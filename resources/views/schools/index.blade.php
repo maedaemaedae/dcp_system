@@ -23,6 +23,7 @@
             <table class="min-w-full divide-y divide-gray-200 text-sm">
                 <thead class="bg-gray-100">
                     <tr>
+                        <th class="px-4 py-2 text-left">School ID</th>
                         <th class="px-4 py-2 text-left">School Name</th>
                         <th class="px-4 py-2 text-left">Address</th>
                         <th class="px-4 py-2 text-left">School Head</th>
@@ -33,9 +34,11 @@
                         <th class="px-4 py-2 text-left">Created Date</th>
                     </tr>
                 </thead>
+
                 <tbody class="divide-y divide-gray-100">
                     @forelse ($schools as $school)
                         <tr>
+                            <td class="px-4 py-2">{{ $school->school_id }}</td>
                             <td class="px-4 py-2">{{ $school->school_name }}</td>
                             <td class="px-4 py-2">{{ $school->school_address }}</td>
                             <td class="px-4 py-2">{{ $school->school_head }}</td>
@@ -47,7 +50,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-4 py-4 text-center text-gray-500">No schools found.</td>
+                            <td colspan="9" class="text-center text-gray-500 py-4">
+                                No schools found.
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

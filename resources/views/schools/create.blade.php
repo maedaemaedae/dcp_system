@@ -20,6 +20,11 @@
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- School ID -->
+                <div>
+                    <label class="block font-medium">School ID</label>
+                    <input type="text" name="school_id" class="w-full border rounded px-3 py-2" required>
+                </div>
 
                 <!-- School Name -->
                 <div>

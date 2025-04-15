@@ -29,6 +29,7 @@ class SchoolController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'school_id' => 'required|unique:schools,school_id',
             'school_name' => 'required|string|max:255',
             'school_address' => 'required',
             'school_head' => 'required',
@@ -38,6 +39,7 @@ class SchoolController extends Controller
         ]);
 
         School::create([
+            'school_id' => $request->school_id,
             'school_name' => $request->school_name,
             'school_address' => $request->school_address,
             'school_head' => $request->school_head,
