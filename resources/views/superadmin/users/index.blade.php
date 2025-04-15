@@ -12,6 +12,14 @@
     </x-slot>
 
     <div class="p-6">
+        <form method="GET" action="{{ route('superadmin.users') }}" class="mb-4">
+            <div class="flex items-center space-x-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name, email, or role"
+                    class="px-3 py-2 border rounded w-1/3">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Search</button>
+            </div>
+        </form>
+
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead>
                 <tr>
