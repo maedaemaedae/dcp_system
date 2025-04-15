@@ -35,7 +35,14 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('superadmin.dashboard');
         }
     
+        $user = $request->user();
+
+        if ($user->role && $user->role->role_name === 'super_admin') {
+            return redirect()->route('superadmin.dashboard');
+        }
+
         return redirect()->intended(RouteServiceProvider::HOME);
+
     }
     
     /**
