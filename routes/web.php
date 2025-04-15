@@ -28,4 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// ✅ Super Admin route
+use App\Http\Controllers\SuperAdminController;
+
+Route::middleware(['auth', 'super_admin'])->group(function () {
+    Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
+});
+
 require __DIR__.'/auth.php';
