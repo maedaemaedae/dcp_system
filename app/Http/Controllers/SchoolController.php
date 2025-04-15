@@ -17,12 +17,8 @@ class SchoolController extends Controller
 
     public function create()
     {
-        // Get the fixed division: Region IV-B MIMAROPA
         $division = Division::where('division_name', 'Region IV-B MIMAROPA')->firstOrFail();
-
-        // Fetch all municipalities (assumed to be under Region IV-B MIMAROPA)
         $municipalities = Municipality::all();
-
         return view('schools.create', compact('division', 'municipalities'));
     }
 
@@ -51,5 +47,43 @@ class SchoolController extends Controller
         ]);
 
         return redirect()->route('schools.index')->with('success', 'School created successfully.');
+    }
+
+    public function edit(School $school)
+    {
+        $division = Division::where('division_name', 'Region IV-B MIMAROPA')->firstOrFail();
+        $municipalities = Municipality::all();
+        return view('schools.edit', compact('school', 'division', 'municipalities'));
+    }
+
+    public function update(Request $request, School $school)
+    {
+        $request->validate([
+            'school_id' => 'required|unique:schools,school_id,' . $school->school_id . ',school_id',
+            'school_name' => 'required|string|max:255',
+            'school_address' => 'required',
+            'school_head' => 'required',
+            'level' => 'required|in:Elementary,High School',
+            'division_id' => 'required|exists:divisions,division_id',
+            'municipality_id' => 'required|exists:municipalities,municipality_id',
+        ]);
+
+        $school->update([
+            'school_id' => $request->school_id,
+            'school_name' => $request->school_name,
+            'school_address' => $request->school_address,
+            'school_head' => $request->school_head,
+            'level' => $request->level,
+            'division_id' => $request->division_id,
+            'municipality_id' => $request->municipality_id,
+        ]);
+
+        return redirect()->route('schools.index')->with('success', 'School updated successfully.');
+    }
+
+    public function destroy(School $school)
+    {
+        $school->delete();
+        return redirect()->route('schools.index')->with('success', 'School deleted successfully.');
     }
 }

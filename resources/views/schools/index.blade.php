@@ -32,6 +32,7 @@
                         <th class="px-4 py-2 text-left">Municipality</th>
                         <th class="px-4 py-2 text-left">Created By</th>
                         <th class="px-4 py-2 text-left">Created Date</th>
+                        <th class="px-4 py-2 text-left">Actions</th>
                     </tr>
                 </thead>
 
@@ -47,6 +48,19 @@
                             <td class="px-4 py-2">{{ $school->municipality->municipality_name ?? '—' }}</td>
                             <td class="px-4 py-2">{{ $school->created_by }}</td>
                             <td class="px-4 py-2">{{ $school->created_date }}</td>
+                            <td class="px-4 py-2 space-x-2">
+                            <a href="{{ route('schools.edit', $school->school_id) }}"
+                            class="bg-yellow-500 text-white px-2 py-1 rounded text-xs hover:bg-yellow-600">Edit</a>
+
+                            <form action="{{ route('schools.destroy', $school->school_id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button onclick="return confirm('Are you sure?')" class="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+
                         </tr>
                     @empty
                         <tr>
