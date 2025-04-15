@@ -18,6 +18,17 @@
                 + Add School
             </a>
         </div>
+        
+        <form method="GET" action="{{ route('schools.index') }}" class="mb-4 flex items-center gap-2">
+            <input type="text" name="search" value="{{ request('search') }}"
+                placeholder="Search by ID, Name, or Address..."
+                class="w-full md:w-1/3 border rounded px-3 py-2"
+            >
+            <button type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Search
+            </button>
+        </form>
 
         <div class="overflow-x-auto bg-white shadow-md rounded">
             <table class="min-w-full divide-y divide-gray-200 text-sm">

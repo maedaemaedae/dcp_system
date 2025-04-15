@@ -9,12 +9,24 @@ use Illuminate\Http\Request;
 
 class SchoolController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $schools = School::with(['division', 'municipality'])->get();
+        $query = School::with(['division', 'municipality']);
+    
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('school_name', 'LIKE', "%{$search}%")
+                  ->orWhere('school_id', 'LIKE', "%{$search}%")
+                  ->orWhere('school_address', 'LIKE', "%{$search}%");
+            });
+        }
+    
+        $schools = $query->get();
+    
         return view('schools.index', compact('schools'));
     }
-
+    
     public function create()
     {
         $division = Division::where('division_name', 'Region IV-B MIMAROPA')->firstOrFail();
