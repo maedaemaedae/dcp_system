@@ -25,6 +25,10 @@ class SuperAdminController extends Controller
 
     public function updateUserRole(Request $request, $userId)
     {
+        if (auth()->id() == $userId) {
+            return redirect()->back()->with('error', 'You cannot change your own role.');
+        }
+        
         $request->validate([
             'role_name' => 'required|string',
         ]);
