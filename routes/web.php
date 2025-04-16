@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\RegionalOfficeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,7 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::get('/schools/{school}/edit', [SchoolController::class, 'edit'])->name('schools.edit');
     Route::put('/schools/{school}', [SchoolController::class, 'update'])->name('schools.update');
     Route::delete('/schools/{school}', [SchoolController::class, 'destroy'])->name('schools.destroy');
+    Route::resource('regional-offices', RegionalOfficeController::class);
 });
 
 require __DIR__.'/auth.php';

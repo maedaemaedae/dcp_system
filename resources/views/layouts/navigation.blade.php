@@ -39,6 +39,19 @@
                             {{ __('User Management') }}
                         </x-nav-link>
                     @endif
+                    
+                    @php
+                        $user = auth()->user();
+                    @endphp
+
+                    @if ($user && $user->role && $user->role->role_name === 'super_admin')
+                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <x-nav-link :href="route('regional-offices.index')" :active="request()->routeIs('regional-offices.*')">
+                                {{ __('Regional Offices') }}
+                            </x-nav-link>
+                        </div>
+                    @endif
+
                 </div>
                 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">

@@ -8,20 +8,21 @@ use App\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        $this->call(RegionMimaropaSeeder::class);
-
-        User::firstOrCreate([
-            'email' => 'superadmin@example.com',
-        ], [
+        // Seed super admin user
+        $user = User::create([
             'name' => 'Super Admin',
-            'password' => bcrypt('password'), // or your preferred default
+            'email' => 'superadmin@example.com',
+            'password' => bcrypt('password'),
         ]);
-        
+
         Role::create([
             'user_id' => $user->id,
             'role_name' => 'super_admin',
         ]);
+
+        // Call Region Seeder
+        $this->call(RegionMimaropaSeeder::class);
     }
 }
