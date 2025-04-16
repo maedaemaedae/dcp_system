@@ -59,15 +59,15 @@
                             </x-nav-link>
                         </div>
                     @endif
-
+                    
+                    @if ($user && $user->role && $user->role->role_name === 'super_admin')
+                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <x-nav-link :href="route('schools.index')" :active="request()->routeIs('schools.*')">
+                                {{ __('School List') }}
+                            </x-nav-link>
+                        </div>
+                    @endif
                 </div>
-                
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('schools.index')" :active="request()->routeIs('schools.*')">
-                        {{ __('School List') }}
-                    </x-nav-link>
-                </div>
-
             </div>
 
             <!-- Settings Dropdown -->
