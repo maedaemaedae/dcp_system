@@ -42,6 +42,12 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Auto-assign default role
+        \App\Models\Role::create([
+            'user_id' => $user->id,
+            'role_name' => 'school', // Change if you want a different default
+        ]);
+
         event(new Registered($user));
 
         Auth::login($user);
