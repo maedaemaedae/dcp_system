@@ -6,6 +6,7 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\RegionalOfficeController;
 use App\Http\Controllers\DivisionOfficeController;
+use App\Http\Controllers\InventoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,7 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::delete('/schools/{school}', [SchoolController::class, 'destroy'])->name('schools.destroy');
     Route::resource('regional-offices', RegionalOfficeController::class);
     Route::resource('division-offices', DivisionOfficeController::class);
+    Route::resource('inventory', InventoryController::class);
 });
 
 require __DIR__.'/auth.php';
