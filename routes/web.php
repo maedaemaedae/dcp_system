@@ -7,6 +7,7 @@ use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\RegionalOfficeController;
 use App\Http\Controllers\DivisionOfficeController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PackageTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::resource('regional-offices', RegionalOfficeController::class);
     Route::resource('division-offices', DivisionOfficeController::class);
     Route::resource('inventory', InventoryController::class);
+    Route::resource('package-types', PackageTypeController::class);
 });
 
 require __DIR__.'/auth.php';

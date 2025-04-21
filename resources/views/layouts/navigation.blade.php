@@ -18,61 +18,44 @@
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
+                <!-- SuperAdmin Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    @php
-                        $user = auth()->user();
-                        $dashboardRoute = 'dashboard';
+                @php
+                    $user = auth()->user();
+                    $dashboardRoute = $user && $user->role && $user->role->role_name === 'super_admin'
+                        ? 'superadmin.dashboard'
+                        : 'dashboard';
+                @endphp
 
-                        if ($user && $user->role && $user->role->role_name === 'super_admin') {
-                            $dashboardRoute = 'superadmin.dashboard';
-                        }
-                    @endphp
-
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route($dashboardRoute)" :active="request()->routeIs($dashboardRoute)">
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @php $user = auth()->user(); @endphp
                     @if ($user && $user->role && $user->role->role_name === 'super_admin')
                         <x-nav-link :href="route('superadmin.users')" :active="request()->routeIs('superadmin.users')">
                             {{ __('User Management') }}
                         </x-nav-link>
-                    @endif
-                    
-                    @php
-                        $user = auth()->user();
-                    @endphp
 
-                    @if ($user && $user->role && $user->role->role_name === 'super_admin')
-                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <x-nav-link :href="route('regional-offices.index')" :active="request()->routeIs('regional-offices.*')">
-                                {{ __('Regional Offices') }}
-                            </x-nav-link>
-                        </div>
-                    @endif
-                    
-                    @if ($user && $user->role && $user->role->role_name === 'super_admin')
-                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <x-nav-link :href="route('division-offices.index')" :active="request()->routeIs('division-offices.*')">
-                                {{ __('Division Offices') }}
-                            </x-nav-link>
-                        </div>
-                    @endif
-                    
-                    @if ($user && $user->role && $user->role->role_name === 'super_admin')
-                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <x-nav-link :href="route('schools.index')" :active="request()->routeIs('schools.*')">
-                                {{ __('School List') }}
-                            </x-nav-link>
-                        </div>
-                    @endif
-                    @if ($user && $user->role && $user->role->role_name === 'super_admin')
-                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-nav-link :href="route('regional-offices.index')" :active="request()->routeIs('regional-offices.*')">
+                            {{ __('Regional Offices') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('division-offices.index')" :active="request()->routeIs('division-offices.*')">
+                            {{ __('Division Offices') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('schools.index')" :active="request()->routeIs('schools.*')">
+                            {{ __('School List') }}
+                        </x-nav-link>
+
                         <x-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.*')">
                             {{ __('Inventory') }}
                         </x-nav-link>
-                        </div>
+
+                        <x-nav-link :href="route('package-types.index')" :active="request()->routeIs('package-types.*')">
+                            {{ __('Packages') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
