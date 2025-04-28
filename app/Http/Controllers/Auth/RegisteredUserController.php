@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rules;
+use Illuminate\View\View;
+use App\Mail\OtpMail; // Import your custom OTP mail
+
+class RegisteredUserController extends Controller
+{
+    /**
+     * Display the registration view.
+     */
+    public function create(): View
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Handle an incoming registration request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        // Generate OTP
+        $otp = rand(100000, 999999);
+
+        // Create user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'otp' => $otp,
+        ]);
+
+        // Assign default role
+        \App\Models\Role::create([
+            'user_id' => $user->id,
+            'role_name' => 'school', // Default role
+        ]);
+
+        event(new Registered($user));
+
+        // Send OTP email
+        Mail::to($user->email)->send(new OtpMail($otp));
+
+        // Redirect to OTP verification page
+        return redirect()->route('otp.verify.page')->with('user_id', $user->id);
+    }
+}
