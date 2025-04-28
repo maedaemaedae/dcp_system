@@ -31,36 +31,42 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+{
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
 
-        // Generate OTP
-        $otp = rand(100000, 999999);
+    // Generate OTP
+    $otp = rand(100000, 999999);
 
-        // Create user
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'otp' => $otp,
-        ]);
+    // Create user
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'otp' => $otp,
+    ]);
 
-        // Assign default role
-        \App\Models\Role::create([
-            'user_id' => $user->id,
-            'role_name' => 'school', // Default role
-        ]);
+    // Assign default role
+    \App\Models\Role::create([
+        'user_id' => $user->id,
+        'role_name' => 'user', // Default role
+    ]);
 
-        event(new Registered($user));
+    event(new Registered($user));
 
-        // Send OTP email
-        Mail::to($user->email)->send(new OtpMail($otp));
+    // Send OTP email
+    Mail::to($user->email)->send(new OtpMail($otp));
 
-        // Redirect to OTP verification page
-        return redirect()->route('otp.verify.page')->with('user_id', $user->id);
-    }
+    // ✅ Save user ID and email in session
+    session([
+        'user_id' => $user->id,
+        'otp_email' => $user->email,
+    ]);
+
+    // ✅ Redirect normally
+    return redirect()->route('otp.verify.page');
+}
 }

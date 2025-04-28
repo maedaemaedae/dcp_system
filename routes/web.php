@@ -30,6 +30,8 @@ Route::get('/dashboard', function () {
 // ✅ Move OTP routes OUTSIDE auth middleware (must be public)
 Route::get('/verify-otp', [OtpVerificationController::class, 'showOtpForm'])->name('otp.verify.page');
 Route::post('/verify-otp', [OtpVerificationController::class, 'verifyOtp'])->name('otp.verify');
+Route::get('/resend-otp', [OtpVerificationController::class, 'resendOtp'])->name('resend.otp');
+
 
 // ✅ Profile routes for all authenticated users
 Route::middleware('auth')->group(function () {
