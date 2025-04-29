@@ -32,7 +32,7 @@ class OtpVerificationController extends Controller
 
         $user->otp = null;
         $user->email_verified_at = now();
-        $user->is_activated = 1; // ← you should also mark as activated if your project requires
+        $user->is_activated = 1; 
         $user->save();
 
         Auth::login($user);
@@ -65,7 +65,7 @@ public function resendOtp(Request $request)
     $user->otp = $otp;
     $user->save();
 
-    // ✅ Send using your custom Mailable
+    // ✅ Send using custom Mailable
     Mail::to($user->email)->send(new OtpMail($otp));
 
     return back()->with('success', 'A new OTP has been sent to your email.');

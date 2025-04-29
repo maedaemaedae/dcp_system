@@ -10,22 +10,26 @@ use Illuminate\Http\Request;
 class SchoolController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = School::with(['division', 'municipality']);
-    
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('school_name', 'LIKE', "%{$search}%")
-                  ->orWhere('school_id', 'LIKE', "%{$search}%")
-                  ->orWhere('school_address', 'LIKE', "%{$search}%");
-            });
-        }
-    
-        $schools = $query->get();
-    
-        return view('schools.index', compact('schools'));
+{
+    $query = School::with(['division', 'municipality']);
+
+    if ($request->has('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('school_name', 'LIKE', "%{$search}%")
+              ->orWhere('school_id', 'LIKE', "%{$search}%")
+              ->orWhere('school_address', 'LIKE', "%{$search}%");
+        });
     }
+
+    $schools = $query->get();
+
+    // Add these 2 lines:
+    $divisions = Division::all();
+    $municipalities = Municipality::all();
+
+    return view('schools.index', compact('schools', 'divisions', 'municipalities'));
+}
     
     public function create()
     {
@@ -58,7 +62,7 @@ class SchoolController extends Controller
             'created_date' => now(),
         ]);
 
-        return redirect()->route('schools.index')->with('success', 'School created successfully.');
+        return redirect()->route('schools.index')->with('success', 'School Added Successfully');
     }
 
     public function edit(School $school)
@@ -96,6 +100,6 @@ class SchoolController extends Controller
     public function destroy(School $school)
     {
         $school->delete();
-        return redirect()->route('schools.index')->with('success', 'School deleted successfully.');
+        return redirect()->route('schools.index')->with('success', 'School Removed Successfully');
     }
 }

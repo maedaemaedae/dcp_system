@@ -45,12 +45,7 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
     Route::get('/superadmin/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.users');
     Route::post('/superadmin/users/{user}/role', [SuperAdminController::class, 'updateUserRole'])->name('superadmin.users.updateRole');
-    Route::get('/schools', [SchoolController::class, 'index'])->name('schools.index');
-    Route::get('/schools/create', [SchoolController::class, 'create'])->name('schools.create');
-    Route::post('/schools', [SchoolController::class, 'store'])->name('schools.store');
-    Route::get('/schools/{school}/edit', [SchoolController::class, 'edit'])->name('schools.edit');
-    Route::put('/schools/{school}', [SchoolController::class, 'update'])->name('schools.update');
-    Route::delete('/schools/{school}', [SchoolController::class, 'destroy'])->name('schools.destroy');
+    Route::resource('schools',SchoolController::class);
     Route::resource('regional-offices', RegionalOfficeController::class);
     Route::resource('division-offices', DivisionOfficeController::class);
     Route::resource('inventory', InventoryController::class);

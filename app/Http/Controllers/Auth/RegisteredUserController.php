@@ -52,7 +52,7 @@ class RegisteredUserController extends Controller
     // Assign default role
     \App\Models\Role::create([
         'user_id' => $user->id,
-        'role_name' => 'user', // Default role
+        'role_name' => 'school', // Default role
     ]);
 
     event(new Registered($user));
