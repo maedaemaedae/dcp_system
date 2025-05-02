@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -46,13 +47,8 @@ class RegisteredUserController extends Controller
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
+        'role_id' => 7, 
         'otp' => $otp,
-    ]);
-
-    // Assign default role
-    \App\Models\Role::create([
-        'user_id' => $user->id,
-        'role_name' => 'school', // Default role
     ]);
 
     event(new Registered($user));

@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // ✅ Group all Super Admin routes under auth + super_admin
-Route::middleware(['auth', 'super_admin'])->group(function () {
+Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
     Route::get('/superadmin/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.users');
     Route::post('/superadmin/users/{user}/role', [SuperAdminController::class, 'updateUserRole'])->name('superadmin.users.updateRole');
