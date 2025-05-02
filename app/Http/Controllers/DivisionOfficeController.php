@@ -8,11 +8,15 @@ use Illuminate\Http\Request;
 
 class DivisionOfficeController extends Controller
 {
+
     public function index()
     {
         $divisions = DivisionOffice::with('regionalOffice')->get();
-        return view('divisionoffices.index', compact('divisions'));
+        $regionalOffices = RegionalOffice::all();
+    
+        return view('divisionoffices.index', compact('divisions', 'regionalOffices'));
     }
+    
 
     public function create()
     {

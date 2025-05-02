@@ -130,8 +130,7 @@
             document.getElementById(id).classList.add('hidden');
         }
     </script>
-
-    @if (session('success'))
+  @if (session('success'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const toast = document.createElement('div');
@@ -146,7 +145,7 @@
                 }
 
                 toast.innerText = message;
-                toast.className = "fixed bottom-1 left-1/2 transform -translate-x-1/2 bg-green-500 text-white py-4 px-8 rounded-lg shadow-lg z-50 text-center text-lg font-semibold";
+                toast.className = "fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white py-4 px-8 rounded-lg shadow-lg z-50 text-center text-lg font-semibold";
                 document.body.appendChild(toast);
 
                 setTimeout(() => {
