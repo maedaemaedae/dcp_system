@@ -18,7 +18,7 @@ class SuperAdminController extends Controller
 
     public function manageUsers(Request $request)
     {
-        $query = \App\Models\User::with('role');
+        $query = User::with('role');
     
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -30,27 +30,26 @@ class SuperAdminController extends Controller
                   });
             });
         }
-    
+
         $users = $query->get();
-    
-        return view('superadmin.users.index', compact('users'));
+        $roles = Role::all(); // ✅ This is what your view needs
+
+        return view('superadmin.users.index', compact('users', 'roles'));
     }
-    
 
     public function updateUserRole(Request $request, $userId)
     {
         if (auth()->id() == $userId) {
             return redirect()->back()->with('error', 'You cannot change your own role.');
         }
-        
+
         $request->validate([
-            'role_name' => 'required|string',
+            'role_id' => 'required|exists:roles,role_id', // ✅ Validate the new role_id
         ]);
 
-        Role::updateOrCreate(
-            ['user_id' => $userId],
-            ['role_name' => $request->role_name]
-        );
+        $user = User::findOrFail($userId);
+        $user->role_id = $request->role_id; // ✅ Directly assign role_id
+        $user->save();
 
         return redirect()->back()->with('success', 'Role updated successfully!');
     }
