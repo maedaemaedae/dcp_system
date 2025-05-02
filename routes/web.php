@@ -52,5 +52,20 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::resource('package-types', PackageTypeController::class);
 });
 
+// ✅ Group all Admin routes under auth + admin
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [App\Http\Controllers\AdminController::class, 'manageUsers'])->name('admin.users');
+    Route::get('/users/{id}/edit', [App\Http\Controllers\AdminController::class, 'editUser'])->name('admin.users.edit');
+    Route::post('/users/{id}', [App\Http\Controllers\AdminController::class, 'updateUser'])->name('admin.users.update');
+});
+
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('regional-offices', [RegionalOfficeController::class, 'index'])->name('admin.regional-offices.index');
+    Route::get('division-offices', [DivisionOfficeController::class, 'index'])->name('admin.division-offices.index');
+    Route::get('schools', [SchoolController::class, 'index'])->name('admin.schools.index');
+    Route::get('inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
+    Route::get('package-types', [PackageTypeController::class, 'index'])->name('admin.package-types.index');
+});
+
 // ✅ Include Laravel Breeze / Fortify / Auth routes
 require __DIR__.'/auth.php';

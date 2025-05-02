@@ -5,14 +5,12 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    @php
-                        $user = auth()->user();
-                        $dashboardRoute = 'dashboard';
-
-                        if ($user && $user->role && $user->role->role_name === 'super_admin') {
-                            $dashboardRoute = 'superadmin.dashboard';
-                        }
-                    @endphp
+                @php
+                    $user = auth()->user();
+                    $dashboardRoute = $user && $user->role && $user->role->role_name === 'super_admin'
+                        ? 'superadmin.dashboard'
+                        : 'dashboard';
+                @endphp
                     <a href="{{ route($dashboardRoute) }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a>
@@ -58,6 +56,37 @@
                         </x-nav-link>
                     @endif
                 </div>
+            </div>
+
+            <!--Admin Navigation Links -->
+            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                @if ($user && $user->role && $user->role->role_name === 'admin')
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
+                            {{ __('User Management') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.regional-offices.index')" :active="request()->routeIs('admin.regional-offices.*')">
+                            {{ __('Regional Offices') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.division-offices.index')" :active="request()->routeIs('admin.division-offices.*')">
+                            {{ __('Division Offices') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.schools.index')" :active="request()->routeIs('admin.schools.*')">
+                            {{ __('School List') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.inventory.index')" :active="request()->routeIs('admin.inventory.*')">
+                            {{ __('Inventory') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.package-types.index')" :active="request()->routeIs('admin.package-types.*')">
+                            {{ __('Packages') }}
+                        </x-nav-link>
+
+                    </div>
+                @endif
             </div>
 
             <!-- Settings Dropdown -->
