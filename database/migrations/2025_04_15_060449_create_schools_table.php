@@ -6,15 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('schools', function (Blueprint $table) {
-            $table->id('school_id');
+            $table->unsignedBigInteger('school_id')->primary();
             $table->unsignedBigInteger('division_id');
             $table->unsignedBigInteger('municipality_id');
             $table->string('school_name');
@@ -26,16 +21,12 @@ return new class extends Migration
             $table->string('modified_by')->nullable();
             $table->date('modified_date')->nullable();
             $table->timestamps();
-    
-            $table->foreign('division_id')->references('division_id')->on('divisions');
+
+            $table->foreign('division_id')->references('division_id')->on('division_offices')->onDelete('cascade');
             $table->foreign('municipality_id')->references('municipality_id')->on('municipalities');
         });
-    }    
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    }
+
     public function down()
     {
         Schema::dropIfExists('schools');

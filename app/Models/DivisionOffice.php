@@ -11,15 +11,16 @@ class DivisionOffice extends Model
 
     protected $table = 'division_offices';
     protected $primaryKey = 'division_id';
-
-    public $timestamps = true;
+    public $incrementing = false;
+    protected $keyType = 'int';
 
     protected $fillable = [
+        'division_id',
         'division_name',
+        'regional_office_id',
         'person_in_charge',
         'email',
         'contact_no',
-        'regional_office_id',
         'created_by',
         'created_date',
         'modified_by',
@@ -29,5 +30,10 @@ class DivisionOffice extends Model
     public function regionalOffice()
     {
         return $this->belongsTo(RegionalOffice::class, 'regional_office_id');
+    }
+
+    public function schools()
+    {
+        return $this->hasMany(School::class, 'division_id');
     }
 }

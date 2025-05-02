@@ -3,83 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\DivisionOffice;
-use App\Models\RegionalOffice;
 use Illuminate\Http\Request;
 
 class DivisionOfficeController extends Controller
 {
     public function index()
     {
-        $divisions = DivisionOffice::with('regionalOffice')->get();
+        $divisions = \App\Models\DivisionOffice::with('regionalOffice')->get();
         return view('divisionoffices.index', compact('divisions'));
     }
-
+    
     public function create()
     {
-        $regionalOffices = RegionalOffice::all();
-        return view('divisionoffices.create', compact('regionalOffices'));
+        return view('divisions.create');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'division_id' => 'required|integer|unique:division_offices,division_id',
             'division_name' => 'required|string|max:255',
+            'regional_office_id' => 'required|exists:regional_offices,ro_id',
             'person_in_charge' => 'required|string|max:255',
             'email' => 'nullable|email',
-            'contact_no' => 'nullable|string|max:255',
-            'regional_office_id' => 'required|exists:regional_offices,ro_id',
+            'contact_no' => 'nullable|string|max:20',
         ]);
-
-        DivisionOffice::create([
-            'division_name' => $request->division_name,
-            'person_in_charge' => $request->person_in_charge,
-            'email' => $request->email,
-            'contact_no' => $request->contact_no,
-            'regional_office_id' => $request->regional_office_id,
-            'created_by' => auth()->user()->name ?? 'System',
+    
+        DivisionOffice::create(array_merge($validated, [
+            'created_by' => auth()->user()->name ?? 'Seeder',
             'created_date' => now(),
-        ]);
-
-        return redirect()->route('division-offices.index')->with('success', 'Division Office added successfully.');
+        ]));
+    
+        return redirect()->route('divisionoffices.index')->with('success', 'Division office added successfully.');
     }
-
-    public function edit($id)
-    {
-        $division = DivisionOffice::findOrFail($id);
-        $regionalOffices = RegionalOffice::all();
-        return view('divisionoffices.edit', compact('division', 'regionalOffices'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $division = DivisionOffice::findOrFail($id);
-
-        $request->validate([
-            'division_name' => 'required|string|max:255',
-            'person_in_charge' => 'required|string|max:255',
-            'email' => 'nullable|email',
-            'contact_no' => 'nullable|string|max:255',
-            'regional_office_id' => 'required|exists:regional_offices,ro_id',
-        ]);
-
-        $division->update([
-            'division_name' => $request->division_name,
-            'person_in_charge' => $request->person_in_charge,
-            'email' => $request->email,
-            'contact_no' => $request->contact_no,
-            'regional_office_id' => $request->regional_office_id,
-            'modified_by' => auth()->user()->name ?? 'System',
-            'modified_date' => now(),
-        ]);
-
-        return redirect()->route('division-offices.index')->with('success', 'Division Office updated successfully.');
-    }
-
-    public function destroy($id)
-    {
-        $division = DivisionOffice::findOrFail($id);
-        $division->delete();
-
-        return redirect()->route('division-offices.index')->with('success', 'Division Office deleted.');
-    }
+    
 }

@@ -3,19 +3,52 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Division;
+use App\Models\RegionalOffice;
+use App\Models\DivisionOffice;
 use App\Models\Municipality;
 
 class RegionMimaropaSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create division
-        $division = Division::firstOrCreate([
-            'division_name' => 'Region IV-B MIMAROPA',
-        ]);
+        // Create the Regional Office for MIMAROPA
+        $region = RegionalOffice::firstOrCreate(
+            ['ro_office' => 'Region IV-B MIMAROPA'],
+            [
+                'person_in_charge' => 'N/A',
+                'email' => 'ro_mimaropa@example.com',
+                'contact_no' => '0000000000',
+                'created_by' => 'Seeder',
+                'created_date' => now(),
+            ]
+        );
 
-        // Sample municipalities under Region IV-B
+        // List of division offices under MIMAROPA
+        $divisions = [
+            'Palawan',
+            'Romblon',
+            'Marinduque',
+            'Oriental Mindoro',
+            'Occidental Mindoro',
+            'Puerto Princesa City',
+            'Calapan City',
+        ];
+
+        foreach ($divisions as $divisionName) {
+            DivisionOffice::firstOrCreate(
+                ['division_name' => $divisionName],
+                [
+                    'regional_office_id' => $region->ro_id,
+                    'person_in_charge' => 'N/A',
+                    'email' => strtolower(str_replace(' ', '', $divisionName)) . '@example.com',
+                    'contact_no' => '0000000000',
+                    'created_by' => 'Seeder',
+                    'created_date' => now(),
+                ]
+            );
+        }
+
+        // Sample municipalities
         $municipalities = [
             'Puerto Princesa',
             'San Jose',
@@ -33,6 +66,6 @@ class RegionMimaropaSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('Division and Municipalities for Region IV-B MIMAROPA seeded.');
+        $this->command->info('✅ Region IV-B MIMAROPA, its divisions, and municipalities seeded successfully.');
     }
 }

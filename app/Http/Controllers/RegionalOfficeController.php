@@ -20,24 +20,22 @@ class RegionalOfficeController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'ro_id' => 'required|integer|unique:regional_offices,ro_id',
             'ro_office' => 'required|string|max:255',
             'person_in_charge' => 'required|string|max:255',
             'email' => 'nullable|email',
-            'contact_no' => 'nullable|string|max:255',
+            'contact_no' => 'nullable|string|max:20',
         ]);
-
-        RegionalOffice::create([
-            'ro_office' => $request->ro_office,
-            'person_in_charge' => $request->person_in_charge,
-            'email' => $request->email,
-            'contact_no' => $request->contact_no,
-            'created_by' => auth()->user()->name ?? 'System',
+    
+        RegionalOffice::create(array_merge($validated, [
+            'created_by' => auth()->user()->name ?? 'Seeder',
             'created_date' => now(),
-        ]);
-
-        return redirect()->route('regional-offices.index')->with('success', 'Regional Office added successfully.');
+        ]));
+    
+        return redirect()->route('regionaloffices.index')->with('success', 'Regional office added successfully.');
     }
+    
 
     public function edit($id)
     {

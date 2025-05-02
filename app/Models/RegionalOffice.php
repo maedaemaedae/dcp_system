@@ -11,10 +11,11 @@ class RegionalOffice extends Model
 
     protected $table = 'regional_offices';
     protected $primaryKey = 'ro_id';
-
-    public $timestamps = true;
+    public $incrementing = false;
+    protected $keyType = 'int';
 
     protected $fillable = [
+        'ro_id',
         'ro_office',
         'person_in_charge',
         'email',
@@ -24,4 +25,9 @@ class RegionalOffice extends Model
         'modified_by',
         'modified_date',
     ];
+
+    public function divisions()
+    {
+        return $this->hasMany(DivisionOffice::class, 'regional_office_id');
+    }
 }
