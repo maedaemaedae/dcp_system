@@ -50,6 +50,6 @@ class User extends Authenticatable
 
     public function role()
     {
-        return $this->hasOne(\App\Models\Role::class, 'user_id', 'id');
-    }
+        return $this->belongsTo(\App\Models\Role::class, 'role_id', 'role_id');
+    }    
 }

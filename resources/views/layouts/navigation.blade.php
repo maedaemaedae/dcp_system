@@ -7,10 +7,11 @@
                 <div class="shrink-0 flex items-center">
                 @php
                     $user = auth()->user();
-                    $dashboardRoute = $user && $user->role && $user->role->role_name === 'super_admin'
+                    $dashboardRoute = $user && $user->role_id === 1
                         ? 'superadmin.dashboard'
                         : 'dashboard';
                 @endphp
+
                     <a href="{{ route($dashboardRoute) }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a>
@@ -20,7 +21,7 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                 @php
                     $user = auth()->user();
-                    $dashboardRoute = $user && $user->role && $user->role->role_name === 'super_admin'
+                    $dashboardRoute = ($user && $user->role_id === 1)
                         ? 'superadmin.dashboard'
                         : 'dashboard';
                 @endphp
@@ -30,7 +31,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @if ($user && $user->role && $user->role->role_name === 'super_admin')
+                    @if ($user && $user->role_id === 1)
                         <x-nav-link :href="route('superadmin.users')" :active="request()->routeIs('superadmin.users')">
                             {{ __('User Management') }}
                         </x-nav-link>
@@ -66,7 +67,7 @@
                             {{ __('User Management') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.regional-offices.index')" :active="request()->routeIs('admin.regional-offices.*')">
-                            {{ __('Regional Offices') }}
+                        {{ __('Regional Offices') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('admin.division-offices.index')" :active="request()->routeIs('admin.division-offices.*')">

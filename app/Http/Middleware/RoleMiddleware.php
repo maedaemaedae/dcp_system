@@ -12,7 +12,19 @@ class RoleMiddleware
     {
         $user = $request->user();
 
-        if (!$user || !$user->role || !in_array($user->role->role_name, $roles)) {
+        // Map role names to IDs
+        $roleNameToId = [
+            'super_admin' => 1,
+            'admin' => 2,
+            'regional_office' => 3,
+            'division_office' => 4,
+            'school' => 5,
+            'supplier' => 6,
+        ];
+
+        $allowedRoleIds = array_map(fn($r) => $roleNameToId[$r] ?? null, $roles);
+
+        if (!$user || !in_array($user->role_id, $allowedRoleIds)) {
             abort(403, 'Unauthorized');
         }
 

@@ -11,10 +11,10 @@ class SuperAdminMiddleware
     {
         \Log::info('User Role:', [
             'id' => auth()->id(),
-            'role' => optional(auth()->user()->role)->role_name
+            'role_id' => auth()->user()?->role_id,
         ]);
-        
-        if (auth()->check() && auth()->user()->role && auth()->user()->role->role_name === 'super_admin') {
+
+        if (auth()->check() && auth()->user()->role_id === 1) {
             return $next($request);
         }
 

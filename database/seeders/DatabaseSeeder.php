@@ -3,26 +3,29 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Seed super admin user
+        // 1. Seed roles first
+        $this->call([
+            RoleSeeder::class,
+        ]);
+
+        // 2. Then create the Super Admin user
         $user = User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@example.com',
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'),
+            'role_id' => 1, // safe now because roles table is seeded
         ]);
 
-        Role::create([
-            'user_id' => $user->id,
-            'role_name' => 'super_admin',
+        // 3. Continue with other seeders
+        $this->call([
+            RegionMimaropaSeeder::class,
         ]);
-
-        // Call Region Seeder
-        $this->call(RegionMimaropaSeeder::class);
     }
 }
