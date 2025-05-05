@@ -13,13 +13,13 @@
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium">Description</label>
-                <textarea name="description" class="w-full border rounded px-3 py-2" rows="3"></textarea>
+                <label for="quantity" class="block text-gray-700">Quantity</label>
+                <input type="number" name="quantity" id="quantity" required class="w-full mt-1 border rounded p-2" min="0">
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium">Quantity</label>
-                <input type="number" name="quantity" class="w-full border rounded px-3 py-2" min="0" required>
+                <label class="block font-medium">Description</label>
+                <textarea name="description" class="w-full border rounded px-3 py-2" rows="4"></textarea>
             </div>
 
             <div class="text-right">

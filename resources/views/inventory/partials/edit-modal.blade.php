@@ -15,13 +15,13 @@
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium">Description</label>
-                <textarea name="description" class="w-full border rounded px-3 py-2" rows="3">{{ $item->description }}</textarea>
+                <label for="quantity" class="block text-gray-700">Quantity</label>
+                <input type="number" name="quantity" value="{{ $item->quantity }}" id="quantity" required class="w-full mt-1 border rounded p-2" min="0">
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium">Quantity</label>
-                <input type="number" name="quantity" value="{{ $item->quantity }}" class="w-full border rounded px-3 py-2" min="0" required>
+                <label class="block font-medium">Description</label>
+                <textarea name="description" class="w-full border rounded px-3 py-2" rows="4">{{ $item->description }}</textarea>
             </div>
 
             <div class="text-right">
