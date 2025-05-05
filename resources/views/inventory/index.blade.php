@@ -16,7 +16,17 @@
         <button id="openAddModalBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-4 inline-block">
             + Add Item
         </button>
-
+        
+                @if ($nameTotals->count())
+            <div class="mb-6 bg-gray-100 border border-gray-300 rounded p-4">
+                <h3 class="text-lg font-semibold mb-2">Inventory Summary by Item</h3>
+                <ul class="list-disc pl-5 text-sm text-gray-800">
+                    @foreach ($nameTotals as $item)
+                        <li><strong>{{ $item->item_name }}:</strong> {{ $item->total_quantity }} in stock</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <!-- Inventory Table -->
         <div class="overflow-x-auto bg-white shadow rounded">
             <table class="min-w-full text-sm">
