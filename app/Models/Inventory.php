@@ -15,9 +15,12 @@ class Inventory extends Model
     protected $fillable = [
         'item_name',
         'description',
+        'quantity', // ✅ Add this line
         'created_by',
         'created_date',
         'modified_by',
         'modified_date',
     ];
+    
+    
 }

@@ -14,11 +14,16 @@
 
             <div class="mb-4">
                 <label class="block font-medium">Description</label>
-                <textarea name="description" class="w-full border rounded px-3 py-2" rows="4"></textarea>
+                <textarea name="description" class="w-full border rounded px-3 py-2" rows="3"></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block font-medium">Quantity</label>
+                <input type="number" name="quantity" class="w-full border rounded px-3 py-2" min="0" required>
             </div>
 
             <div class="text-right">
-                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Save</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
             </div>
         </form>
     </div>

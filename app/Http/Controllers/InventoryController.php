@@ -24,12 +24,14 @@ class InventoryController extends Controller
         $request->validate([
             'item_name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'quantity' => 'required|integer|min:0',
         ]);
 
         Inventory::create([
             'item_name' => $request->item_name,
             'description' => $request->description,
-            'created_by' => Auth::user()->name ?? 'System',
+            'quantity' => $request->quantity,
+            'created_by' => Auth::user()->name,
             'created_date' => now(),
         ]);
 
@@ -49,11 +51,13 @@ class InventoryController extends Controller
         $request->validate([
             'item_name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'quantity' => 'required|integer|min:0',
         ]);
 
         $item->update([
             'item_name' => $request->item_name,
             'description' => $request->description,
+            'quantity' => $request->quantity,
             'modified_by' => Auth::user()->name ?? 'System',
             'modified_date' => now(),
         ]);

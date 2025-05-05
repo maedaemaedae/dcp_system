@@ -16,7 +16,12 @@
 
             <div class="mb-4">
                 <label class="block font-medium">Description</label>
-                <textarea name="description" class="w-full border rounded px-3 py-2" rows="4">{{ $item->description }}</textarea>
+                <textarea name="description" class="w-full border rounded px-3 py-2" rows="3">{{ $item->description }}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block font-medium">Quantity</label>
+                <input type="number" name="quantity" value="{{ $item->quantity }}" class="w-full border rounded px-3 py-2" min="0" required>
             </div>
 
             <div class="text-right">
