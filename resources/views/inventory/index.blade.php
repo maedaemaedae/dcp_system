@@ -17,16 +17,22 @@
             + Add Item
         </button>
         
-                @if ($nameTotals->count())
+        @if ($nameTotals->count())
             <div class="mb-6 bg-gray-100 border border-gray-300 rounded p-4">
                 <h3 class="text-lg font-semibold mb-2">Inventory Summary by Item</h3>
-                <ul class="list-disc pl-5 text-sm text-gray-800">
+
+                <ul class="list-disc pl-5 text-sm text-gray-800 mb-2">
                     @foreach ($nameTotals as $item)
                         <li><strong>{{ $item->item_name }}:</strong> {{ $item->total_quantity }} in stock</li>
                     @endforeach
                 </ul>
+
+                <div class="text-right font-semibold text-sm text-gray-900">
+                    Total Items in Inventory: {{ $totalQuantity }}
+                </div>
             </div>
         @endif
+
         <!-- Inventory Table -->
         <div class="overflow-x-auto bg-white shadow rounded">
             <table class="min-w-full text-sm">

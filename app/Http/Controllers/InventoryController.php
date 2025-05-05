@@ -11,13 +11,15 @@ class InventoryController extends Controller
     public function index()
     {
         $items = Inventory::all();
-    
+        $totalQuantity = Inventory::sum('quantity');
+
         $nameTotals = Inventory::select('item_name', \DB::raw('SUM(quantity) as total_quantity'))
             ->groupBy('item_name')
             ->orderBy('item_name')
             ->get();
-    
-        return view('inventory.index', compact('items', 'nameTotals'));
+         
+        return view('inventory.index', compact('items', 'nameTotals', 'totalQuantity'));
+            
     }
     
 
