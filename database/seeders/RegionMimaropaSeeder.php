@@ -11,9 +11,9 @@ class RegionMimaropaSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create the Regional Office for MIMAROPA
+        // Ensure clean match for Regional Office
         $region = RegionalOffice::firstOrCreate(
-            ['ro_office' => 'Region IV-B MIMAROPA'],
+            ['ro_id' => 1, 'ro_office' => 'Region IV-B MIMAROPA'],
             [
                 'person_in_charge' => 'N/A',
                 'email' => 'ro_mimaropa@example.com',
@@ -22,8 +22,12 @@ class RegionMimaropaSeeder extends Seeder
                 'created_date' => now(),
             ]
         );
-
-        // List of division offices under MIMAROPA
+    
+        if (!$region || !$region->ro_id) {
+            throw new \Exception("❌ Failed to retrieve or create Region IV-B MIMAROPA.");
+        }
+    
+        // Proceed to create division offices
         $divisions = [
             'Palawan',
             'Romblon',
@@ -33,7 +37,7 @@ class RegionMimaropaSeeder extends Seeder
             'Puerto Princesa City',
             'Calapan City',
         ];
-
+    
         foreach ($divisions as $divisionName) {
             DivisionOffice::firstOrCreate(
                 ['division_name' => $divisionName],
@@ -47,8 +51,8 @@ class RegionMimaropaSeeder extends Seeder
                 ]
             );
         }
-
-        // Sample municipalities
+    
+        // Create municipalities
         $municipalities = [
             'Puerto Princesa',
             'San Jose',
@@ -59,13 +63,15 @@ class RegionMimaropaSeeder extends Seeder
             'Coron',
             'Pinamalayan',
         ];
-
+    
         foreach ($municipalities as $name) {
             Municipality::firstOrCreate([
                 'municipality_name' => $name,
             ]);
         }
-
+    
         $this->command->info('✅ Region IV-B MIMAROPA, its divisions, and municipalities seeded successfully.');
     }
-}
+    
+    }
+

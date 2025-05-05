@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('regional_offices', function (Blueprint $table) {
-            $table->unsignedBigInteger('ro_id')->primary();
+            $table->id('ro_id'); // ✅ Auto-incrementing primary key
             $table->string('ro_office');
             $table->string('person_in_charge');
             $table->string('email')->nullable();
@@ -20,6 +20,8 @@ return new class extends Migration
             $table->timestamp('modified_date')->nullable();
             $table->timestamps();
         });
+        
+    
     }
 
     public function down()

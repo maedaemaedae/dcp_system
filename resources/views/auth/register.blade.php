@@ -18,7 +18,16 @@
         <div class="text-center text-black text-2xl font-bold font-['Poppins'] mb-6">
             Create an account
         </div>
-
+                <!-- Error Display -->
+                @if ($errors->any())
+                    <div class="mb-4 text-red-600">
+                        <ul class="list-disc list-inside text-sm">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
         <form method="POST" action="{{ route('register') }}" class="flex flex-col gap-2">
             @csrf
 
