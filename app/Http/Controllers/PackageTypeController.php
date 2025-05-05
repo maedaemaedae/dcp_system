@@ -12,9 +12,10 @@ class PackageTypeController extends Controller
     public function index()
     {
         $packages = PackageType::with('contents.inventory')->get();
-        return view('packages.index', compact('packages'));
+        $inventoryItems = Inventory::all(); // this is what your modals need
+    
+        return view('packages.index', compact('packages', 'inventoryItems'));
     }
-
     public function create()
     {
         $inventoryItems = Inventory::all();
