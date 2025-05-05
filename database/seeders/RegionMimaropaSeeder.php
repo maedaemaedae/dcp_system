@@ -3,69 +3,88 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\RegionalOffice;
-use App\Models\DivisionOffice;
-use App\Models\Municipality;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class RegionMimaropaSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create the Regional Office for MIMAROPA
-        $region = RegionalOffice::firstOrCreate(
-            ['ro_office' => 'Region IV-B MIMAROPA'],
+        // Insert Regional Office
+        DB::table('regional_offices')->insert([
+            'ro_id' => 1,
+            'ro_office' => 'Region IV-B MIMAROPA',
+            'person_in_charge' => 'N/A',
+            'email' => 'ro_mimaropa@example.com',
+            'contact_no' => '0000000000',
+            'created_by' => 'Seeder',
+            'created_date' => Carbon::now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        // Insert Division Offices
+        DB::table('division_offices')->insert([
             [
+                'division_id' => 1,
+                'division_name' => 'Palawan',
+                'regional_office_id' => 1,
                 'person_in_charge' => 'N/A',
-                'email' => 'ro_mimaropa@example.com',
+                'email' => 'palawan@example.com',
                 'contact_no' => '0000000000',
                 'created_by' => 'Seeder',
-                'created_date' => now(),
-            ]
-        );
-
-        // List of division offices under MIMAROPA
-        $divisions = [
-            'Palawan',
-            'Romblon',
-            'Marinduque',
-            'Oriental Mindoro',
-            'Occidental Mindoro',
-            'Puerto Princesa City',
-            'Calapan City',
-        ];
-
-        foreach ($divisions as $divisionName) {
-            DivisionOffice::firstOrCreate(
-                ['division_name' => $divisionName],
-                [
-                    'regional_office_id' => $region->ro_id,
-                    'person_in_charge' => 'N/A',
-                    'email' => strtolower(str_replace(' ', '', $divisionName)) . '@example.com',
-                    'contact_no' => '0000000000',
-                    'created_by' => 'Seeder',
-                    'created_date' => now(),
-                ]
-            );
-        }
-
-        // Sample municipalities
-        $municipalities = [
-            'Puerto Princesa',
-            'San Jose',
-            'Brooke’s Point',
-            'Calapan',
-            'Roxas',
-            'Sablayan',
-            'Coron',
-            'Pinamalayan',
-        ];
-
-        foreach ($municipalities as $name) {
-            Municipality::firstOrCreate([
-                'municipality_name' => $name,
-            ]);
-        }
-
-        $this->command->info('✅ Region IV-B MIMAROPA, its divisions, and municipalities seeded successfully.');
+                'created_date' => Carbon::now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'division_id' => 2,
+                'division_name' => 'Marinduque',
+                'regional_office_id' => 1,
+                'person_in_charge' => 'N/A',
+                'email' => 'marinduque@example.com',
+                'contact_no' => '0000000000',
+                'created_by' => 'Seeder',
+                'created_date' => Carbon::now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'division_id' => 3,
+                'division_name' => 'Occidental Mindoro',
+                'regional_office_id' => 1,
+                'person_in_charge' => 'N/A',
+                'email' => 'occmin@example.com',
+                'contact_no' => '0000000000',
+                'created_by' => 'Seeder',
+                'created_date' => Carbon::now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'division_id' => 4,
+                'division_name' => 'Oriental Mindoro',
+                'regional_office_id' => 1,
+                'person_in_charge' => 'N/A',
+                'email' => 'ormin@example.com',
+                'contact_no' => '0000000000',
+                'created_by' => 'Seeder',
+                'created_date' => Carbon::now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'division_id' => 5,
+                'division_name' => 'Romblon',
+                'regional_office_id' => 1,
+                'person_in_charge' => 'N/A',
+                'email' => 'romblon@example.com',
+                'contact_no' => '0000000000',
+                'created_by' => 'Seeder',
+                'created_date' => Carbon::now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]);
     }
 }
