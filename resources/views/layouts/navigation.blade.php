@@ -53,7 +53,7 @@
                         </x-nav-link>
 
                         <x-nav-link :href="route('package-types.index')" :active="request()->routeIs('package-types.*')">
-                            {{ __('Package Types') }}
+                            {{ __('Packages') }}
                         </x-nav-link>
                     @endif
                 </div>

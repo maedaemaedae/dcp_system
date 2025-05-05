@@ -20,69 +20,64 @@
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                 <!-- School ID -->
                 <div>
-                    <label class="block font-medium text-sm text-gray-700">School ID (DepEd)</label>
-                    <input type="number" name="school_id" class="w-full border rounded px-3 py-2" required>
+                    <label class="block font-medium">School ID</label>
+                    <input type="text" name="school_id" class="w-full border rounded px-3 py-2" required>
                 </div>
 
                 <!-- School Name -->
                 <div>
-                    <label class="block font-medium text-sm text-gray-700">School Name</label>
+                    <label class="block font-medium">School Name</label>
                     <input type="text" name="school_name" class="w-full border rounded px-3 py-2" required>
                 </div>
 
                 <!-- School Address -->
                 <div>
-                    <label class="block font-medium text-sm text-gray-700">School Address</label>
+                    <label class="block font-medium">School Address</label>
                     <input type="text" name="school_address" class="w-full border rounded px-3 py-2" required>
                 </div>
 
                 <!-- School Head -->
                 <div>
-                    <label class="block font-medium text-sm text-gray-700">School Head</label>
+                    <label class="block font-medium">School Head</label>
                     <input type="text" name="school_head" class="w-full border rounded px-3 py-2" required>
                 </div>
 
-                <!-- Level -->
+                <!-- Level Dropdown -->
                 <div>
-                    <label class="block font-medium text-sm text-gray-700">Level</label>
+                    <label class="block font-medium">Level</label>
                     <select name="level" class="w-full border rounded px-3 py-2" required>
                         <option value="">Select Level</option>
                         <option value="Elementary">Elementary</option>
-                        <option value="Secondary">Secondary</option>
-                        <option value="Senior High School">Senior High School</option>
+                        <option value="High School">High School</option>
                     </select>
                 </div>
 
-                <!-- Division -->
+                <!-- Division (Fixed to Region IV-B) -->
                 <div>
-                    <label class="block font-medium text-sm text-gray-700">Division Office</label>
+                    <label class="block font-medium">Division</label>
                     <select name="division_id" class="w-full border rounded px-3 py-2" required>
-                        <option value="">Select Division</option>
-                        @foreach($divisions as $division)
-                            <option value="{{ $division->division_id }}">{{ $division->division_name }}</option>
-                        @endforeach
+                        <option value="{{ $division->division_id }}">{{ $division->division_name }}</option>
                     </select>
                 </div>
 
-                <!-- Municipality -->
+                <!-- Municipality Dropdown -->
                 <div>
-                    <label class="block font-medium text-sm text-gray-700">Municipality</label>
+                    <label class="block font-medium">Municipality</label>
                     <select name="municipality_id" class="w-full border rounded px-3 py-2" required>
                         <option value="">Select Municipality</option>
-                        @foreach($municipalities as $municipality)
+                        @foreach ($municipalities as $municipality)
                             <option value="{{ $municipality->municipality_id }}">{{ $municipality->municipality_name }}</option>
                         @endforeach
                     </select>
                 </div>
-
             </div>
 
+            <!-- Submit Button -->
             <div class="mt-6">
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                    Submit
+                    Save School
                 </button>
             </div>
         </form>
