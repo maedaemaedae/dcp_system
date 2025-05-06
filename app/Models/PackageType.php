@@ -18,4 +18,9 @@ class PackageType extends Model
     {
         return $this->hasMany(PackageContent::class);
     }
+
+        public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'package_type_project', 'package_type_id', 'project_id');
+    }
 }

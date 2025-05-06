@@ -9,6 +9,7 @@ use App\Http\Controllers\DivisionOfficeController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PackageTypeController;
 use App\Http\Controllers\Auth\OtpVerificationController;
+use App\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,10 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::resource('division-offices', DivisionOfficeController::class);
     Route::resource('inventory', InventoryController::class);
     Route::resource('package-types', PackageTypeController::class);
+    Route::get('/projects/create', [SuperAdminController::class, 'createProjectForm'])->name('superadmin.projects.create');
+    Route::post('/projects/store', [SuperAdminController::class, 'storeProject'])->name('superadmin.projects.store');
+    Route::get('/superadmin/projects', [SuperAdminController::class, 'indexProjects'])->name('superadmin.projects.index');
+    Route::resource('projects', ProjectController::class);
 });
 
 // ✅ Group all Admin routes under auth + admin

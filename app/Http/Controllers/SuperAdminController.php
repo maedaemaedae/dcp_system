@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Project;
+use App\Models\Package;
 
 class SuperAdminController extends Controller
 {
@@ -52,5 +54,15 @@ class SuperAdminController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'Role updated successfully!');
+    }
+
+
+
+    public function indexProjects()
+    {
+        $projects = Project::with('packages')->orderByDesc('projects_id')->get();
+        $packages = Package::whereNull('project_id')->get(); // ✅ Add this line
+
+        return view('projects.index', compact('projects', 'packages'));
     }
 }
