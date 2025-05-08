@@ -14,15 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
-            $table->id('projects_id');
-            $table->unsignedBigInteger('school_id');
-            $table->string('project_name');
-            $table->integer('year');
-            $table->text('description')->nullable();
-            $table->string('created_by')->nullable();
-            $table->timestamps(); // adds created_at and updated_at
+            $table->id();
+            $table->string('name');
+            $table->date('target_delivery_date')->nullable();
+            $table->date('target_arrival_date')->nullable();
+            $table->timestamps(); // Includes created_at and updated_at
         });
-             
+                     
     }
 
     /**

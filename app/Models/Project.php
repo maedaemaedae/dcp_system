@@ -2,32 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    use HasFactory;
-
-    protected $primaryKey = 'projects_id'; // match your DB column
-    public $timestamps = false;
-
-    protected $fillable = [
-        'school_id',
-        'project_name',
-        'year',
-        'description',
-        'created_by',
-        'created_date',
-    ];
+    protected $fillable = ['name', 'target_delivery_date', 'target_arrival_date'];
 
     public function packages()
     {
-        return $this->hasMany(Package::class, 'project_id', 'projects_id');
+        return $this->hasMany(Package::class);
     }
-    
-        public function packageTypes()
+
+    public function schools()
     {
-        return $this->belongsToMany(PackageType::class, 'package_type_project', 'project_id', 'package_type_id');
+        return $this->belongsToMany(School::class, 'project_school_assignments', 'project_id', 'school_id');
     }
 }

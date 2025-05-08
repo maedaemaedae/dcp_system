@@ -2,15 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class School extends Model
 {
-    use HasFactory;
-
-    protected $table = 'schools';
-    protected $primaryKey = 'school_id';
+    protected $primaryKey = 'school_id'; // ✅ Important for custom PK
     public $incrementing = false;
     protected $keyType = 'int';
 
@@ -36,5 +32,10 @@ class School extends Model
     public function municipality()
     {
         return $this->belongsTo(Municipality::class, 'municipality_id');
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'project_school_assignments', 'school_id', 'project_id');
     }
 }

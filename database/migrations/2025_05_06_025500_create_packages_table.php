@@ -9,18 +9,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('packages', function (Blueprint $table) {
-            $table->id('packages_id');
+            $table->id(); // standard primary key
 
-            $table->unsignedBigInteger('package_type_id');
-            $table->foreign('package_type_id')
-                  ->references('id')
-                  ->on('package_types')
+            $table->foreignId('package_type_id')
+                  ->constrained('package_types')
                   ->onDelete('cascade');
 
-            $table->unsignedBigInteger('project_id')->nullable();
-            $table->foreign('project_id')
-                  ->references('projects_id')
-                  ->on('projects')
+            $table->foreignId('project_id')
+                  ->nullable()
+                  ->constrained('projects')
                   ->nullOnDelete();
 
             $table->timestamps();
@@ -32,4 +29,3 @@ return new class extends Migration
         Schema::dropIfExists('packages');
     }
 };
-

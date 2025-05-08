@@ -9,7 +9,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('schools', function (Blueprint $table) {
-            $table->unsignedBigInteger('school_id')->primary();
+            $table->unsignedBigInteger('school_id')->primary(); // ✅ Custom primary key
+
             $table->unsignedBigInteger('division_id');
             $table->unsignedBigInteger('municipality_id');
             $table->string('school_name');

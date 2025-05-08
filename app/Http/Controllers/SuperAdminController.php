@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Project;
 use App\Models\Package;
+use App\Models\PackageType;
+use App\Models\DivisionOffice;
 
 class SuperAdminController extends Controller
 {
@@ -57,12 +59,13 @@ class SuperAdminController extends Controller
     }
 
 
-
     public function indexProjects()
     {
-        $projects = Project::with('packages')->orderByDesc('projects_id')->get();
-        $packages = Package::whereNull('project_id')->get(); // ✅ Add this line
-
-        return view('projects.index', compact('projects', 'packages'));
+        $projects = Project::with('packages')->orderByDesc('id')->get();
+        $packages = Package::whereNull('project_id')->get();
+        $packageTypes = PackageType::all();
+        $divisions = DivisionOffice::all(); // ✅ Add this line
+    
+        return view('projects.index', compact('projects', 'packages', 'packageTypes', 'divisions'));
     }
 }
