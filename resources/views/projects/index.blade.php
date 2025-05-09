@@ -27,14 +27,20 @@
                         </div>
 
                         {{-- Recipient Schools --}}
-                        <div class="mt-2">
-                            <strong class="text-sm">Recipient Schools:</strong>
-                            <ul class="list-disc list-inside text-sm text-gray-700">
-                                @foreach ($project->schools as $school)
-                                    <li>{{ $school->school_name }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                            <div class="mt-2">
+                                <strong class="text-sm">Recipient Schools & Delivery Status:</strong>
+                                <ul class="list-disc list-inside text-sm text-gray-700">
+                                    @foreach ($project->schools as $school)
+                                        <li>
+                                            {{ $school->school_name }}
+                                            <span class="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-800">
+                                                {{ $school->pivot->delivery_status }}
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+
 
                         {{-- Dates --}}
                         <p class="text-sm text-gray-600 mt-2">

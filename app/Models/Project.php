@@ -16,7 +16,8 @@ class Project extends Model
 
     public function schools()
     {
-        return $this->belongsToMany(School::class, 'project_school_assignments', 'project_id', 'school_id');
+        return $this->belongsToMany(School::class, 'project_school_assignments', 'project_id', 'school_id')
+                    ->withPivot('delivery_status');
     }
-    
+        
 }
