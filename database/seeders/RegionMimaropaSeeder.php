@@ -85,6 +85,30 @@ class RegionMimaropaSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'division_id' => 6,
+                'division_name' => 'City of Calapan',
+                'regional_office_id' => 1,
+                'person_in_charge' => 'N/A',
+                'email' => 'calapan@example.com',
+                'contact_no' => '0000000000',
+                'created_by' => 'Seeder',
+                'created_date' => Carbon::now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'division_id' => 7,
+                'division_name' => 'Puerto Princesa City',
+                'regional_office_id' => 1,
+                'person_in_charge' => 'N/A',
+                'email' => 'puertoprincesa@example.com',
+                'contact_no' => '0000000000',
+                'created_by' => 'Seeder',
+                'created_date' => Carbon::now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }
