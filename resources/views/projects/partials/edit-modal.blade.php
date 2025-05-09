@@ -58,6 +58,26 @@
                 </div>
             </div>
 
+            @if ($project->schools->isNotEmpty())
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-1">Delivery Status per School</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        @foreach ($project->schools as $school)
+                            <div>
+                                <label class="text-sm font-medium block">{{ $school->school_name }}</label>
+                               <select name="delivery_statuses[{{ $school->school_id }}]" class="w-full border px-3 py-2 rounded">
+                                    @foreach (['Pending', 'Delivered', 'Delayed'] as $statusOption)
+                                        <option value="{{ $statusOption }}" {{ $school->pivot->delivery_status === $statusOption ? 'selected' : '' }}>
+                                            {{ $statusOption }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             <div class="mt-6 flex justify-end gap-2">
                 <button type="button" id="closeEditProjectModalBtn-{{ $project->id }}" data-project-id="{{ $project->id }}" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Save Changes</button>

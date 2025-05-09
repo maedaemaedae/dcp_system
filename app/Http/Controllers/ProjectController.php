@@ -35,7 +35,7 @@ class ProjectController extends Controller
             'name' => $validated['name'],
             'target_delivery_date' => $validated['target_delivery_date'],
             'target_arrival_date' => $validated['target_arrival_date'],
-            'status' => 'Pending' // ✅ default status
+            'status' => 'Pending' // default status
         ]);
 
         foreach ($validated['package_types'] as $typeId) {
@@ -45,10 +45,14 @@ class ProjectController extends Controller
             ]);
         }
 
+        $deliveryStatuses = $request->input('delivery_statuses', []);
         foreach ($validated['school_ids'] as $schoolId) {
+            $status = $deliveryStatuses[$schoolId] ?? 'Pending';
+
             ProjectSchoolAssignment::create([
                 'project_id' => $project->id,
                 'school_id' => $schoolId,
+                'delivery_status' => $status,
             ]);
         }
 
@@ -70,6 +74,7 @@ class ProjectController extends Controller
 
         $project = Project::findOrFail($id);
 
+        // Update project info
         $project->update([
             'name' => $validated['name'],
             'target_delivery_date' => $validated['target_delivery_date'],
@@ -77,6 +82,7 @@ class ProjectController extends Controller
             'status' => $validated['status'],
         ]);
 
+        // Update packages
         Package::where('project_id', $project->id)->delete();
         foreach ($validated['package_types'] as $typeId) {
             Package::create([
@@ -85,31 +91,32 @@ class ProjectController extends Controller
             ]);
         }
 
+        // Update school assignments with delivery status
+        $deliveryStatuses = $request->input('delivery_statuses', []);
         ProjectSchoolAssignment::where('project_id', $project->id)->delete();
+
         foreach ($validated['school_ids'] as $schoolId) {
+            $status = $deliveryStatuses[$schoolId] ?? 'Pending';
+
             ProjectSchoolAssignment::create([
                 'project_id' => $project->id,
                 'school_id' => $schoolId,
+                'delivery_status' => $status,
             ]);
         }
 
         return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
     }
 
-        public function destroy($id)
+    public function destroy($id)
     {
         $project = Project::findOrFail($id);
 
-        // Delete related packages
         Package::where('project_id', $project->id)->delete();
-
-        // Delete school assignments
         ProjectSchoolAssignment::where('project_id', $project->id)->delete();
-
-        // Delete the project
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
-
 }
+
