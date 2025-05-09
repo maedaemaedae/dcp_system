@@ -1,15 +1,10 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            Edit Division Office
-        </h2>
-    </x-slot>
-
-    <div class="p-6">
+<!-- Edit Division Office Modal -->
+<div id="editModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[500px]">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Edit Division Office</h3>
         <form method="POST" action="{{ route('division-offices.update', $division->division_id) }}">
             @csrf
             @method('PUT')
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block font-medium">Division Name</label>
@@ -38,10 +33,13 @@
                     </select>
                 </div>
             </div>
-
-            <div class="mt-6">
+            <div class="mt-6 text-right">
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update</button>
+                <button type="button" id="closeEditModalBtn" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 ml-2">Cancel</button>
             </div>
         </form>
     </div>
-</x-app-layout>
+</div>
+
+<!-- Trigger Button to Open Modal -->
+<button id="openEditModalBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Edit Division Office</button>

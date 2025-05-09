@@ -10,6 +10,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PackageTypeController;
 use App\Http\Controllers\Auth\OtpVerificationController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,6 +28,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 // ✅ Move OTP routes OUTSIDE auth middleware (must be public)
 Route::get('/verify-otp', [OtpVerificationController::class, 'showOtpForm'])->name('otp.verify.page');
@@ -52,6 +54,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::resource('inventory', InventoryController::class);
     Route::resource('package-types', PackageTypeController::class);
 });
+
 
 // ✅ Group all Admin routes under auth + admin
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {

@@ -1,24 +1,35 @@
 <!-- Add Inventory Modal -->
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white p-6 rounded shadow-lg w-full max-w-xl relative">
-        <button id="closeAddModalBtn" class="absolute top-2 right-2 text-gray-500 text-xl hover:text-black">&times;</button>
-        <h2 class="text-xl font-semibold mb-4">Add Inventory Item</h2>
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-8 relative">
+        <!-- Close Button -->
+        <button id="closeAddModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl font-bold">
+            &times;
+        </button>
 
-        <form method="POST" action="{{ route('inventory.store') }}">
+        <!-- Modal Header -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Add Inventory Item</h2>
+
+        <!-- Form -->
+        <form method="POST" action="{{ route('inventory.store') }}" class="space-y-5">
             @csrf
 
-            <div class="mb-4">
-                <label class="block font-medium">Item Name</label>
-                <input type="text" name="item_name" class="w-full border rounded px-3 py-2" required>
+            <!-- Item Name -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+                <input type="text" name="item_name" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
             </div>
 
-            <div class="mb-4">
-                <label class="block font-medium">Description</label>
-                <textarea name="description" class="w-full border rounded px-3 py-2" rows="4"></textarea>
+            <!-- Description -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea name="description" rows="4" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"></textarea>
             </div>
 
+            <!-- Submit Button -->
             <div class="text-right">
-                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Save</button>
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow">
+                    Save
+                </button>
             </div>
         </form>
     </div>
