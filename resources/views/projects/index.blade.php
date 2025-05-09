@@ -33,11 +33,16 @@
                 </div>
             </div>
 
+            {{-- Edit Modal for this project --}}
             @include('projects.partials.edit-modal', ['project' => $project])
         @endforeach
-    </div>
 
-    @include('projects.partials.create-modal')
+        {{-- Create Modal (only included once) --}}
+        @include('projects.partials.create-modal', [
+            'packageTypes' => $packageTypes,
+            'divisions' => $divisions
+        ])
+    </div>
 
     <script>
         const addModal = document.getElementById('addProjectModal');
@@ -48,14 +53,15 @@
         closeAddBtn?.addEventListener('click', () => addModal.classList.add('hidden'));
 
         function openEditModal(projectId) {
-            const modal = document.getElementById('editProjectModal');
-            modal.classList.remove('hidden');
-            // You can expand this function to auto-fill fields if needed
+            const modal = document.getElementById(`editProjectModal-${projectId}`);
+            modal?.classList.remove('hidden');
         }
 
-        const closeEditBtn = document.getElementById('closeEditProjectModalBtn');
-        closeEditBtn?.addEventListener('click', () => {
-            document.getElementById('editProjectModal')?.classList.add('hidden');
+        document.querySelectorAll('[id^="closeEditProjectModalBtn-"]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const projectId = button.getAttribute('data-project-id');
+                document.getElementById(`editProjectModal-${projectId}`)?.classList.add('hidden');
+            });
         });
     </script>
 </x-app-layout>

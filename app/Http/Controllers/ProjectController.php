@@ -3,103 +3,58 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Models\PackageType;
+use App\Models\Package;
+use App\Models\ProjectSchoolAssignment;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    // Display list of projects
-    public function index()
-    {
-        $projects = Project::with('packageTypes')->get();
-        return view('projects.index', compact('projects'));
-    }
-
-    // Show form to create new project
-    public function create()
-    {
-        $packageTypes = PackageType::all();
-        return view('projects.create', compact('packageTypes'));
-    }
-
-    // Store new project and attach package types
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'school_id' => 'required|exists:schools,id',
-            'project_name' => 'required|string|max:255',
-            'year' => 'required|integer',
-            'description' => 'nullable|string',
-            'created_by' => 'nullable|string|max:255',
-            'package_type_ids' => 'required|array',
-            'package_type_ids.*' => 'exists:package_types,id',
+            'name' => 'required|string|max:255',
+            'package_types' => 'required|array',
+            'package_types.*' => 'exists:package_types,id',
+            'school_ids' => 'required|array',
+            'school_ids.*' => 'exists:schools,school_id',
+            'target_delivery_date' => 'required|date',
+            'target_arrival_date' => 'required|date',
         ]);
 
+        // 1. Create the project
         $project = Project::create([
-            'school_id' => $validated['school_id'],
-            'project_name' => $validated['project_name'],
-            'year' => $validated['year'],
-            'description' => $validated['description'],
-            'created_by' => $validated['created_by'],
-            'created_date' => now(),
+            'name' => $validated['name'],
+            'target_delivery_date' => $validated['target_delivery_date'],
+            'target_arrival_date' => $validated['target_arrival_date'],
         ]);
 
-        $project->packageTypes()->attach($validated['package_type_ids']);
+        // 2. Add packages to the project
+        foreach ($validated['package_types'] as $typeId) {
+            Package::create([
+                'package_type_id' => $typeId,
+                'project_id' => $project->id,
+            ]);
+        }
+
+        // 3. Assign schools
+        foreach ($validated['school_ids'] as $schoolId) {
+            ProjectSchoolAssignment::create([
+                'project_id' => $project->id,
+                'school_id' => $schoolId,
+            ]);
+        }
 
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
-
-    // Show a single project's details
-    public function show($id)
+    
+        public function index()
     {
-        $project = Project::with('packageTypes')->findOrFail($id);
-        return view('projects.show', compact('project'));
+        $projects = Project::with('packages')->get();
+        $packageTypes = \App\Models\PackageType::all();
+        $divisions = \App\Models\DivisionOffice::all();
+        $packages = \App\Models\Package::whereNull('project_id')->get();
+
+        return view('projects.index', compact('projects', 'packages', 'packageTypes', 'divisions'));
     }
 
-    // Edit form for existing project
-    public function edit($id)
-    {
-        $project = Project::findOrFail($id);
-        $packageTypes = PackageType::all();
-        $selectedTypes = $project->packageTypes->pluck('id')->toArray();
-
-        return view('projects.edit', compact('project', 'packageTypes', 'selectedTypes'));
-    }
-
-    // Update existing project details
-    public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'school_id' => 'required|exists:schools,id',
-            'project_name' => 'required|string|max:255',
-            'year' => 'required|integer',
-            'description' => 'nullable|string',
-            'created_by' => 'nullable|string|max:255',
-            'package_type_ids' => 'required|array',
-            'package_type_ids.*' => 'exists:package_types,id',
-        ]);
-
-        $project = Project::findOrFail($id);
-        $project->update([
-            'school_id' => $validated['school_id'],
-            'project_name' => $validated['project_name'],
-            'year' => $validated['year'],
-            'description' => $validated['description'],
-            'created_by' => $validated['created_by'],
-        ]);
-
-        $project->packageTypes()->sync($validated['package_type_ids']);
-
-        return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
-    }
-
-    // Delete project
-    public function destroy($id)
-    {
-        $project = Project::findOrFail($id);
-        $project->packageTypes()->detach();
-        $project->delete();
-
-        return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
-    }
 }

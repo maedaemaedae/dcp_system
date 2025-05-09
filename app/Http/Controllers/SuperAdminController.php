@@ -62,9 +62,9 @@ class SuperAdminController extends Controller
     public function indexProjects()
     {
         $projects = Project::with('packages')->orderByDesc('id')->get();
+        $packageTypes = PackageType::all(); // ✅ Add this
+        $divisions = DivisionOffice::all(); // ✅ Needed for dropdown
         $packages = Package::whereNull('project_id')->get();
-        $packageTypes = PackageType::all();
-        $divisions = DivisionOffice::all(); // ✅ Add this line
     
         return view('projects.index', compact('projects', 'packages', 'packageTypes', 'divisions'));
     }
