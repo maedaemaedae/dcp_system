@@ -15,8 +15,8 @@ class Package extends Model
 
     public function packageType()
     {
-        return $this->belongsTo(PackageType::class);
-    }
+        return $this->belongsTo(\App\Models\PackageType::class, 'package_type_id');
+    }    
 }
 
 

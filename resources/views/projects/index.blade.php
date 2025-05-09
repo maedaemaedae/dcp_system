@@ -7,31 +7,54 @@
 
         @foreach ($projects as $project)
             <div class="bg-white p-4 shadow rounded mb-4">
-                <div class="flex justify-between items-center">
+                <div class="flex justify-between items-start">
                     <div>
                         <h3 class="text-lg font-semibold">{{ $project->name }}</h3>
-                        <p class="text-sm text-gray-600">
-                            Delivery: {{ $project->target_delivery_date }}<br>
-                            Arrival: {{ $project->target_arrival_date }}
-                        </p>
+
+                        {{-- Status Badge --}}
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mt-1">
+                            {{ $project->status }}
+                        </span>
+
+                        {{-- Packages --}}
                         <div class="mt-2">
+                            <strong class="text-sm">Packages:</strong>
                             @foreach ($project->packages as $pkg)
-                                <span class="inline-block bg-gray-100 text-xs px-2 py-1 rounded mr-1">
+                                <span class="inline-block bg-gray-100 text-xs px-2 py-1 rounded mr-1 mt-1">
                                     {{ $pkg->packageType->package_code }}
                                 </span>
                             @endforeach
                         </div>
+
+                        {{-- Recipient Schools --}}
+                        <div class="mt-2">
+                            <strong class="text-sm">Recipient Schools:</strong>
+                            <ul class="list-disc list-inside text-sm text-gray-700">
+                                @foreach ($project->schools as $school)
+                                    <li>{{ $school->school_name }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+                        {{-- Dates --}}
+                        <p class="text-sm text-gray-600 mt-2">
+                            📅 Delivery: {{ $project->target_delivery_date }}<br>
+                            📦 Arrival: {{ $project->target_arrival_date }}
+                        </p>
                     </div>
-                    <div class="flex gap-2 items-center">
-                        <button onclick="openEditModal({{ $project->id }})" class="text-blue-600 hover:underline">Edit</button>
-                        <form method="POST" action="{{ route('projects.destroy', $project->id) }}" onsubmit="return confirm('Are you sure you want to delete this project?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:underline">Delete</button>
-                        </form>
-                    </div>
+
+
+                {{-- 🔧 Action Buttons --}}
+                <div class="flex gap-2 items-center">
+                    <button onclick="openEditModal({{ $project->id }})" class="text-blue-600 hover:underline">Edit</button>
+                    <form method="POST" action="{{ route('projects.destroy', $project->id) }}" onsubmit="return confirm('Are you sure you want to delete this project?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-600 hover:underline">Delete</button>
+                    </form>
                 </div>
             </div>
+        </div>
 
             {{-- Edit Modal for this project --}}
             @include('projects.partials.edit-modal', ['project' => $project])

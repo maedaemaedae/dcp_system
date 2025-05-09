@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    protected $fillable = ['name', 'target_delivery_date', 'target_arrival_date'];
+   
+    protected $fillable = ['name', 'target_delivery_date', 'target_arrival_date', 'status'];
 
     public function packages()
     {
@@ -17,4 +18,5 @@ class Project extends Model
     {
         return $this->belongsToMany(School::class, 'project_school_assignments', 'project_id', 'school_id');
     }
+    
 }
