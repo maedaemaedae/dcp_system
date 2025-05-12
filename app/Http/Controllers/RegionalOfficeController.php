@@ -33,7 +33,7 @@ class RegionalOfficeController extends Controller
             'created_date' => now(),
         ]));
     
-        return redirect()->route('regionaloffices.index')->with('success', 'Regional office added successfully.');
+        return redirect()->route('regionaloffices.index')->with('success', 'Regional Office Added Successfully.');
     }
     
 
@@ -63,7 +63,7 @@ class RegionalOfficeController extends Controller
             'modified_date' => now(),
         ]);
 
-        return redirect()->route('regional-offices.index')->with('success', 'Regional Office updated successfully.');
+        return redirect()->route('regional-offices.index')->with('success', 'Regional Office Updated Successfully.');
     }
 
     public function destroy($id)
@@ -71,6 +71,6 @@ class RegionalOfficeController extends Controller
         $regionalOffice = RegionalOffice::findOrFail($id);
         $regionalOffice->delete();
 
-        return redirect()->route('regional-offices.index')->with('success', 'Regional Office deleted.');
+        return redirect()->route('regional-offices.index')->with('success', 'Regional Office Deleted.');
     }
 }

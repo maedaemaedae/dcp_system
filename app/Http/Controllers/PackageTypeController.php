@@ -11,11 +11,20 @@ class PackageTypeController extends Controller
 {
     public function index()
     {
-        $packages = PackageType::with('contents.inventory')->get();
-        $inventoryItems = Inventory::all(); // this is what your modals need
+        //tinanggal ko to for testing
+     //   $packages = PackageType::with('contents.inventory')->get();
+     //   $inventoryItems = Inventory::all(); // this is what your modals need
     
+     //   return view('packages.index', compact('packages', 'inventoryItems'));
+
+
+        $packages = PackageType::with('contents.inventory')->paginate(4); // You can adjust number per page
+        $inventoryItems = Inventory::all();
         return view('packages.index', compact('packages', 'inventoryItems'));
     }
+
+
+    
     public function create()
     {
         $inventoryItems = Inventory::all();
@@ -45,7 +54,7 @@ class PackageTypeController extends Controller
             ]);
         }
 
-        return redirect()->route('package-types.index')->with('success', 'Package created successfully.');
+        return redirect()->route('package-types.index')->with('success', 'Package Created Successfully.');
     }
 
     public function edit(PackageType $package_type)
@@ -82,7 +91,7 @@ class PackageTypeController extends Controller
             ]);
         }
 
-        return redirect()->route('package-types.index')->with('success', 'Package updated successfully.');
+        return redirect()->route('package-types.index')->with('success', 'Package Updated Successfully.');
     }
 
     public function destroy(PackageType $package_type)
@@ -90,6 +99,6 @@ class PackageTypeController extends Controller
         $package_type->contents()->delete();
         $package_type->delete();
 
-        return redirect()->route('package-types.index')->with('success', 'Package deleted successfully.');
+        return redirect()->route('package-types.index')->with('success', 'Package Deleted Successfully.');
     }
 }

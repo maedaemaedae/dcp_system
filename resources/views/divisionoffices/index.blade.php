@@ -19,92 +19,88 @@
             $isAdmin = $authUser && $authUser->role && $authUser->role->role_name === 'admin';
         @endphp
 
-       <!-- Side Bar -->
-       @include('components.sidebar')
+    <!-- Side Bar -->
+    @include('components.sidebar')
 
-        <!-- Top Nav Bar -->
-        <header class="w-full h-20 fixed top-0 left-0 bg-white shadow-md flex items-center justify-between px-8 z-10">
-            <div class="flex items-center gap-2">
-                <img src="{{ asset('images/landscape-logo.png') }}" class="h-20 w-auto ml-[-20px]" alt="Logo">
-            </div>
-
-            <div class="relative" x-data="{ open: false }">
-                <div class="flex items-center gap-4">
-                    <span class="text-base text-black">{{ $authUser->name }}</span>
-                    <button @click="open = !open" class="w-14 h-14 bg-zinc-300 rounded-full flex items-center justify-center hover:ring-2 hover:ring-blue-500 transition focus:outline-none mr-[40px]">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.779.63 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </button>
-                </div>
-
-                <div x-show="open" @click.away="open = false"
-                    class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 text-sm text-gray-700"
-                    x-transition>
-                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </header>
+    <!-- Top Nav Bar -->
+    @include('components.top-navbar')
        
 
         <!-- Main Content -->
         <main :class="open ? 'ml-[300px]' : 'ml-20'" class="transition-all duration-300 pt-24 p-8 relative">
-        <h2 class="text-[45px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide">
-            🏢 Division Offices
-            </h2>
+    <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide">
+        🏢 Division Offices
+    </h2>
 
+    @if (session('success'))
+        <div class="mb-4 text-green-600 font-medium bg-green-100 border border-green-200 rounded px-4 py-2">
+            {{ session('success') }}
+        </div>
+    @endif
 
-            @if (session('success'))
-                <div class="mb-4 text-green-600 font-medium">{{ session('success') }}</div>
-            @endif
-
-            <!-- Add Division Office Button -->
-            <button id="openAddModalBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-4">
-                + Add Division Office
+    <!-- Add Division Office Button -->
+    <button id="openAddModalBtn" 
+     class="bg-[#4A90E2] hover:bg-[#357ABD] text-white font-medium px-6 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 ease-in-out mb-4 flex items-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>Add Division Office</span>
             </button>
 
-            <div class="overflow-x-auto bg-white rounded shadow border">
-                <table class="min-w-full text-sm divide-y divide-gray-200">
-                    <thead class="bg-blue-600 text-white">
-                        <tr>
-                            <th class="px-4 py-2 text-left">Division Name</th>
-                            <th class="px-4 py-2 text-left">Person in Charge</th>
-                            <th class="px-4 py-2 text-left">Region</th>
-                            <th class="px-4 py-2 text-left">Email</th>
-                            <th class="px-4 py-2 text-left">Contact No.</th>
-                            <th class="px-4 py-2 text-left">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-100">
-                        @forelse ($divisions as $division)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-2">{{ $division->division_name }}</td>
-                                <td class="px-4 py-2">{{ $division->person_in_charge }}</td>
-                                <td class="px-4 py-2">{{ $division->regionalOffice->ro_office ?? '—' }}</td>
-                                <td class="px-4 py-2">{{ $division->email }}</td>
-                                <td class="px-4 py-2">{{ $division->contact_no }}</td>
-                                <td class="px-4 py-2 space-x-2">
-                                    <a href="{{ route('division-offices.edit', $division->division_id) }}" class="bg-yellow-500 text-white px-2 py-1 rounded text-xs hover:bg-yellow-600">Edit</a>
-                                    <form action="{{ route('division-offices.destroy', $division->division_id) }}" method="POST" class="inline">
-                                        @csrf @method('DELETE')
-                                        <button onclick="return confirm('Are you sure?')" class="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center text-gray-500 py-4">No divisions found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </main>
+    <!-- Division Offices Table -->
+    <div class="overflow-x-auto bg-white rounded-2xl shadow-md border border-gray-200">
+        <table class="min-w-full text-sm divide-y divide-gray-200">
+            <thead class="bg-[#4A90E2] text-white">
+                <tr>
+                    <th class="px-6 py-3 text-left font-semibold">Division Name</th>
+                    <th class="px-6 py-3 text-left font-semibold">Person in Charge</th>
+                    <th class="px-6 py-3 text-left font-semibold">Region</th>
+                    <th class="px-6 py-3 text-left font-semibold">Email</th>
+                    <th class="px-6 py-3 text-left font-semibold">Contact No.</th>
+                    <th class="px-6 py-3 text-center font-semibold">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100">
+                @forelse ($divisions as $division)
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 text-gray-800 font-medium">{{ $division->division_name }}</td>
+                        <td class="px-6 py-4 text-gray-700">{{ $division->person_in_charge }}</td>
+                        <td class="px-6 py-4 text-gray-700">{{ $division->regionalOffice->ro_office ?? '—' }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ $division->email }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ $division->contact_no }}</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+
+                            <div class="flex items-center space-x-2">
+                                <!-- Edit Button -->
+                                <a href="{{ route('division-offices.edit', $division->division_id) }}"
+                                   class="px-4 py-1.5 rounded-full bg-[#4A90E2] text-white hover:bg-[#357ABD] transition shadow-sm text-sm font-medium"
+                                    title="Edit"
+                                   >
+                                   Edit
+                                </a>
+
+                                <!-- Delete Button -->
+                                <form action="{{ route('division-offices.destroy', $division->division_id) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button onclick="return confirm('Are you sure?')"
+                                        class="px-4 py-1.5 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition text-sm font-medium shadow-sm">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center text-gray-500 py-6 italic">
+                            No divisions found.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</main>
+
 
         <script>
             // Open the Add Modal
@@ -147,27 +143,71 @@
         </script>
         
         @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const toast = document.createElement('div');
-                let message = "{{ session('success') }}";
-                if (message.includes('Added')) {
-                    message = '✔ ' + message;
-                } else if (message.includes('Updated')) {
-                    message = '✏️ ' + message;
-                } else if (message.includes('Removed')) {
-                    message = '🗑 ' + message;
-                }
+       <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let message = "{{ session('success') }}";
+        if (!message) return;
 
-                toast.innerText = message;
-                toast.className = "fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white py-4 px-8 rounded-lg shadow-lg z-50 text-center text-lg font-semibold";
-                document.body.appendChild(toast);
+        const toast = document.createElement('div');
+        let icon = '✅';
+        let bgColor = 'bg-green-500';
 
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
-            });
-        </script>
+        if (message.includes('Added')) {
+            icon = '✅';
+            bgColor = 'bg-green-500';
+        } else if (message.includes('Updated')) {
+            icon = '✏️';
+            bgColor = 'bg-blue-500';
+        } else if (message.includes('Removed') || message.includes('Deleted')) {
+            icon = '🗑️';
+            bgColor = 'bg-red-500';
+        }
+
+        toast.innerHTML = `
+            <div class="flex justify-between items-center space-x-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">${icon}</span>
+                    <span class="text-base">${message}</span>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" class="text-white text-xl hover:text-gray-200">&times;</button>
+            </div>
+        `;
+
+        toast.className = `
+            fixed bottom-6 left-1/2 transform -translate-x-1/2
+            ${bgColor} text-white px-6 py-3 rounded-xl shadow-lg
+            text-sm font-medium z-50 min-w-[280px] max-w-md
+            animate-fade-in-up
+        `;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.remove("animate-fade-in-up");
+            toast.classList.add("animate-fade-out-down");
+            setTimeout(() => toast.remove(), 500);
+        }, 4000);
+    });
+</script>
+
+
+<style>
+@keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-out-down {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
+}
+.animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out forwards;
+}
+.animate-fade-out-down {
+    animation: fade-out-down 0.4s ease-in forwards;
+}
+</style>
+
         @endif
 
 </body>

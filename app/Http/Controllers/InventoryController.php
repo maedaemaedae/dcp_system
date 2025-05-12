@@ -33,7 +33,7 @@ class InventoryController extends Controller
             'created_date' => now(),
         ]);
 
-        return redirect()->route('inventory.index')->with('success', 'Item added successfully.');
+        return redirect()->route('inventory.index')->with('success', 'Item Added Successfully.');
     }
 
     public function edit($id)
@@ -58,7 +58,7 @@ class InventoryController extends Controller
             'modified_date' => now(),
         ]);
 
-        return redirect()->route('inventory.index')->with('success', 'Item updated successfully.');
+        return redirect()->route('inventory.index')->with('success', 'Item Updated Successfully.');
     }
 
     public function destroy($id)
@@ -66,6 +66,6 @@ class InventoryController extends Controller
         $item = Inventory::findOrFail($id);
         $item->delete();
 
-        return redirect()->route('inventory.index')->with('success', 'Item deleted.');
+        return redirect()->route('inventory.index')->with('success', 'Item Deleted Successfully.');
     }
 }

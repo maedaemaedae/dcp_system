@@ -8,6 +8,78 @@
     <script src="https://unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+    @if (session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let message = @json(session('success')).trim();
+
+        const toast = document.createElement('div');
+
+        // Defaults
+        let icon = '✅';
+        let bgColor = 'bg-green-500';
+
+        // Match by keyword (case-insensitive)
+        if (/added/i.test(message)) {
+            icon = '✅';
+            bgColor = 'bg-green-500';
+        } else if (/updated/i.test(message)) {
+            icon = '✏️';
+            bgColor = 'bg-blue-500';
+        } else if (/removed|deleted/i.test(message)) {
+            icon = '🗑️';
+            bgColor = 'bg-red-500';
+        }
+
+        // Toast content
+        toast.innerHTML = `
+            <div class="flex items-center justify-between space-x-4">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl">${icon}</span>
+                    <span>${message}</span>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" class="text-white text-xl hover:text-gray-200 transition">&times;</button>
+            </div>
+        `;
+
+        toast.className = `
+            fixed bottom-6 left-1/2 transform -translate-x-1/2
+            ${bgColor} text-white px-6 py-3 rounded-xl shadow-lg
+            text-sm font-medium z-50 min-w-[300px] max-w-md
+            animate-fade-in-up
+        `;
+
+        document.body.appendChild(toast);
+
+        // Auto-remove after 4s
+        setTimeout(() => {
+            toast.classList.remove("animate-fade-in-up");
+            toast.classList.add("animate-fade-out-down");
+            setTimeout(() => toast.remove(), 400);
+        }, 4000);
+    });
+</script>
+
+<style>
+@keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-out-down {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
+}
+.animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out forwards;
+}
+.animate-fade-out-down {
+    animation: fade-out-down 0.4s ease-in forwards;
+}
+</style>
+  @endif
+  
 </head>
 
 <body class="bg-gray-100 font-sans">
@@ -16,39 +88,10 @@
      <!-- Side Bar -->
      @include('components.sidebar')
 
-     <!-- Top Navbar -->
-<header class="w-full h-20 fixed top-0 left-0 bg-white shadow-md flex items-center justify-between px-8 z-10">
-    <div class="flex items-center gap-2">
-        <img src="{{ asset('images/landscape-logo.png') }}" class="h-20 w-auto ml-[-20px]" alt="Logo">
-    </div>
+    <!-- Top Nav Bar -->
+    @include('components.top-navbar')
 
-    <div class="relative" x-data="{ open: false }">
-        <!-- User Name -->
-        <div class="flex items-center gap-4">
-            <span class="text-base text-black">{{ Auth::user()->name }}</span>
-
-            <!-- Profile Dropdown Trigger -->
-            <button @click="open = !open" class="w-14 h-14 bg-zinc-300 rounded-full flex items-center justify-center hover:ring-2 hover:ring-blue-500 transition focus:outline-none mr-[40px]">
-                <!-- Optional icon or profile initials -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.779.63 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-            </button>
-        </div>
-
-        <!-- Dropdown Menu -->
-        <div x-show="open" @click.away="open = false"
-             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 text-sm text-gray-700 "
-             x-transition>
-            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
-            </form>
-        </div>
-    </div>
-</header>
-
+    
       <!-- Main Content -->
 <div :class="open ? 'ml-[300px]' : 'ml-20'" class="transition-all duration-300 pt-24 p-8 relative">
     <h2 class="text-[45px] font-bold text-gray-800 mb-6 border-b border-gray-300 pb-2 tracking-wide">
@@ -57,45 +100,77 @@
 
     <!-- Add Package Button -->
     <div class="mb-6">
-        <button id="openAddModalBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
-            + Add Package
-        </button>
-    </div>
+        <button id="openAddModalBtn" 
+        class="bg-[#4A90E2] hover:bg-[#357ABD] text-white font-medium px-6 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 ease-in-out mb-4 flex items-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>Add Package</span>
+            </button>
+     </div>
 
-    <!-- Package List -->
-    @foreach ($packages as $package)
-        <div class="bg-white p-4 shadow rounded mb-4">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800">{{ $package->package_code }}</h3>
-                    <p class="text-gray-600">{{ $package->description }}</p>
+<!-- Packages List Wrapper -->
+<div class="flex justify-center">
+    <!-- Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 place-items-stretch">
+        @foreach ($packages as $package)
+        <!-- Package Card -->
+        <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-100 transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-[#4A90E2] flex flex-col justify-between min-h-[260px]">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex-1">
+                    <!-- Card Content -->
+                    <h3 class="text-xl font-semibold text-gray-800">{{ $package->package_code }}</h3>
+                    <p class="text-gray-600 text-sm mt-1">{{ $package->description }}</p>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="openEditModal({{ $package->id }})" class="text-blue-600 hover:underline">
+                <div class="flex items-start gap-2 ml-4">
+                    <!-- Edit Button -->
+                    <button 
+                        onclick="openEditModal({{ $package->id }})"
+                        class="px-4 py-1.5 rounded-full bg-[#4A90E2] text-white hover:bg-[#357ABD] transition duration-200 ease-in-out shadow-md text-sm font-medium"
+                        title="Edit">
                         Edit
                     </button>
-                    <form method="POST" action="{{ route('package-types.destroy', $package->id) }}"
-                          onsubmit="return confirm('Are you sure you want to delete this package?')">
+
+                    <!-- Delete Button -->
+                    <form method="POST" action="{{ route('package-types.destroy', $package->id) }}" onsubmit="return confirm('Are you sure you want to delete this package?')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="text-red-600 hover:underline">
+                        <button 
+                            type="submit"
+                            class="px-4 py-1.5 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition duration-200 ease-in-out text-sm font-medium shadow-md">
                             Delete
                         </button>
                     </form>
                 </div>
             </div>
-            <ul class="mt-2 text-sm text-gray-700">
-                @foreach ($package->contents as $content)
-                    <li>
-                        {{ $content->inventory->item_name }} – Qty: {{ $content->quantity }}
-                    </li>
-                @endforeach
-            </ul>
+
+            <!-- Package Contents -->
+            <div class="text-sm text-gray-700 mt-auto">
+                <p class="font-semibold mb-2">Contents:</p>
+                <ul class="space-y-1 list-disc list-inside">
+                    @forelse ($package->contents as $content)
+                        <li>
+                            <span class="font-medium text-gray-800">{{ $content->inventory->item_name }}</span>
+                            <span class="text-gray-500">– Qty: {{ $content->quantity }}</span>
+                        </li>
+                    @empty
+                        <li class="text-gray-400 italic">No contents listed</li>
+                    @endforelse
+                </ul>
+            </div>
         </div>
 
         @include('packages.partials.edit-modal', ['packageType' => $package, 'inventoryItems' => $inventoryItems])
-    @endforeach
+        @endforeach
+    </div>
 </div>
+
+
+
+<!-- Pagination Links -->
+<div class="mt-10">
+    {{ $packages->links('vendor.pagination.tailwind') }}
+</div>
+
+
 
 <!-- Create Modal -->
 @include('packages.partials.create-modal', ['inventoryItems' => $inventoryItems])
@@ -128,6 +203,9 @@
             modal.classList.remove('flex');
         }
     </script>
+
+
+
 
         </body>
 </html>

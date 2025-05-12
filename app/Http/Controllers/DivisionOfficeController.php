@@ -34,7 +34,7 @@ class DivisionOfficeController extends Controller
             'created_date' => now(),
         ]));
     
-        return redirect()->route('divisionoffices.index')->with('success', 'Division office added successfully.');
+        return redirect()->route('divisionoffices.index')->with('success', 'Division Office Added Successfully.');
     }
     
 }

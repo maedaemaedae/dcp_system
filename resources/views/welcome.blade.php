@@ -187,78 +187,81 @@
             </div>
         </div>
     </section>
-    <section id="forms">
-                <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mb-20">
-                <div class="text-center mb-8">
-                    <button class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">
-                        Download Forms & Templates
-                    </button>
-                </div>
 
-                <!-- Accordion Section -->
-                <div class="space-y-4">
-                    <!-- Accordion Item 1 -->
-                    <div class="border rounded-lg">
-                        <button class="w-full text-left px-6 py-4 font-semibold text-blue-800 focus:outline-none flex justify-between items-center accordion-toggle">
-                            Documentary Requirements
-                            <span class="transform transition-transform duration-200">&#9660;</span>
-                        </button>
-                        <div class="accordion-content px-6 pb-4 hidden">
-                            <ul class="list-disc pl-5 text-gray-700">
-                                <li>Letter of Intent</li>
-                                <li>School Profile</li>
-                                <li>Device Inventory</li>
-                            </ul>
-                        </div>
-                    </div>
+    <section id="forms" class="py-12 bg-gray-50">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg mb-20 space-y-8">
+        <!-- Header Button -->
+        <div class="text-center mb-8">
+            <button class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-200">
+                Download Forms & Templates
+            </button>
+        </div>
 
-                    <!-- Accordion Item 2 -->
-                    <div class="border rounded-lg">
-                        <button class="w-full text-left px-6 py-4 font-semibold text-blue-800 focus:outline-none flex justify-between items-center accordion-toggle">
-                            FAQs (Frequently Asked Questions)
-                            <span class="transform transition-transform duration-200">&#9660;</span>
-                        </button>
-                        <div class="accordion-content px-6 pb-4 hidden">
-                            <p class="text-gray-700">Answers to the most common questions regarding submissions, deadlines, and eligibility.</p>
-                        </div>
-                    </div>
-
-                    <!-- Accordion Item 3 (dynamic and conditional file links) -->
-                    <div class="border rounded-lg">
-                        <button class="w-full text-left px-6 py-4 font-semibold text-blue-800 focus:outline-none flex justify-between items-center accordion-toggle">
-                            DepEd Computerization Program (DCP) FY 2025 EPA References
-                            <span class="transform transition-transform duration-200">&#9660;</span>
-                        </button>
-                        <div class="accordion-content px-6 pb-4 hidden">
-                            @if(count($dcpFiles) > 0)
-                                <ul class="list-disc pl-5 text-gray-700 space-y-1">
-                                    @foreach($dcpFiles as $file)
-                                        <li>
-                                            @if(Str::endsWith($file, '.pdf'))
-                                                <a href="{{ asset('storage/dcp/' . $file) }}" 
-                                                target="_blank" 
-                                                class="text-blue-600 hover:underline">
-                                                    View {{ $file }}
-                                                </a>
-                                            @else
-                                                <a href="{{ asset('storage/dcp/' . $file) }}" 
-                                                download 
-                                                class="text-blue-600 hover:underline">
-                                                    Download {{ $file }}
-                                                </a>
-                                            @endif
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                <p class="text-gray-500">No reference files available at the moment.</p>
-                            @endif
-                        </div>
-                    </div>
+        <!-- Accordion Section -->
+        <div class="space-y-4">
+            <!-- Accordion Item 1 -->
+            <div class="border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+                <button class="w-full text-left px-6 py-4 font-semibold text-blue-800 focus:outline-none flex justify-between items-center bg-gray-100 hover:bg-gray-200 transition duration-200 accordion-toggle">
+                    Documentary Requirements
+                    <span class="transform transition-transform duration-200">&#9660;</span>
+                </button>
+                <div class="accordion-content px-6 pb-4 hidden bg-gray-50">
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li>Letter of Intent</li>
+                        <li>School Profile</li>
+                        <li>Device Inventory</li>
+                    </ul>
                 </div>
             </div>
 
-            <script>
+            <!-- Accordion Item 2 -->
+            <div class="border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+                <button class="w-full text-left px-6 py-4 font-semibold text-blue-800 focus:outline-none flex justify-between items-center bg-gray-100 hover:bg-gray-200 transition duration-200 accordion-toggle">
+                    FAQs (Frequently Asked Questions)
+                    <span class="transform transition-transform duration-200">&#9660;</span>
+                </button>
+                <div class="accordion-content px-6 pb-4 hidden bg-gray-50">
+                    <p class="text-gray-700">Answers to the most common questions regarding submissions, deadlines, and eligibility.</p>
+                </div>
+            </div>
+
+            <!-- Accordion Item 3 (Dynamic and Conditional File Links) -->
+            <div class="border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+                <button class="w-full text-left px-6 py-4 font-semibold text-blue-800 focus:outline-none flex justify-between items-center bg-gray-100 hover:bg-gray-200 transition duration-200 accordion-toggle">
+                    DepEd Computerization Program (DCP) FY 2025 EPA References
+                    <span class="transform transition-transform duration-200">&#9660;</span>
+                </button>
+                <div class="accordion-content px-6 pb-4 hidden bg-gray-50">
+                    @if(count($dcpFiles) > 0)
+                        <ul class="list-disc pl-5 text-gray-700 space-y-2">
+                            @foreach($dcpFiles as $file)
+                                <li>
+                                    @if(Str::endsWith($file, '.pdf'))
+                                        <a href="{{ asset('storage/dcp/' . $file) }}" 
+                                           target="_blank" 
+                                           class="text-blue-600 hover:underline">
+                                           View {{ $file }}
+                                        </a>
+                                    @else
+                                        <a href="{{ asset('storage/dcp/' . $file) }}" 
+                                           download 
+                                           class="text-blue-600 hover:underline">
+                                           Download {{ $file }}
+                                        </a>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-gray-500">No reference files available at the moment.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     document.querySelectorAll('.accordion-toggle').forEach(button => {
                         button.addEventListener('click', () => {
@@ -271,23 +274,9 @@
                     });
                 });
             </script>
-    </section>
-    <footer class="bg-white border-t mt-20">
-    <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
-        <div class="mb-4 md:mb-0">
-            © {{ date('Y') }} DCP Tracking System. All rights reserved.
-        </div>
-        <div class="flex space-x-4">
-            <a href="#" class="hover:underline">Privacy Policy</a>
-            <a href="#" class="hover:underline">Terms of Service</a>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ict.mimaroparegion@deped.gov.ph" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="hover:underline">
-                Contact
-                </a>
-        </div>
-    </div>
-</footer>
+
+    <!-- Footer -->
+    @include('components.footer')           
+
 </body>
 </html>

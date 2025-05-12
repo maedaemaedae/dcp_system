@@ -51,6 +51,6 @@ class SuperAdminController extends Controller
         $user->role_id = $request->role_id; // ✅ Directly assign role_id
         $user->save();
 
-        return redirect()->back()->with('success', 'Role updated successfully!');
+        return redirect()->back()->with('success', 'Role Updated Successfully!');
     }
 }

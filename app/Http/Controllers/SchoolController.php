@@ -53,7 +53,7 @@ class SchoolController extends Controller
             'created_date' => now(),
         ]));
 
-        return redirect()->route('schools.index')->with('success', 'School added successfully.');
+        return redirect()->route('schools.index')->with('success', 'School Added Successfully.');
     }
 
     public function update(Request $request, $school_id)
@@ -74,7 +74,7 @@ class SchoolController extends Controller
             'modified_date' => now(),
         ]));
 
-        return redirect()->route('schools.index')->with('success', 'School updated successfully.');
+        return redirect()->route('schools.index')->with('success', 'School Updated Successfully.');
     }
 
     public function destroy($school_id)
@@ -82,6 +82,6 @@ class SchoolController extends Controller
         $school = School::findOrFail($school_id);
         $school->delete();
 
-        return redirect()->route('schools.index')->with('success', 'School deleted successfully.');
+        return redirect()->route('schools.index')->with('success', 'School Deleted Successfully.');
     }
 }

@@ -29,32 +29,43 @@
     <div class="flex flex-col gap-5 px-2.5 mt-20">
 
 <!-- Dashboard -->
- <div class="relative group">
-        <a href="{{ route('dashboard') }}"
-           class="flex items-center gap-5 px-5 py-3 text-[14px] hover:bg-white hover:text-[#033372] hover:rounded-xl transition-all duration-300">
-            <i class="fa-solid fa-gauge-high text-xl w-7 h-7"></i>
-            <div class="relative overflow-hidden">
-                <span class="invisible whitespace-nowrap block">Dashboard</span>
-                <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Dashboard</span>
-            </div>
-        </a>
-        <!-- Tooltip shown only when sidebar is collapsed and hovered -->
-        <div x-show="!open" x-cloak
-            class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-            Dashboard
+<div class="relative group">
+    <a href="{{ route('dashboard') }}"
+       class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
+           hover:bg-white hover:text-[#033372] hover:rounded-xl
+           {{ request()->routeIs('dashboard') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+        
+        <i class="fa-solid fa-gauge-high text-xl w-7 h-7"></i>
+
+        <div class="relative overflow-hidden">
+            <span class="invisible whitespace-nowrap block">Dashboard</span>
+            <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Dashboard</span>
         </div>
+    </a>
+
+    <!-- Tooltip -->
+    <div x-show="!open" x-cloak
+         class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+        Dashboard
     </div>
+</div>
 
 <!-- User Management -->
 <div class="relative group">
     <a href="{{ route('superadmin.users') }}"
-       class="flex items-center gap-5 px-5 py-3 text-[14px] hover:bg-white hover:text-[#033372] hover:rounded-xl transition-all duration-300">
+       class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
+           hover:bg-white hover:text-[#033372] hover:rounded-xl
+           {{ request()->routeIs('superadmin.users') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+
         <i class="fa-solid fa-users text-xl w-7 h-7"></i>
+
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">Manage Users</span>
             <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Manage Users</span>
         </div>
     </a>
+
+    <!-- Tooltip -->
     <div x-show="!open" x-cloak
          class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
         User Management
@@ -64,7 +75,10 @@
 <!-- Regional Offices -->
 <div class="relative group">
     <a href="{{ route('regional-offices.index') }}"
-       class="flex items-center gap-5 px-5 py-3 text-[14px] hover:bg-white hover:text-[#033372] hover:rounded-xl transition-all duration-300">
+       class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
+           hover:bg-white hover:text-[#033372] hover:rounded-xl
+           {{ request()->routeIs('regional-offices.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+
         <i class="fa-solid fa-building text-xl w-7 h-7"></i>
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">Regional Offices</span>
@@ -72,7 +86,7 @@
         </div>
     </a>
     <div x-show="!open" x-cloak
-         class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+         class="absolute left-full top-1/2 transform -translate-y-1/2 ml-3 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
         Regional Offices
     </div>
 </div>
@@ -80,7 +94,10 @@
 <!-- Division Offices -->
 <div class="relative group">
     <a href="{{ route('division-offices.index') }}"
-       class="flex items-center gap-5 px-5 py-3 text-[14px] hover:bg-white hover:text-[#033372] hover:rounded-xl transition-all duration-300">
+       class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
+           hover:bg-white hover:text-[#033372] hover:rounded-xl
+           {{ request()->routeIs('division-offices.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+
         <i class="fa-solid fa-sitemap text-xl w-7 h-7"></i>
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">Division Offices</span>
@@ -96,7 +113,10 @@
 <!-- School List -->
 <div class="relative group">
     <a href="{{ route('schools.index') }}"
-       class="flex items-center gap-5 px-5 py-3 text-[14px] hover:bg-white hover:text-[#033372] hover:rounded-xl transition-all duration-300">
+       class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
+           hover:bg-white hover:text-[#033372] hover:rounded-xl
+           {{ request()->routeIs('schools.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+
         <i class="fa-solid fa-school text-xl w-7 h-7"></i>
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">School List</span>
@@ -112,7 +132,10 @@
 <!-- Inventory -->
 <div class="relative group">
     <a href="{{ route('inventory.index') }}"
-       class="flex items-center gap-5 px-5 py-3 text-[14px] hover:bg-white hover:text-[#033372] hover:rounded-xl transition-all duration-300">
+       class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
+           hover:bg-white hover:text-[#033372] hover:rounded-xl
+           {{ request()->routeIs('inventory.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+
         <i class="fa-solid fa-boxes-stacked text-xl w-7 h-7"></i>
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">Inventory</span>
@@ -128,7 +151,10 @@
 <!-- Packages -->
 <div class="relative group">
     <a href="{{ route('package-types.index') }}"
-       class="flex items-center gap-5 px-5 py-3 text-[14px] hover:bg-white hover:text-[#033372] hover:rounded-xl transition-all duration-300">
+       class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
+           hover:bg-white hover:text-[#033372] hover:rounded-xl
+           {{ request()->routeIs('package-types.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+
         <i class="fa-solid fa-box text-xl w-7 h-7"></i>
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">Packages</span>
