@@ -10,6 +10,8 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PackageTypeController;
 use App\Http\Controllers\Auth\OtpVerificationController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\DeliveryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +58,8 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::post('/projects/store', [SuperAdminController::class, 'storeProject'])->name('superadmin.projects.store');
     Route::get('/superadmin/projects', [SuperAdminController::class, 'indexProjects'])->name('superadmin.projects.index');
     Route::resource('projects', ProjectController::class);
+    Route::resource('deliveries', DeliveryController::class)->only(['index', 'edit', 'update']);
+
 });
 
 // ✅ Group all Admin routes under auth + admin

@@ -55,9 +55,15 @@
                         <x-nav-link :href="route('package-types.index')" :active="request()->routeIs('package-types.*')">
                             {{ __('Packages') }}
                         </x-nav-link>
+                        
                         <x-nav-link :href="route('superadmin.projects.index')" :active="request()->routeIs('superadmin.projects.index')">
                             {{ __('Projects') }}
                         </x-nav-link>
+
+                        <x-nav-link :href="route('deliveries.index')" :active="request()->routeIs('deliveries.*')">
+                            {{ __('Deliveries') }}
+                        </x-nav-link>
+
                     @endif
                 </div>
             </div>

@@ -6,6 +6,8 @@ use App\Models\Project;
 use App\Models\Package;
 use App\Models\ProjectSchoolAssignment;
 use Illuminate\Http\Request;
+use App\Models\Delivery;
+use App\Models\School;
 
 class ProjectController extends Controller
 {
@@ -35,9 +37,10 @@ class ProjectController extends Controller
             'name' => $validated['name'],
             'target_delivery_date' => $validated['target_delivery_date'],
             'target_arrival_date' => $validated['target_arrival_date'],
-            'status' => 'Pending' // ✅ default status
+            'status' => 'Pending'
         ]);
 
+        // Attach packages to project
         foreach ($validated['package_types'] as $typeId) {
             Package::create([
                 'package_type_id' => $typeId,
@@ -45,6 +48,7 @@ class ProjectController extends Controller
             ]);
         }
 
+        // Attach schools to project
         foreach ($validated['school_ids'] as $schoolId) {
             ProjectSchoolAssignment::create([
                 'project_id' => $project->id,
@@ -52,8 +56,23 @@ class ProjectController extends Controller
             ]);
         }
 
+        // ✅ Auto-create deliveries
+        $projectPackages = Package::where('project_id', $project->id)->get();
+
+        foreach ($validated['school_ids'] as $schoolId) {
+            foreach ($projectPackages as $package) {
+                Delivery::create([
+                    'project_id' => $project->id,
+                    'school_id' => $schoolId,
+                    'package_id' => $package->id,
+                    'status' => 'Pending',
+                ]);
+            }
+        }
+
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
+
 
     public function update(Request $request, $id)
     {
@@ -94,6 +113,16 @@ class ProjectController extends Controller
         }
 
         return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
+    }
+
+        public function showDeliveries($id)
+    {
+        $project = Project::findOrFail($id);
+        $deliveries = PackageDelivery::with(['school', 'packageType'])
+                        ->where('project_id', $id)
+                        ->get();
+
+        return view('deliveries.deliveries', compact('deliveries', 'project'));
     }
 
         public function destroy($id)

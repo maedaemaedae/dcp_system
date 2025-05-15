@@ -38,4 +38,10 @@ class School extends Model
     {
         return $this->belongsToMany(Project::class, 'project_school_assignments', 'school_id', 'project_id');
     }
+
+        public function deliveries()
+    {
+        return $this->hasMany(PackageDelivery::class, 'school_id', 'school_id'); // custom FK
+    }
+
 }

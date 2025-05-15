@@ -19,4 +19,10 @@ class Project extends Model
         return $this->belongsToMany(School::class, 'project_school_assignments', 'project_id', 'school_id');
     }
     
+        public function deliveries()
+    {
+        return $this->hasMany(PackageDelivery::class);
+    }
+
+    
 }
