@@ -58,29 +58,13 @@ class ProjectController extends Controller
 
         // Loop schools and package types to assign deliveries
         foreach ($validated['school_ids'] as $schoolId) {
-            foreach ($validated['package_types'] as $typeId) {
-                // Get an unused package of this type
-                $package = Package::whereNull('project_id')
-                                ->where('package_type_id', $typeId)
-                                ->whereNotIn('id', $assignedPackages)
-                                ->first();
-
-                if ($package) {
-                    // Mark package as used
-                    $assignedPackages[] = $package->id;
-                    $package->update(['project_id' => $project->id]);
-                }
-
-                // Create delivery even if no package is available
-                Delivery::create([
-                    'project_id' => $project->id,
-                    'school_id' => $schoolId,
-                    'package_id' => $package?->id,
-                    'status' => 'Pending',
-                    'delivery_date' => $validated['target_delivery_date'],
-                    'arrival_date' => $validated['target_arrival_date'],
-                ]);
-            }
+            Delivery::create([
+                'project_id' => $project->id,
+                'school_id' => $schoolId,
+                'status' => 'Pending',
+                'delivery_date' => $validated['target_delivery_date'],
+                'arrival_date' => $validated['target_arrival_date']
+            ]);
         }
 
         return redirect()->route('projects.index')->with('success', 'Project created and deliveries assigned.');
