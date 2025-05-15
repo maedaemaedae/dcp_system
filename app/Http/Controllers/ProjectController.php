@@ -33,6 +33,7 @@ class ProjectController extends Controller
             'target_arrival_date' => 'required|date',
         ]);
 
+        // Create the project
         $project = Project::create([
             'name' => $validated['name'],
             'target_delivery_date' => $validated['target_delivery_date'],
@@ -40,28 +41,32 @@ class ProjectController extends Controller
             'status' => 'Pending'
         ]);
 
-        // Attach packages to project
-        foreach ($validated['package_types'] as $typeId) {
-            $package = Package::whereNull('project_id')
-                            ->where('package_type_id', $typeId)
-                            ->first();
+        // Link schools via pivot table
+        $project->schools()->sync($validated['school_ids']);
 
-            if ($package) {
-                $package->update(['project_id' => $project->id]);
-            }
-        }
+        // Track used packages per type to avoid duplication
+        $assignedPackages = [];
 
-        // Create delivery entries for each school x package pair
+        // Loop schools and package types to assign deliveries
         foreach ($validated['school_ids'] as $schoolId) {
             foreach ($validated['package_types'] as $typeId) {
-                $package = Package::where('project_id', $project->id)
+                // Get an unused package of this type
+                $package = Package::whereNull('project_id')
                                 ->where('package_type_id', $typeId)
+                                ->whereNotIn('id', $assignedPackages)
                                 ->first();
 
+                if ($package) {
+                    // Mark package as used
+                    $assignedPackages[] = $package->id;
+                    $package->update(['project_id' => $project->id]);
+                }
+
+                // Create delivery even if no package is available
                 Delivery::create([
                     'project_id' => $project->id,
                     'school_id' => $schoolId,
-                    'package_id' => $package?->id, // null-safe if no package found
+                    'package_id' => $package?->id,
                     'status' => 'Pending',
                     'delivery_date' => $validated['target_delivery_date'],
                     'arrival_date' => $validated['target_arrival_date'],
@@ -71,6 +76,8 @@ class ProjectController extends Controller
 
         return redirect()->route('projects.index')->with('success', 'Project created and deliveries assigned.');
     }
+
+
 
     public function update(Request $request, $id)
     {
