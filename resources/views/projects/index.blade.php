@@ -70,14 +70,14 @@
             </div>
 
             {{-- Edit Modal for this project --}}
-            @include('projects.partials.edit-modal', ['project' => $project])
-        @endforeach
+                @include('projects.partials.edit-modal', ['project' => $project])
+                @endforeach
 
-        {{-- Create Modal (only once) --}}
-        @include('projects.partials.create-modal', [
-            'packageTypes' => $packageTypes,
-            'divisions' => $divisions
-        ])
+            {{-- Create Modal (only once) --}}
+                @include('projects.partials.create-modal', [
+                    'packageTypes' => $packageTypes,
+                    'divisions' => $divisions
+            ])
     </div>
 
     {{-- Modal JS --}}

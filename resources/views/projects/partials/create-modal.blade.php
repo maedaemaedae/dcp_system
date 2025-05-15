@@ -12,10 +12,12 @@
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium">Package Contents</label>
+                <label class="block font-medium">Packages Included</label>
                 <select name="package_types[]" class="w-full border px-3 py-2" multiple required>
-                    @foreach ($packageTypes as $package)
-                        <option value="{{ $package->id }}">{{ $package->package_code }} - {{ $package->description }}</option>
+                    @foreach ($packageTypes as $type)
+                        <option value="{{ $type->id }}">
+                            {{ $type->package_code }} - {{ $type->description }}
+                        </option>
                     @endforeach
                 </select>
             </div>

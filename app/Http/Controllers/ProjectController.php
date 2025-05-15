@@ -21,6 +21,7 @@ class ProjectController extends Controller
         return view('projects.index', compact('projects', 'packages', 'packageTypes', 'divisions'));
     }
 
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -40,6 +41,14 @@ class ProjectController extends Controller
             'target_arrival_date' => $validated['target_arrival_date'],
             'status' => 'Pending'
         ]);
+
+        foreach ($validated['package_types'] as $typeId) {
+            Package::create([
+                'project_id' => $project->id,
+                'package_type_id' => $typeId,
+            ]);
+}
+
 
         // Link schools via pivot table
         $project->schools()->sync($validated['school_ids']);

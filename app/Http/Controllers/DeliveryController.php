@@ -9,7 +9,8 @@ class DeliveryController extends Controller
 {
     public function index()
     {
-        $deliveries = Delivery::with(['project', 'school', 'package'])->get();
+        $deliveries = \App\Models\Delivery::with(['school', 'package.packageType'])->get();
+
         return view('deliveries.index', compact('deliveries'));
     }
 
