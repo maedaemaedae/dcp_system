@@ -18,7 +18,8 @@ return new class extends Migration
 
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('school_id');
-            $table->unsignedBigInteger('package_id');
+            $table->unsignedBigInteger('package_id')->nullable();
+
 
             $table->enum('status', ['Pending', 'In Transit', 'Delivered'])->default('Pending');
             $table->date('delivery_date')->nullable();

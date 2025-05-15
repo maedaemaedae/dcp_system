@@ -42,37 +42,35 @@ class ProjectController extends Controller
 
         // Attach packages to project
         foreach ($validated['package_types'] as $typeId) {
-            Package::create([
-                'package_type_id' => $typeId,
-                'project_id' => $project->id,
-            ]);
+            $package = Package::whereNull('project_id')
+                            ->where('package_type_id', $typeId)
+                            ->first();
+
+            if ($package) {
+                $package->update(['project_id' => $project->id]);
+            }
         }
 
-        // Attach schools to project
+        // Create delivery entries for each school x package pair
         foreach ($validated['school_ids'] as $schoolId) {
-            ProjectSchoolAssignment::create([
-                'project_id' => $project->id,
-                'school_id' => $schoolId,
-            ]);
-        }
+            foreach ($validated['package_types'] as $typeId) {
+                $package = Package::where('project_id', $project->id)
+                                ->where('package_type_id', $typeId)
+                                ->first();
 
-        // ✅ Auto-create deliveries
-        $projectPackages = Package::where('project_id', $project->id)->get();
-
-        foreach ($validated['school_ids'] as $schoolId) {
-            foreach ($projectPackages as $package) {
                 Delivery::create([
                     'project_id' => $project->id,
                     'school_id' => $schoolId,
-                    'package_id' => $package->id,
+                    'package_id' => $package?->id, // null-safe if no package found
                     'status' => 'Pending',
+                    'delivery_date' => $validated['target_delivery_date'],
+                    'arrival_date' => $validated['target_arrival_date'],
                 ]);
             }
         }
 
-        return redirect()->route('projects.index')->with('success', 'Project created successfully.');
+        return redirect()->route('projects.index')->with('success', 'Project created and deliveries assigned.');
     }
-
 
     public function update(Request $request, $id)
     {
