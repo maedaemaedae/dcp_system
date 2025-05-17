@@ -65,38 +65,14 @@
                         </x-nav-link>
 
                     @endif
+
+                    {{-- ✅ Supplier Links  --}}
+                    @if ($user && $user->role_id === 6)
+                        <x-nav-link :href="route('supplier.deliveries.index')" :active="request()->routeIs('supplier.deliveries.*')">
+                            {{ __('Deliveries') }}
+                        </x-nav-link>
+                    @endif
                 </div>
-            </div>
-
-            <!--Admin Navigation Links -->
-            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                @if ($user && $user->role && $user->role->role_name === 'admin')
-                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
-                            {{ __('User Management') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.regional-offices.index')" :active="request()->routeIs('admin.regional-offices.*')">
-                        {{ __('Regional Offices') }}
-                        </x-nav-link>
-
-                        <x-nav-link :href="route('admin.division-offices.index')" :active="request()->routeIs('admin.division-offices.*')">
-                            {{ __('Division Offices') }}
-                        </x-nav-link>
-
-                        <x-nav-link :href="route('admin.schools.index')" :active="request()->routeIs('admin.schools.*')">
-                            {{ __('School List') }}
-                        </x-nav-link>
-
-                        <x-nav-link :href="route('admin.inventory.index')" :active="request()->routeIs('admin.inventory.*')">
-                            {{ __('Inventory') }}
-                        </x-nav-link>
-
-                        <x-nav-link :href="route('admin.package-types.index')" :active="request()->routeIs('admin.package-types.*')">
-                            {{ __('Packages') }}
-                        </x-nav-link>
-
-                    </div>
-                @endif
             </div>
 
             <!-- Settings Dropdown -->

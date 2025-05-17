@@ -11,6 +11,7 @@ use App\Http\Controllers\PackageTypeController;
 use App\Http\Controllers\Auth\OtpVerificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\Supplier\DeliveryController as SupplierDeliveryController;
 
 
 /*
@@ -75,6 +76,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::get('schools', [SchoolController::class, 'index'])->name('admin.schools.index');
     Route::get('inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
     Route::get('package-types', [PackageTypeController::class, 'index'])->name('admin.package-types.index');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::middleware(['role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
+        Route::get('/deliveries', [SupplierDeliveryController::class, 'index'])->name('deliveries.index');
+        Route::get('/deliveries/{id}/edit', [SupplierDeliveryController::class, 'edit'])->name('deliveries.edit');
+        Route::put('/deliveries/{id}', [SupplierDeliveryController::class, 'update'])->name('deliveries.update');
+    });
 });
 
 // ✅ Include Laravel Breeze / Fortify / Auth routes
