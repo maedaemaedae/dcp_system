@@ -24,14 +24,22 @@
                 <tbody>
                     @forelse($deliveries as $delivery)
                         <tr class="border-t">
-                            <td class="px-4 py-2">{{ $delivery->school->name ?? '-' }}</td>
-                            <td class="px-4 py-2">{{ $delivery->package->name ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $delivery->school->school_name }}</td>
+                            <td class="px-4 py-2">
+                                @if ($delivery->project && $delivery->project->packages->count())
+                                    @foreach ($delivery->project->packages as $pkg)
+                                        <div>{{ $pkg->packageType->description ?? 'Unnamed Package' }}</div>
+                                    @endforeach
+                                @else
+                                    N/A
+                                @endif
+                            </td>
                             <td class="px-4 py-2">{{ $delivery->status }}</td>
                             <td class="px-4 py-2">{{ $delivery->delivery_date }}</td>
                             <td class="px-4 py-2">{{ $delivery->arrival_date }}</td>
                             <td class="px-4 py-2">{{ $delivery->remarks }}</td>
                             <td class="px-4 py-2">
-                            <a href="{{ route('supplier.deliveries.edit', $delivery->id) }}" class="text-blue-500 hover:underline">Edit</a>
+                            <a href="{{ route('supplier.deliveries.edit', $delivery->id) }}" class="text-blue-600 hover:underline">Edit</a>
                             </td>
                         </tr>
                     @empty

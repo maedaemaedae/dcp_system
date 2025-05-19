@@ -11,7 +11,7 @@ class DeliveryController extends Controller
     {
         $deliveries = \App\Models\Delivery::with(['school', 'package.packageType'])->get();
 
-        return view('deliveries.index', compact('deliveries'));
+        return view('supplier.deliveries.index', compact('deliveries'));
     }
 
     public function edit(Delivery $delivery)
