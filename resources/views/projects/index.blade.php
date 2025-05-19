@@ -27,7 +27,7 @@
                             <strong class="text-sm">Packages:</strong>
                             @forelse ($project->packages as $pkg)
                                 <span class="inline-block bg-gray-100 text-xs px-2 py-1 rounded mr-1 mt-1">
-                                    {{ $pkg->packageType->package_code ?? 'Unknown Package' }}
+                                    {{ $pkg->packageType->description ?? 'Unknown Package' }}
                                 </span>
                             @empty
                                 <span class="text-gray-400 italic text-sm">No packages assigned.</span>

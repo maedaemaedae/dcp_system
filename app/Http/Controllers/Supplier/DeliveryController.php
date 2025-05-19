@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Supplier;
-
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Delivery;
 
@@ -9,33 +9,28 @@ class DeliveryController extends Controller
 {
     public function index()
     {
-        $deliveries = Delivery::with(['project', 'school', 'package'])->get();
+        $deliveries = \App\Models\Delivery::with(['school', 'package.packageType'])->get();
 
-        return view('supplier.deliveries.index', compact('deliveries'));
+        return view('deliveries.index', compact('deliveries'));
     }
 
-        public function edit($id)
+    public function edit(Delivery $delivery)
     {
-        $delivery = Delivery::with(['project', 'school', 'package'])->findOrFail($id);
         return view('supplier.deliveries.edit', compact('delivery'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Delivery $delivery)
     {
-        $delivery = Delivery::findOrFail($id);
-
-        $request->validate([
+        $validated = $request->validate([
             'status' => 'required|string',
             'delivery_date' => 'nullable|date',
             'arrival_date' => 'nullable|date',
             'remarks' => 'nullable|string',
         ]);
 
-        $delivery->update($request->only([
-            'status', 'delivery_date', 'arrival_date', 'remarks'
-        ]));
+        $delivery->update($validated);
 
-        return redirect()->route('supplier.deliveries.index')->with('success', 'Delivery updated successfully.');
+        return redirect()->route('deliveries.index')->with('success', 'Delivery updated successfully.');
     }
 }
 

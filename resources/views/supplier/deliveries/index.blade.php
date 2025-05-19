@@ -31,7 +31,7 @@
                             <td class="px-4 py-2">{{ $delivery->arrival_date }}</td>
                             <td class="px-4 py-2">{{ $delivery->remarks }}</td>
                             <td class="px-4 py-2">
-                                <a href="{{ route('supplier.deliveries.edit', $delivery->id) }}" class="text-blue-600 hover:underline">Edit</a>
+                            <a href="{{ route('supplier.deliveries.edit', $delivery->id) }}" class="text-blue-600 hover:underline">Edit</a>
                             </td>
                         </tr>
                     @empty

@@ -81,8 +81,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
         Route::get('/deliveries', [SupplierDeliveryController::class, 'index'])->name('deliveries.index');
-        Route::get('/deliveries/{id}/edit', [SupplierDeliveryController::class, 'edit'])->name('deliveries.edit');
-        Route::put('/deliveries/{id}', [SupplierDeliveryController::class, 'update'])->name('deliveries.update');
+        Route::get('/deliveries/{delivery}/edit', [SupplierDeliveryController::class, 'edit'])->name('deliveries.edit');
+        Route::put('/deliveries/{delivery}', [SupplierDeliveryController::class, 'update'])->name('deliveries.update');
     });
 });
 

@@ -28,7 +28,7 @@
                             <td class="px-4 py-2">
                                 @if ($delivery->project && $delivery->project->packages->count())
                                     @foreach ($delivery->project->packages as $pkg)
-                                        <div>{{ $pkg->packageType->package_code ?? 'Unnamed Package' }}</div>
+                                        <div>{{ $pkg->packageType->description ?? 'Unnamed Package' }}</div>
                                     @endforeach
                                 @else
                                     N/A
