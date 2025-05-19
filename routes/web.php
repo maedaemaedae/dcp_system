@@ -80,11 +80,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::get('package-types', [PackageTypeController::class, 'index'])->name('admin.package-types.index');
 });
 
-Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
-    Route::get('/deliveries', [SupplierDeliveryController::class, 'index'])->name('deliveries.index');
-    Route::get('/supplier/deliveries/{delivery}/edit', [SupplierDeliveryController::class, 'edit'])->name('supplier.deliveries.edit');
-    Route::put('/deliveries/{delivery}', [SupplierDeliveryController::class, 'update'])->name('deliveries.update');
-});
+Route::middleware(['auth', 'role:supplier'])
+    ->prefix('supplier')
+    ->name('supplier.')
+    ->group(function () {
+        Route::get('/deliveries', [SupplierDeliveryController::class, 'index'])->name('deliveries.index');
+        Route::get('/deliveries/{delivery}/edit', [SupplierDeliveryController::class, 'edit'])->name('deliveries.edit');
+        Route::put('/deliveries/{delivery}', [SupplierDeliveryController::class, 'update'])->name('deliveries.update');
+    });
 
 // ✅ Include Laravel Breeze / Fortify / Auth routes
 require __DIR__.'/auth.php';
