@@ -10,15 +10,86 @@ use App\Models\Project;
 use App\Models\Package;
 use App\Models\PackageType;
 use App\Models\DivisionOffice;
+use App\Models\Inventory;
+use Illuminate\Support\Facades\DB;
 
 class SuperAdminController extends Controller
 {
-    public function dashboard()
-    {
-        return view('superadmin.dashboard', [
-            'user' => Auth::user()
-        ]);
+    public function dashboard(Request $request)
+   {
+    $chartType = $request->input('chart_type', 'item_type');
+    $selectedPackageId = $request->input('package_type_id');
+    $selectedProjectId = $request->input('project_id');
+    $projectView = $request->input('project_view', 'schools');
+    $selectedProjectPackageId = $request->input('project_package_id');
+
+    $packageTypes = PackageType::all();
+    $projects = Project::all();
+    $nameTotals = Inventory::select('item_name', DB::raw('SUM(quantity) as total_quantity'))
+        ->groupBy('item_name')
+        ->orderBy('item_name')
+        ->get();
+
+    $packageChartData = [];
+    if ($chartType === 'package' && $selectedPackageId) {
+        $packageChartData = DB::table('package_contents')
+            ->join('inventory', 'package_contents.item_id', '=', 'inventory.item_id')
+            ->where('package_contents.package_type_id', $selectedPackageId)
+            ->select('inventory.item_name', DB::raw('SUM(package_contents.quantity) as total_quantity'))
+            ->groupBy('inventory.item_name')
+            ->get();
     }
+
+    $schools = [];
+    $projectPackages = [];
+    $projectChartData = [];
+
+    if ($chartType === 'project' && $selectedProjectId) {
+        // Schools
+        $schools = DB::table('project_school_assignments')
+            ->join('schools', 'project_school_assignments.school_id', '=', 'schools.school_id')
+            ->where('project_id', $selectedProjectId)
+            ->select('schools.school_id as id', 'schools.school_name')
+            ->get();
+
+        // Packages
+        $projectPackages = DB::table('packages')
+            ->join('package_types', 'packages.package_type_id', '=', 'package_types.id')
+            ->where('project_id', $selectedProjectId)
+            ->select('packages.id', 'package_types.package_code')
+            ->get();
+
+        // Package-wide donut chart
+        if ($projectView === 'packages') {
+            $projectChartData = DB::table('package_contents')
+                ->join('packages', 'packages.package_type_id', '=', 'package_contents.package_type_id')
+                ->join('package_types', 'package_types.id', '=', 'packages.package_type_id')
+                ->join('inventory', 'package_contents.item_id', '=', 'inventory.item_id')
+                ->where('packages.project_id', $selectedProjectId)
+                ->select(
+                    'package_types.package_code',
+                    'inventory.item_name',
+                    DB::raw('SUM(package_contents.quantity) as total_quantity')
+                )
+                ->groupBy('package_types.package_code', 'inventory.item_name')
+                ->get();
+        }
+    }
+
+    return view('superadmin.dashboard', compact(
+        'chartType',
+        'nameTotals',
+        'packageTypes',
+        'packageChartData',
+        'selectedPackageId',
+        'projects',
+        'selectedProjectId',
+        'schools',
+        'projectPackages',
+        'projectChartData',
+        'projectView'
+    ));
+}
 
     public function manageUsers(Request $request)
     {
