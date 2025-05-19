@@ -16,9 +16,11 @@ class DeliveryController extends Controller
 
     public function edit(Delivery $delivery)
     {
+        
         return view('supplier.deliveries.edit', compact('delivery'));
     }
 
+    
     public function update(Request $request, Delivery $delivery)
     {
         $validated = $request->validate([
@@ -30,7 +32,7 @@ class DeliveryController extends Controller
 
         $delivery->update($validated);
 
-        return redirect()->route('deliveries.index')->with('success', 'Delivery updated successfully.');
+        return redirect()->route('supplier.deliveries.index')->with('success', 'Delivery updated successfully.');
     }
 }
 
