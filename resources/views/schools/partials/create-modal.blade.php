@@ -53,6 +53,40 @@
                     </select>
                 </div>
             </div>
+                            <h3 class="text-lg font-semibold mt-4">Internet Information</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-medium">Connected to Internet</label>
+                        <select name="connected_to_internet" class="w-full border rounded px-3 py-2">
+                            <option value="">-- Select --</option>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-medium">ISP</label>
+                        <input type="text" name="isp" class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block font-medium">Type of ISP</label>
+                        <input type="text" name="type_of_isp" class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block font-medium">Fund Source</label>
+                        <input type="text" name="fund_source" class="w-full border rounded px-3 py-2">
+                    </div>
+                </div>
+
+                <!-- Electricity Section -->
+                <h3 class="text-lg font-semibold mt-4">Electricity Information</h3>
+
+                <div class="mb-4">
+                    <label class="block font-medium">Electricity Source</label>
+                    <input type="text" name="electricity_source" class="w-full border rounded px-3 py-2">
+                </div>
+            </div>
+
 
             <div class="text-right">
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>

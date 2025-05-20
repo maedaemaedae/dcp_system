@@ -72,7 +72,7 @@
                         @endforeach
                     </select>
                 </div>
-            </div>
+
 
             <!-- Submit Button -->
             <div class="mt-6">

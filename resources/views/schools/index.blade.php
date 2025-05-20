@@ -30,6 +30,9 @@
                         <th class="px-4 py-2 text-left">Level</th>
                         <th class="px-4 py-2 text-left">Division</th>
                         <th class="px-4 py-2 text-left">Municipality</th>
+                        <th class="px-4 py-2 text-left">Internet</th>
+                        <th class="px-4 py-2 text-left">ISP</th>
+                        <th class="px-4 py-2 text-left">Electricity</th>
                         <th class="px-4 py-2 text-left">Created By</th>
                         <th class="px-4 py-2 text-left">Created Date</th>
                         <th class="px-4 py-2 text-left">Actions</th>
@@ -46,6 +49,19 @@
                             <td class="px-4 py-2">{{ $school->level }}</td>
                             <td class="px-4 py-2">{{ $school->division->division_name ?? '—' }}</td>
                             <td class="px-4 py-2">{{ $school->municipality->municipality_name ?? '—' }}</td>
+                            <td>
+                                @if($school->internet)
+                                    {{ $school->internet->connected_to_internet ? 'Yes' : 'No' }}
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                            <td>
+                                {{ $school->internet->isp ?? 'N/A' }}
+                            </td>
+                            <td>
+                                {{ $school->electricity->electricity_source ?? 'N/A' }}
+                            </td>
                             <td class="px-4 py-2">{{ $school->created_by }}</td>
                             <td class="px-4 py-2">{{ $school->created_date }}</td>
                             <td class="px-4 py-2">
@@ -124,6 +140,11 @@
             document.getElementById('edit_level').value = school.level ?? '';
             document.getElementById('edit_division_id').value = school.division?.division_id ?? '';
             document.getElementById('edit_municipality_id').value = school.municipality?.municipality_id ?? '';
+            document.getElementById('edit_connected_to_internet').value = school.internet?.connected_to_internet ?? '';
+            document.getElementById('edit_isp').value = school.internet?.isp ?? '';
+            document.getElementById('edit_type_of_isp').value = school.internet?.type_of_isp ?? '';
+            document.getElementById('edit_fund_source').value = school.internet?.fund_source ?? '';
+            document.getElementById('edit_electricity_source').value = school.electricity?.electricity_source ?? '';
         }
 
         function closeModal(id) {

@@ -44,4 +44,13 @@ class School extends Model
         return $this->hasMany(Delivery::class, 'school_id', 'school_id');
     }
     
+        public function internet()
+    {
+        return $this->hasOne(Internet::class, 'school_id', 'school_id');
+    }
+
+    public function electricity()
+    {
+        return $this->hasOne(Electricity::class, 'school_id', 'school_id');
+    }
 }

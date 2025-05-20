@@ -11,7 +11,7 @@ class SchoolController extends Controller
 {
     public function index(Request $request)
     {
-        $query = School::with(['division', 'municipality']);
+        $query = School::with(['division', 'municipality', 'internet', 'electricity']);
 
         if ($request->has('search')) {
             $search = $request->input('search');
@@ -48,13 +48,24 @@ class SchoolController extends Controller
             'municipality_id' => 'required|exists:municipalities,municipality_id',
         ]);
 
-        School::create(array_merge($validated, [
+        $school = School::create(array_merge($validated, [
             'created_by' => auth()->user()->name ?? 'Seeder',
             'created_date' => now(),
         ]));
 
+        // Save Internet info
+        $school->internet()->create($request->only([
+            'connected_to_internet', 'isp', 'type_of_isp', 'fund_source'
+        ]));
+
+        // Save Electricity info
+        $school->electricity()->create($request->only([
+            'electricity_source'
+        ]));
+
         return redirect()->route('schools.index')->with('success', 'School added successfully.');
     }
+
 
     public function update(Request $request, $school_id)
     {
@@ -74,8 +85,21 @@ class SchoolController extends Controller
             'modified_date' => now(),
         ]));
 
+        // Update or create Internet info
+        $school->internet()->updateOrCreate(
+            ['school_id' => $school->school_id],
+            $request->only(['connected_to_internet', 'isp', 'type_of_isp', 'fund_source'])
+        );
+
+        // Update or create Electricity info
+        $school->electricity()->updateOrCreate(
+            ['school_id' => $school->school_id],
+            $request->only(['electricity_source'])
+        );
+
         return redirect()->route('schools.index')->with('success', 'School updated successfully.');
     }
+
 
     public function destroy($school_id)
     {
