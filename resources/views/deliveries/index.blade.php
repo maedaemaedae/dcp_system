@@ -9,9 +9,21 @@
         @endif
 
         <div class="overflow-x-auto bg-white rounded shadow">
+            <form method="GET" action="{{ route('deliveries.index') }}" class="mb-4">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Search deliveries..."
+                    class="border border-gray-300 px-3 py-2 rounded-md w-1/3"
+                >
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Search</button>
+            </form>
+
             <table class="min-w-full text-sm">
                 <thead class="bg-gray-100 text-gray-700 text-left">
                     <tr>
+                        <th class="px-4 py-2">Project</th>
                         <th class="px-4 py-2">School</th>
                         <th class="px-4 py-2">Package</th>
                         <th class="px-4 py-2">Status</th>
@@ -24,6 +36,7 @@
                 <tbody>
                     @foreach ($deliveries as $delivery)
                         <tr class="border-t">
+                            <td>{{ $delivery->project->name ?? 'N/A' }}</td>
                             <td class="px-4 py-2">{{ $delivery->school->school_name }}</td>
                             <td class="px-4 py-2">
                                 @if ($delivery->project && $delivery->project->packages->count())
