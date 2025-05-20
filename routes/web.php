@@ -51,6 +51,8 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.users');
     Route::post('/superadmin/users/{user}/role', [SuperAdminController::class, 'updateUserRole'])->name('superadmin.users.updateRole');
     Route::resource('schools',SchoolController::class);
+    Route::get('/superadmin/chart-report', [SuperAdminController::class, 'downloadChartReport'])->name('superadmin.chart.pdf');
+
     Route::resource('regional-offices', RegionalOfficeController::class);
     Route::resource('division-offices', DivisionOfficeController::class);
     Route::resource('inventory', InventoryController::class);

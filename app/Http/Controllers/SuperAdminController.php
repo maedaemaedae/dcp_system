@@ -12,24 +12,26 @@ use App\Models\PackageType;
 use App\Models\DivisionOffice;
 use App\Models\Inventory;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class SuperAdminController extends Controller
 {
     public function dashboard(Request $request)
-   {
-    $chartType = $request->input('chart_type', 'item_type');
+  {$chartType = $request->input('chart_type', 'item_type');
     $selectedPackageId = $request->input('package_type_id');
     $selectedProjectId = $request->input('project_id');
     $projectView = $request->input('project_view', 'schools');
     $selectedProjectPackageId = $request->input('project_package_id');
 
-    $packageTypes = PackageType::all();
-    $projects = Project::all();
-    $nameTotals = Inventory::select('item_name', DB::raw('SUM(quantity) as total_quantity'))
-        ->groupBy('item_name')
-        ->orderBy('item_name')
-        ->get();
+    $packageTypes = \App\Models\PackageType::all();
+    $projects = \App\Models\Project::all();
 
+    // Item type distribution
+    $nameTotals = \App\Models\Inventory::select('item_name', DB::raw('SUM(quantity) as total_quantity'))
+        ->groupBy('item_name')->orderBy('item_name')->get();
+
+    // Individual package donut
     $packageChartData = [];
     if ($chartType === 'package' && $selectedPackageId) {
         $packageChartData = DB::table('package_contents')
@@ -40,26 +42,24 @@ class SuperAdminController extends Controller
             ->get();
     }
 
+    // Project-wide views
     $schools = [];
     $projectPackages = [];
     $projectChartData = [];
 
     if ($chartType === 'project' && $selectedProjectId) {
-        // Schools
         $schools = DB::table('project_school_assignments')
             ->join('schools', 'project_school_assignments.school_id', '=', 'schools.school_id')
             ->where('project_id', $selectedProjectId)
             ->select('schools.school_id as id', 'schools.school_name')
             ->get();
 
-        // Packages
         $projectPackages = DB::table('packages')
             ->join('package_types', 'packages.package_type_id', '=', 'package_types.id')
             ->where('project_id', $selectedProjectId)
             ->select('packages.id', 'package_types.package_code')
             ->get();
 
-        // Package-wide donut chart
         if ($projectView === 'packages') {
             $projectChartData = DB::table('package_contents')
                 ->join('packages', 'packages.package_type_id', '=', 'package_contents.package_type_id')
@@ -76,6 +76,28 @@ class SuperAdminController extends Controller
         }
     }
 
+    // Delivery status donut chart
+    $deliveryStatusCounts = DB::table('deliveries')
+        ->select('status', DB::raw('COUNT(*) as count'))
+        ->groupBy('status')
+        ->pluck('count', 'status');
+
+    // Delivery tracking table
+    $deliveryData = DB::table('deliveries')
+        ->join('schools', 'deliveries.school_id', '=', 'schools.school_id')
+        ->join('package_types', 'deliveries.package_id', '=', 'package_types.id')
+        ->select(
+            'deliveries.id',
+            'schools.school_name as school',
+            'package_types.package_code as package',
+            'deliveries.status',
+            'deliveries.delivery_date',
+            'deliveries.arrival_date',
+            'deliveries.remarks'
+        )
+        ->orderBy('delivery_date', 'desc')
+        ->get();
+
     return view('superadmin.dashboard', compact(
         'chartType',
         'nameTotals',
@@ -87,8 +109,26 @@ class SuperAdminController extends Controller
         'schools',
         'projectPackages',
         'projectChartData',
-        'projectView'
+        'projectView',
+        'deliveryStatusCounts',
+        'deliveryData'
     ));
+}
+public function downloadChartReport(Request $request)
+{
+    $chartType = $request->input('chart_type', 'item_type');
+
+    if ($chartType === 'item_type') {
+        $nameTotals = Inventory::select('item_name', DB::raw('SUM(quantity) as total_quantity'))
+            ->groupBy('item_name')
+            ->orderBy('item_name')
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.chart-item-type', compact('nameTotals'));
+        return $pdf->download('item_type_distribution.pdf');
+    }
+
+    // You can extend for 'package' or 'project' types too
 }
 
     public function manageUsers(Request $request)

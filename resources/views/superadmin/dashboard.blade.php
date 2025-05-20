@@ -142,6 +142,12 @@
         });
     </script>
 @endif
+@if ($chartType === 'item_type')
+    <form action="{{ route('superadmin.chart.pdf') }}" method="GET" target="_blank" style="text-align: center; margin-top: 20px;">
+        <input type="hidden" name="chart_type" value="item_type">
+        <button type="submit">📄 Download PDF Report</button>
+    </form>
+@endif
 
 @if ($chartType === 'package' && $selectedPackageId && count($packageChartData))
     <div style="width: 500px; margin: auto;">
@@ -172,6 +178,73 @@
             }
         });
     </script>
+@endif
+@if ($chartType === 'project' && $projectView === 'packages' && $deliveryStatusCounts->count())
+    <h2 style="text-align:center; margin-top: 60px;">Delivery Status Overview</h2>
+    <div style="width: 500px; margin: auto;">
+        <canvas id="deliveryStatusChart"></canvas>
+    </div>
+    <script>
+        const ctxStatus = document.getElementById('deliveryStatusChart').getContext('2d');
+        new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: @json($deliveryStatusCounts->keys()),
+                datasets: [{
+                    label: 'Delivery Status',
+                    data: @json($deliveryStatusCounts->values()),
+                    backgroundColor: [
+                        'rgba(255, 205, 86, 0.6)', // Pending
+                        'rgba(54, 162, 235, 0.6)', // In Transit
+                        'rgba(75, 192, 192, 0.6)'  // Delivered
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: { display: true, text: 'Deliveries by Status' }
+                }
+            }
+        });
+    </script>
+    
+{{-- Delivery Tracking Table --}}
+<h2 style="text-align:center; margin-top: 60px;">Delivery Tracking</h2>
+<table style="margin: auto; border-collapse: collapse; width: 90%;">
+    <thead style="background-color: #f0f0f0;">
+        <tr>
+            <th style="padding: 10px; border: 1px solid #ccc;">School</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Package</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Status</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Delivery Date</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Arrival Date</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Remarks</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($deliveryData as $delivery)
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->school }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->package }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->status }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->delivery_date }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->arrival_date }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->remarks ?? '-' }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">
+                    <a href="{{ route('deliveries.edit', $delivery->id) }}">Edit</a>
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="7" style="padding: 10px; text-align: center;">No deliveries recorded.</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
 @endif
 
 </body>
