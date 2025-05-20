@@ -2,7 +2,7 @@
  <div x-data="{ open: true }" class="flex">
         <aside
             :class="open ? 'w-[250px]' : 'w-20'"
-            class="h-[950px] absolute top-[80px] left-0 bg-[#033372] text-white font-['Poppins'] transition-all duration-300">
+            class="h-[950px] absolute top-[80px] left-0 bg-[#033372] text-white font-['Poppins'] transition-all duration-300 overflow-y-auto">
 
     <!-- Sidebar Toggle Button (aligned vertically with menu items) -->
 <button @click="open = !open"
@@ -178,7 +178,8 @@
            hover:bg-white hover:text-[#033372] hover:rounded-xl
            {{ request()->routeIs('deliveries.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
 
-        <i class="fa-solid fa-box text-xl w-7 h-7"></i>
+       <i class="fa-solid fa-truck text-xl w-7 h-7"></i>
+
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">Deliveries</span>
             <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Deliveries</span>
@@ -197,7 +198,7 @@
            hover:bg-white hover:text-[#033372] hover:rounded-xl
            {{ request()->routeIs('projects.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
 
-        <i class="fa-solid fa-box text-xl w-7 h-7"></i>
+      <i class="fa-solid fa-clipboard-list text-xl w-7 h-7"></i>
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">Projects</span>
             <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Projects</span>

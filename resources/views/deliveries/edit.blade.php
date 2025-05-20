@@ -1,6 +1,16 @@
 <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-xl shadow-xl w-full max-w-lg p-6 relative animate-fade-in-up">
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">✏️ Edit Delivery</h3>
+
+    
+
+        <h2 class="text-xl text-[#033372] font-semibold mb-4">Edit Deliveries</h2>
+
+       <!-- Close Button -->
+        <button onclick="closeModal('editModal')"
+             class="absolute top-3 right-3 text-gray-400 text-2xl hover:text-[#4A90E2] transition">
+        &times;
+        </button>
+
 
         <form method="POST" id="editDeliveryForm">
             @csrf
@@ -35,12 +45,13 @@
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
-                <textarea id="edit_remarks" name="remarks" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2"></textarea>
+                <textarea id="edit_remarks" name="remarks" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 resize-none"></textarea>
             </div>
 
             <div class="flex justify-end space-x-2">
                 <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Cancel</button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Update</button>
+                <button type="submit" class="text-white px-4 py-2 rounded-md transition" style="background-color: #4A90E2;" onmouseover="this.style.backgroundColor='#3a78c2'" onmouseout="this.style.backgroundColor='#4A90E2'"> 
+                    Update
             </div>
         </form>
     </div>

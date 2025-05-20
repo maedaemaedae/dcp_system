@@ -82,7 +82,7 @@
   
 </head>
 
-<body class="bg-gray-100 font-sans">
+<body class="bg-white-100">
 <div class="flex h-screen relative bg-white">
 
      <!-- Side Bar -->
@@ -149,7 +149,8 @@
                     @forelse ($package->contents as $content)
                         <li>
                             <span class="font-medium text-gray-800">{{ $content->inventory->item_name }}</span>
-                            <span class="text-gray-500">– Qty: {{ $content->quantity }}</span>
+                            <span class="inline-block bg-blue-100 text-blue-700 font-semibold text-xs px-2 py-1 rounded-full">
+                               Qty: {{ $content->quantity }}</span>
                         </li>
                     @empty
                         <li class="text-gray-400 italic">No contents listed</li>
@@ -177,35 +178,60 @@
 
 
     <script>
-        const addModal = document.getElementById('addModal');
-        const openAddBtn = document.getElementById('openAddModalBtn');
-        const closeAddBtn = document.getElementById('closeAddModalBtn');
+    const addModal = document.getElementById('addModal');
+    const openAddBtn = document.getElementById('openAddModalBtn');
+    const closeAddBtn = document.getElementById('closeAddModalBtn');
 
-        openAddBtn.addEventListener('click', () => {
-            addModal.classList.remove('hidden');
-            addModal.classList.add('flex');
-        });
+    openAddBtn.addEventListener('click', () => {
+        addModal.classList.remove('hidden');
+        addModal.classList.add('flex');
+    });
 
-        closeAddBtn.addEventListener('click', () => {
-            addModal.classList.add('hidden');
-            addModal.classList.remove('flex');
-        });
+    closeAddBtn.addEventListener('click', () => {
+        closeAddModal();
+    });
 
-        function openEditModal(id) {
-            const modal = document.getElementById(`editModal-${id}`);
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
+    function openAddModal() {
+    const modal = document.getElementById('addModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex', 'animate-fade-in-up');
+}
 
-        function closeEditModal(id) {
-            const modal = document.getElementById(`editModal-${id}`);
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-    </script>
+    function closeAddModal() {
+    const modal = document.getElementById('addModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex', 'animate-fade-in-up');
+}
 
+    function openEditModal(id) {
+        const modal = document.getElementById(`editModal-${id}`);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
 
+    function closeEditModal(id) {
+        const modal = document.getElementById(`editModal-${id}`);
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+</script>\
 
+<style>
+@keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-out-down {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
+}
+.animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out forwards;
+}
+.animate-fade-out-down {
+    animation: fade-out-down 0.4s ease-in forwards;
+}
+</style>
 
-        </body>
+    </body>
 </html>

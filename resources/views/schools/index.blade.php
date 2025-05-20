@@ -113,8 +113,9 @@
 
 </head>
 
-<body class="bg-gray-100 font-sans">
-<div class="flex h-screen relative bg-white ">
+<body class="bg-white-100">
+<div class="flex h-screen relative bg-white">
+  <div class="max-h-screen overflow-auto">
 
     <!-- Side Bar -->
     @include('layouts.sidebar')

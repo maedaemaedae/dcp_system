@@ -4,8 +4,8 @@
         <!-- Close Button -->
         <button type="button"
                 onclick="closeEditModal({{ $ro->ro_id }})"
-                class="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-2xl transition-colors duration-200">
-            &times;
+                 class="absolute top-3 right-3 text-gray-400 text-2xl hover:text-[#4A90E2] transition">
+        &times;
         </button>
 
         <!-- Modal Title -->

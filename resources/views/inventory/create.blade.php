@@ -25,9 +25,9 @@
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                     Save
                 </button>
-                <a href="{{ route('inventory.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-                    Cancel
-                </a>
+                <button id="closeAddModalBtn" onclick="closeAddModal()" class="absolute top-2 right-2 text-gray-500 text-xl hover:text-black">&times;</button>
+
+
             </div>
         </form>
     </div>

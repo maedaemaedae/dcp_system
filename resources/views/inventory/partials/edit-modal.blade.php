@@ -4,9 +4,9 @@
 
         <!-- Close Button -->
         <button onclick="closeEditModal('{{ $item->item_id }}')"
-            class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out text-2xl font-bold">
-            &times;
-        </button>
+           class="absolute top-3 right-3 text-gray-400 text-2xl hover:text-[#4A90E2] transition">
+      &times;
+    </button>
 
         <!-- Modal Header -->
         <h2 class="text-2xl font-semibold text-[#033372] mb-6">Edit Inventory Item</h2>

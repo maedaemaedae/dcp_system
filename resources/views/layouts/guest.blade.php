@@ -14,7 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-poppins text-gray-900 antialiased bg-gray-100">
+    <body class="min-h-screen font-poppins text-gray-900 antialiased bg-gray-100 overflow-y-auto">
 
         <div class="flex items-center justify-center min-h-screen">
             <div class="w-[799px] shadow-lg overflow-hidden">    

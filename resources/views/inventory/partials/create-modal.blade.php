@@ -4,9 +4,9 @@
         
         <!-- Close Button -->
         <button id="closeAddModalBtn"
-            class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out text-2xl font-bold">
-            &times;
-        </button>
+           class="absolute top-3 right-3 text-gray-400 text-2xl hover:text-[#4A90E2] transition">
+      &times;
+    </button>
 
         <!-- Modal Header -->
         <h2 class="text-2xl font-semibold text-[#033372] mb-6">Add Inventory Item</h2>
@@ -39,7 +39,11 @@
             </div>
 
             <!-- Submit Button -->
-            <div class="text-right">
+           <div class="flex justify-end gap-2 pt-2">
+                <button type="button" onclick="closeAddModal()"
+                    class="inline-flex items-center px-5 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium rounded-md transition">
+                    Cancel
+                </button>
                 <button type="submit"
                     class="inline-flex items-center gap-2 bg-[#4A90E2] hover:bg-[#3a78c2] text-white font-medium px-6 py-2 rounded-md transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"

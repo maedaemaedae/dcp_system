@@ -13,7 +13,7 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with(['packages.packageType', 'schools'])->get();
+       $projects = Project::with(['packages.packageType', 'schools'])->paginate(4); // Adjust per-page count as needed
         $packageTypes = \App\Models\PackageType::all();
         $divisions = \App\Models\DivisionOffice::all();
         $packages = \App\Models\Package::whereNull('project_id')->get();

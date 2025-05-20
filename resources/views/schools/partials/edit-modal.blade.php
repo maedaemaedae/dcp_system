@@ -1,10 +1,10 @@
 <!-- Edit School Modal -->
 <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
-    <div class="bg-white p-6 rounded-2xl w-full max-w-2xl relative">
+    <div class="bg-white p-6 rounded-2xl w-full max-w-2xl relative animate-fade-in-up">
 
-        <button onclick="closeModal('editModal')" class="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-2xl transition-colors duration-200">
-            &times;
-        </button>
+        <button onclick="closeModal('editModal')" class="absolute top-3 right-3 text-gray-400 text-2xl hover:text-[#4A90E2] transition">
+      &times;
+    </button>
 
         <h2 class="text-xl text-[#033372] font-semibold mb-4">Edit School</h2>
 

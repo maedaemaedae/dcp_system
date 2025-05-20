@@ -122,12 +122,12 @@
     <!-- Main Content -->
     <div :class="open ? 'ml-[300px]' : 'ml-20'" class="transition-all duration-300 pt-24 p-8 relative">
     <h2 class="text-[45px] font-bold text-gray-800 mb-6 border-b border-gray-300 pb-2 tracking-wide">
-        📦 Deliveries
+        🚚 Deliveries
         </h2>
 
-        <div class="overflow-x-auto bg-white rounded-lg shadow-md border border-gray-200">
-  <table class="min-w-full text-sm text-gray-700">
-    <thead class="bg-gray-50 uppercase text-gray-500 text-xs font-semibold tracking-wide">
+<div class="w-full overflow-x-auto bg-white rounded-2xl shadow border">
+        <table class="min-w-full text-sm divide-y divide-gray-200">
+            <thead class="bg-[#4A90E2] text-white">
       <tr>
         <th class="px-6 py-3 whitespace-nowrap">School</th>
         <th class="px-6 py-3 whitespace-nowrap">Package</th>
@@ -138,6 +138,7 @@
         <th class="px-6 py-3 whitespace-nowrap text-center">Action</th>
       </tr>
     </thead>
+    
     <tbody>
       @foreach ($deliveries as $delivery)
       <tr class="border-t border-gray-200 hover:bg-gray-50 transition-colors duration-150">
@@ -174,10 +175,9 @@
 
 <button
     onclick='openDeliveryEditModal({!! $deliveryJson !!})'
-    class="inline-block text-blue-600 hover:text-blue-800 font-semibold transition"
->
-    Edit
-</button>
+    class="px-4 py-1.5 rounded-full bg-[#4A90E2] text-white hover:bg-[#357ABD] transition shadow-sm text-sm font-medium">
+                                Edit
+                            </button>
 
         </td>
       </tr>
