@@ -2,7 +2,7 @@
     <div class="max-w-3xl mx-auto py-6">
         <h2 class="text-2xl font-bold mb-4">Update Delivery (Supplier)</h2>
 
-        <form method="POST" action="{{ route('supplier.deliveries.update', $delivery->id) }}" class="bg-white p-6 rounded shadow">
+        <form method="POST" action="{{ route('supplier.deliveries.update', $delivery->id) }}" enctype="multipart/form-data" class="bg-white p-6 rounded shadow">
             @csrf
             @method('PUT')
 
@@ -28,6 +28,11 @@
             <div class="mb-4">
                 <label class="block mb-1 font-medium">Remarks:</label>
                 <textarea name="remarks" rows="3" class="w-full border rounded p-2">{{ $delivery->remarks }}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block mb-1 font-medium">Upload Proof of Delivery (PDF/JPG/PNG):</label>
+                <input type="file" name="proof" required class="w-full border rounded p-2">
             </div>
 
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded">

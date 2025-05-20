@@ -23,12 +23,18 @@ class DeliveryController extends Controller
     
     public function update(Request $request, Delivery $delivery)
     {
+
         $validated = $request->validate([
             'status' => 'required|string',
             'delivery_date' => 'nullable|date',
             'arrival_date' => 'nullable|date',
             'remarks' => 'nullable|string',
+            'proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240', // Require proof file
         ]);
+
+        $path = $request->file('proof')->store('public/proofs');
+        $delivery->proof_path = $path;
+        $delivery->save();
 
         $delivery->update($validated);
 

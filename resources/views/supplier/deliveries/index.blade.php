@@ -18,6 +18,7 @@
                         <th class="px-4 py-2">Delivery Date</th>
                         <th class="px-4 py-2">Arrival Date</th>
                         <th class="px-4 py-2">Remarks</th>
+                        <th class="px-4 py-2">Proof</th>
                         <th class="px-4 py-2">Action</th>
                     </tr>
                 </thead>
@@ -38,6 +39,13 @@
                             <td class="px-4 py-2">{{ $delivery->delivery_date }}</td>
                             <td class="px-4 py-2">{{ $delivery->arrival_date }}</td>
                             <td class="px-4 py-2">{{ $delivery->remarks }}</td>
+                            <td class="px-4 py-2">
+                                @if($delivery->proof_path)
+                                    <a href="{{ Storage::url($delivery->proof_path) }}" target="_blank" class="text-blue-600 underline">View</a>
+                                @else
+                                    N/A
+                                @endif
+                            </td>
                             <td class="px-4 py-2">
                             <a href="{{ route('supplier.deliveries.edit', $delivery->id) }}" class="text-blue-600 hover:underline">Edit</a>
                             </td>

@@ -8,7 +8,7 @@ class Delivery extends Model
 {
     protected $fillable = [
         'project_id', 'school_id', 'package_id',
-        'status', 'delivery_date', 'arrival_date', 'remarks'
+        'status', 'delivery_date', 'arrival_date', 'remarks', 'proof_path',
     ];
 
     public function project()
