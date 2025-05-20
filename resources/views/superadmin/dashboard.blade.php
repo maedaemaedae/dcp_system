@@ -178,7 +178,20 @@
             }
         });
     </script>
+    <form action="{{ route('superadmin.chart.pdf') }}" method="GET" target="_blank" style="text-align: center; margin-top: 20px;">
+    <input type="hidden" name="chart_type" value="{{ $chartType }}">
+    @if ($chartType === 'package')
+        <input type="hidden" name="package_type_id" value="{{ $selectedPackageId }}">
+    @endif
+    @if ($chartType === 'project')
+        <input type="hidden" name="project_id" value="{{ $selectedProjectId }}">
+        <input type="hidden" name="project_view" value="{{ $projectView }}">
+    @endif
+    <button type="submit">📄 Download PDF Report</button>
+</form>
+
 @endif
+
 @if ($chartType === 'project' && $projectView === 'packages' && $deliveryStatusCounts->count())
     <h2 style="text-align:center; margin-top: 60px;">Delivery Status Overview</h2>
     <div style="width: 500px; margin: auto;">
@@ -226,23 +239,31 @@
         </tr>
     </thead>
     <tbody>
-        @forelse ($deliveryData as $delivery)
-            <tr>
-                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->school }}</td>
-                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->package }}</td>
-                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->status }}</td>
-                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->delivery_date }}</td>
-                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->arrival_date }}</td>
-                <td style="padding: 10px; border: 1px solid #ccc;">{{ $delivery->remarks ?? '-' }}</td>
-                <td style="padding: 10px; border: 1px solid #ccc;">
-                    <a href="{{ route('deliveries.edit', $delivery->id) }}">Edit</a>
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="7" style="padding: 10px; text-align: center;">No deliveries recorded.</td>
-            </tr>
-        @endforelse
+        @forelse ($deliveries as $delivery)
+             <tr class="border-t">
+                            <td class="px-4 py-2">{{ $delivery->school->school_name }}</td>
+                            <td class="px-4 py-2">
+                                @if ($delivery->project && $delivery->project->packages->count())
+                                    @foreach ($delivery->project->packages as $pkg)
+                                        <div>{{ $pkg->packageType->package_code ?? 'Unnamed Package' }}</div>
+                                    @endforeach
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                            <td class="px-4 py-2">{{ $delivery->status }}</td>
+                            <td class="px-4 py-2">{{ $delivery->delivery_date ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $delivery->arrival_date ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $delivery->remarks ?? '-' }}</td>
+                            <td class="px-4 py-2">
+                                <a href="{{ route('deliveries.edit', $delivery->id) }}" class="text-blue-500 hover:underline">Edit</a>
+                            </td>
+                        </tr>
+            @empty
+                <tr>
+                    <td colspan="7" style="padding: 10px; text-align: center;">No deliveries recorded.</td>
+                </tr>
+            @endforelse
     </tbody>
 </table>
 @endif

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -11,6 +12,7 @@ use App\Models\Package;
 use App\Models\PackageType;
 use App\Models\DivisionOffice;
 use App\Models\Inventory;
+use App\Models\Delivery;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -97,6 +99,7 @@ class SuperAdminController extends Controller
         )
         ->orderBy('delivery_date', 'desc')
         ->get();
+    $deliveries = Delivery::with(['school', 'package.packageType'])->get();
 
     return view('superadmin.dashboard', compact(
         'chartType',
@@ -111,24 +114,91 @@ class SuperAdminController extends Controller
         'projectChartData',
         'projectView',
         'deliveryStatusCounts',
-        'deliveryData'
+        'deliveryData',
+        'deliveries',
     ));
 }
 public function downloadChartReport(Request $request)
 {
-    $chartType = $request->input('chart_type', 'item_type');
+    $chartType = $request->input('chart_type');
+    $selectedPackageId = $request->input('package_type_id');
+    $selectedProjectId = $request->input('project_id');
+    $projectView = $request->input('project_view');
 
     if ($chartType === 'item_type') {
         $nameTotals = Inventory::select('item_name', DB::raw('SUM(quantity) as total_quantity'))
-            ->groupBy('item_name')
-            ->orderBy('item_name')
-            ->get();
+            ->groupBy('item_name')->get();
 
-        $pdf = Pdf::loadView('pdf.chart-item-type', compact('nameTotals'));
-        return $pdf->download('item_type_distribution.pdf');
+        $csv = "Item Name,Total Quantity\n";
+        foreach ($nameTotals as $item) {
+            $csv .= "{$item->item_name},{$item->total_quantity}\n";
+        }
+
+        return Response::make($csv, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="Item_Type_Distribution.csv"',
+        ]);
     }
 
-    // You can extend for 'package' or 'project' types too
+    if ($chartType === 'package' && $selectedPackageId) {
+        $packageChartData = DB::table('package_contents')
+            ->join('inventory', 'package_contents.item_id', '=', 'inventory.item_id')
+            ->where('package_contents.package_type_id', $selectedPackageId)
+            ->select('inventory.item_name', DB::raw('SUM(package_contents.quantity) as total_quantity'))
+            ->groupBy('inventory.item_name')->get();
+
+        $csv = "Item Name,Total Quantity\n";
+        foreach ($packageChartData as $item) {
+            $csv .= "{$item->item_name},{$item->total_quantity}\n";
+        }
+
+        return Response::make($csv, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="Package_Distribution.csv"',
+        ]);
+    }
+
+    if ($chartType === 'project' && $selectedProjectId) {
+        if ($projectView === 'schools') {
+            $schools = DB::table('project_school_assignments')
+                ->join('schools', 'project_school_assignments.school_id', '=', 'schools.school_id')
+                ->where('project_id', $selectedProjectId)
+                ->select('schools.school_id', 'schools.school_name')->get();
+
+            $csv = "School ID,School Name\n";
+            foreach ($schools as $school) {
+                $csv .= "{$school->school_id},{$school->school_name}\n";
+            }
+
+            return Response::make($csv, 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="Project_Schools.csv"',
+            ]);
+        }
+
+        if ($projectView === 'packages') {
+            $projectChartData = DB::table('package_contents')
+                ->join('packages', 'packages.package_type_id', '=', 'package_contents.package_type_id')
+                ->join('package_types', 'package_types.id', '=', 'packages.package_type_id')
+                ->join('inventory', 'package_contents.item_id', '=', 'inventory.item_id')
+                ->where('packages.project_id', $selectedProjectId)
+                ->select('package_types.package_code', 'inventory.item_name', DB::raw('SUM(package_contents.quantity) as total_quantity'))
+                ->groupBy('package_types.package_code', 'inventory.item_name')
+                ->get();
+
+            $csv = "Package Code,Item Name,Total Quantity\n";
+            foreach ($projectChartData as $item) {
+                $csv .= "{$item->package_code},{$item->item_name},{$item->total_quantity}\n";
+            }
+
+            return Response::make($csv, 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="Project_Packages.csv"',
+            ]);
+        }
+    }
+
+    return redirect()->back()->with('error', 'Invalid report request.');
 }
 
     public function manageUsers(Request $request)
