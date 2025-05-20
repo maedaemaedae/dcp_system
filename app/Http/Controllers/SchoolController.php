@@ -17,8 +17,24 @@ class SchoolController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('school_name', 'LIKE', "%{$search}%")
-                  ->orWhere('school_id', 'LIKE', "%{$search}%")
-                  ->orWhere('school_address', 'LIKE', "%{$search}%");
+                ->orWhere('school_id', 'LIKE', "%{$search}%")
+                ->orWhere('school_address', 'LIKE', "%{$search}%")
+                ->orWhere('school_head', 'LIKE', "%{$search}%")
+                ->orWhere('level', 'LIKE', "%{$search}%")
+                ->orWhereHas('division', function ($sub) use ($search) {
+                    $sub->where('division_name', 'LIKE', "%{$search}%");
+                })
+                ->orWhereHas('municipality', function ($sub) use ($search) {
+                    $sub->where('municipality_name', 'LIKE', "%{$search}%");
+                })
+                ->orWhereHas('internet', function ($sub) use ($search) {
+                    $sub->where('isp', 'LIKE', "%{$search}%")
+                        ->orWhere('type_of_isp', 'LIKE', "%{$search}%")
+                        ->orWhere('fund_source', 'LIKE', "%{$search}%");
+                })
+                ->orWhereHas('electricity', function ($sub) use ($search) {
+                    $sub->where('electricity_source', 'LIKE', "%{$search}%");
+                });
             });
         }
 
