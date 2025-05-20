@@ -28,7 +28,7 @@
                         <th class="px-4 py-2">Package</th>
                         <th class="px-4 py-2">Status</th>
                         <th class="px-4 py-2">Delivery Date</th>
-                        <th class="px-4 py-2">Arrival Date</th>
+                        <th class="px-4 py-2">Date Delivered</th>
                         <th class="px-4 py-2">Remarks</th>
                         <th class="px-4 py-2">Proof</th>
                         <th class="px-4 py-2">Action</th>
