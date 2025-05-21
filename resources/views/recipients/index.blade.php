@@ -1,177 +1,162 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            School Management
+            Recipients Overview
         </h2>
     </x-slot>
 
-    <div class="p-6">
-        <div class="mb-4">
-            <button onclick="openCreateModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                + Add School
+    <div class="p-6 space-y-12">
+
+        <!-- ✅ Add Dropdown -->
+        <div class="relative mb-4">
+            <button onclick="toggleAddDropdown()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                + Add
             </button>
+            <div id="addDropdown" class="absolute z-10 mt-2 bg-white shadow-md rounded hidden w-48">
+                <button onclick="openModal('createSchoolModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add School</button>
+                <button onclick="openModal('createDivisionModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add Division</button>
+            </div>
         </div>
 
-        <form method="GET" action="{{ route('recipients.index') }}" class="mb-4 flex items-center gap-2">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by ID, Name, or Address..." class="w-full md:w-1/3 border rounded px-3 py-2">
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                Search
-            </button>
-        </form>
-
-        <div class="overflow-x-auto bg-white shadow-md rounded">
-            <table class="min-w-full divide-y divide-gray-200 text-sm">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-4 py-2 text-left">School ID</th>
-                        <th class="px-4 py-2 text-left">School Name</th>
-                        <th class="px-4 py-2 text-left">Address</th>
-                        <th class="px-4 py-2 text-left">School Head</th>
-                        <th class="px-4 py-2 text-left">Level</th>
-                        <th class="px-4 py-2 text-left">Division</th>
-                        <th class="px-4 py-2 text-left">Municipality</th>
-                        <th class="px-4 py-2 text-left">Internet</th>
-                        <th class="px-4 py-2 text-left">ISP</th>
-                        <th class="px-4 py-2 text-left">Electricity</th>
-                        <th class="px-4 py-2 text-left">Created By</th>
-                        <th class="px-4 py-2 text-left">Created Date</th>
-                        <th class="px-4 py-2 text-left">Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody class="divide-y divide-gray-100">
-                    @forelse ($schools as $school)
+        {{-- ✅ School Info Table --}}
+        <div class="bg-white shadow rounded p-4">
+            <h3 class="text-lg font-bold mb-4">School Info</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-left border border-gray-200">
+                    <thead class="bg-gray-100">
                         <tr>
-                            <td class="px-4 py-2">{{ $school->school_id }}</td>
-                            <td class="px-4 py-2">{{ $school->school_name }}</td>
-                            <td class="px-4 py-2">{{ $school->school_address }}</td>
-                            <td class="px-4 py-2">{{ $school->school_head }}</td>
-                            <td class="px-4 py-2">{{ $school->level }}</td>
-                            <td class="px-4 py-2">{{ $school->division->division_name ?? '—' }}</td>
-                            <td class="px-4 py-2">{{ $school->municipality->municipality_name ?? '—' }}</td>
-                            <td>
-                                @if($school->internet)
-                                    {{ $school->internet->connected_to_internet ? 'Yes' : 'No' }}
-                                @else
-                                    N/A
-                                @endif
-                            </td>
-                            <td>
-                                {{ $school->internet->isp ?? 'N/A' }}
-                            </td>
-                            <td>
-                                {{ $school->electricity->electricity_source ?? 'N/A' }}
-                            </td>
-                            <td class="px-4 py-2">{{ $school->created_by }}</td>
-                            <td class="px-4 py-2">{{ $school->created_date }}</td>
-                            <td class="px-4 py-2">
-                                <div class="flex space-x-2">
-                                    @php
-                                        $schoolJson = json_encode([
-                                            "school_id" => $school->school_id,
-                                            "school_name" => $school->school_name,
-                                            "school_address" => $school->school_address,
-                                            "school_head" => $school->school_head,
-                                            "level" => $school->level,
-                                            "division" => [
-                                                "division_id" => $school->division->division_id ?? null
-                                            ],
-                                            "municipality" => [
-                                                "municipality_id" => $school->municipality->municipality_id ?? null
-                                            ]
-                                        ]);
-                                    @endphp
-
-                                    <button 
-                                        data-school='{{ $schoolJson }}'
-                                        onclick="handleEditClick(this)"
-                                        class="bg-yellow-500 text-white px-3 py-1 rounded text-xs hover:bg-yellow-600">
-                                        Edit
-                                    </button>
-
-                                    <form action="{{ route('schools.destroy', $school->school_id) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button onclick="return confirm('Are you sure?')"
-                                            class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+                            <th class="px-4 py-2">School ID</th>
+                            <th class="px-4 py-2">Name</th>
+                            <th class="px-4 py-2">Address</th>
+                            <th class="px-4 py-2">Internet?</th>
+                            <th class="px-4 py-2">ISP</th>
+                            <th class="px-4 py-2">Electricity</th>
+                            <th class="px-4 py-2">Division</th>
+                            <th class="px-4 py-2">Actions</th>
                         </tr>
-                    @empty
+                    </thead>
+                    <tbody>
+                        @foreach($schools as $school)
+                            <tr class="border-t">
+                                <td class="px-4 py-2">{{ $school->school_id }}</td>
+                                <td class="px-4 py-2">{{ $school->school_name }}</td>
+                                <td class="px-4 py-2">{{ $school->school_address }}</td>
+                                <td class="px-4 py-2">{!! $school->has_internet ? '✅' : '❌' !!}</td>
+                                <td class="px-4 py-2">{{ $school->internet_provider }}</td>
+                                <td class="px-4 py-2">{{ $school->electricity_provider }}</td>
+                                <td class="px-4 py-2">{{ $school->division->division_name ?? 'N/A' }}</td>
+                                <td class="px-4 py-2 flex gap-2">
+                                    <button onclick='openEditSchoolModal(@json($school))' class="text-blue-600 hover:underline">Edit</button>
+                                    <button onclick='openDeleteModal("school", {{ $school->school_id }})' class="text-red-600 hover:underline">Delete</button>
+                                </td>
+
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {{-- ✅ Division Info Table --}}
+        <div class="bg-white shadow rounded p-4">
+            <h3 class="text-lg font-bold mb-4">Division Info</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-left border border-gray-200">
+                    <thead class="bg-gray-100">
                         <tr>
-                            <td colspan="10" class="text-center text-gray-500 py-4">
-                                No schools found.
-                            </td>
+                            <th class="px-4 py-2">Division ID</th>
+                            <th class="px-4 py-2">Division Name</th>
+                            <th class="px-4 py-2">Regional Office</th>
+                            <th class="px-4 py-2">Actions</th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach($divisions as $division)
+                            <tr class="border-t">
+                                <td class="px-4 py-2">{{ $division->division_id }}</td>
+                                <td class="px-4 py-2">{{ $division->division_name }}</td>
+                                <td class="px-4 py-2">{{ $division->regionalOffice->ro_office ?? 'N/A' }}</td>
+                                <td class="px-4 py-2 flex gap-2">
+                                    <button onclick='openEditDivisionModal(@json($division))' class="text-blue-600 hover:underline">Edit</button>
+                                    <button onclick='openDeleteModal("division", {{ $division->division_id }})' class="text-red-600 hover:underline">Delete</button>
+                                </td>                            
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- Include Create Modal -->
-    @include('recipients.partials.create-modal')
+    {{-- ✅ Modal Includes --}}
+    @include('recipients.partials.create-school-modal')
+    @include('recipients.partials.edit-school-modal')
+    @include('recipients.partials.create-division-office-modal')
+    @include('recipients.partials.edit-division-office-modal')
 
-    <!-- Include Edit Modal -->
-    @include('recipients.partials.edit-modal')
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden justify-center items-center">
+        <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6 relative">
+            <h2 class="text-lg font-bold mb-4 text-center">Confirm Deletion</h2>
+            <p class="mb-4 text-center text-gray-700">Are you sure you want to delete this record?</p>
 
+            <form id="deleteForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('deleteModal')" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
+                </div>
+            </form>
+
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onclick="closeModal('deleteModal')">&times;</button>
+        </div>
+    </div>
+
+    {{-- ✅ JavaScript --}}
     <script>
-        function openCreateModal() {
-            document.getElementById('createModal').classList.remove('hidden');
-        }
-
-        function handleEditClick(button) {
-            const school = JSON.parse(button.getAttribute('data-school'));
-            openEditModal(school);
-        }
-
-        function openEditModal(school) {
-            document.getElementById('editModal').classList.remove('hidden');
-            const form = document.getElementById('editSchoolForm');
-            form.action = `/schools/${school.school_id}`;
-
-            document.getElementById('edit_school_id').value = school.school_id ?? '';
-            document.getElementById('edit_school_name').value = school.school_name ?? '';
-            document.getElementById('edit_school_address').value = school.school_address ?? '';
-            document.getElementById('edit_school_head').value = school.school_head ?? '';
-            document.getElementById('edit_level').value = school.level ?? '';
-            document.getElementById('edit_division_id').value = school.division?.division_id ?? '';
-            document.getElementById('edit_connected_to_internet').value = school.internet?.connected_to_internet ?? '';
-            document.getElementById('edit_isp').value = school.internet?.isp ?? '';
-            document.getElementById('edit_type_of_isp').value = school.internet?.type_of_isp ?? '';
-            document.getElementById('edit_fund_source').value = school.internet?.fund_source ?? '';
-            document.getElementById('edit_electricity_source').value = school.electricity?.electricity_source ?? '';
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).classList.add('flex');
         }
 
         function closeModal(id) {
+            document.getElementById(id).classList.remove('flex');
             document.getElementById(id).classList.add('hidden');
         }
+
+        function toggleAddDropdown() {
+            document.getElementById('addDropdown').classList.toggle('hidden');
+        }
+
+        function closeAddDropdown() {
+            document.getElementById('addDropdown').classList.add('hidden');
+        }
+
+        function openEditSchoolModal(school) {
+            document.getElementById('editSchoolId').value = school.school_id;
+            document.getElementById('editSchoolName').value = school.school_name;
+            document.getElementById('editSchoolAddress').value = school.school_address;
+            document.getElementById('editDivisionId').value = school.division_id;
+            document.getElementById('editHasInternet').value = school.has_internet;
+            document.getElementById('editInternetProvider').value = school.internet_provider;
+            document.getElementById('editElectricityProvider').value = school.electricity_provider;
+            document.getElementById('editSchoolForm').action = `/recipients/school/${school.school_id}`;
+            openModal('editSchoolModal');
+        }
+
+        function openEditDivisionModal(division) {
+            document.getElementById('editDivisionId').value = division.division_id;
+            document.getElementById('editDivisionName').value = division.division_name;
+            document.getElementById('editRegionalOfficeId').value = division.regional_office_id;
+            document.getElementById('editDivisionForm').action = `/recipients/division/${division.division_id}`;
+            openModal('editDivisionModal');
+        }
+
+        function openDeleteModal(type, id) {
+            const form = document.getElementById('deleteForm');
+            form.action = `/recipients/${type}/${id}`;
+            openModal('deleteModal');
+        }
     </script>
-  @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const toast = document.createElement('div');
-                let message = "{{ session('success') }}";
-
-                if (message.includes('Added')) {
-                    message = '✔ ' + message;
-                } else if (message.includes('Updated')) {
-                    message = '\u270F\uFE0F ' + message;
-                } else if (message.includes('Removed')) {
-                    message = '🗑 ' + message;
-                }
-
-                toast.innerText = message;
-                toast.className = "fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white py-4 px-8 rounded-lg shadow-lg z-50 text-center text-lg font-semibold";
-                document.body.appendChild(toast);
-
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
-            });
-        </script>
-    @endif
 </x-app-layout>

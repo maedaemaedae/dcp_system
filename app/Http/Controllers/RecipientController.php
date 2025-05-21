@@ -2,112 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\School;
-use App\Models\DivisionOffice;
 use Illuminate\Http\Request;
+use App\Models\School;
+use App\Models\RegionalOffice;
+use App\Models\DivisionOffice;
+use App\Imports\SchoolsImport;
+use App\Imports\DivisionsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RecipientController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = School::with(['division','internet', 'electricity']);
+        $schools = School::with('division')->get();
+        $divisions = DivisionOffice::with('regionalOffice')->get();
+        $regionalOffices = RegionalOffice::all(); // add this
 
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('school_name', 'LIKE', "%{$search}%")
-                  ->orWhere('school_id', 'LIKE', "%{$search}%")
-                  ->orWhere('school_address', 'LIKE', "%{$search}%")
-                  ->orWhere('school_head', 'LIKE', "%{$search}%")
-                  ->orWhere('level', 'LIKE', "%{$search}%")
-                  ->orWhereHas('division', function ($sub) use ($search) {
-                      $sub->where('division_name', 'LIKE', "%{$search}%");
-                  })
-                  ->orWhereHas('internet', function ($sub) use ($search) {
-                      $sub->where('isp', 'LIKE', "%{$search}%")
-                          ->orWhere('type_of_isp', 'LIKE', "%{$search}%")
-                          ->orWhere('fund_source', 'LIKE', "%{$search}%");
-                  })
-                  ->orWhereHas('electricity', function ($sub) use ($search) {
-                      $sub->where('electricity_source', 'LIKE', "%{$search}%");
-                  });
-            });
+        return view('recipients.index', compact('schools', 'divisions', 'regionalOffices'));
+    }
+
+    // SCHOOL CRUD
+    public function storeSchool(Request $request)
+    {
+        $validated = $request->validate([
+            'school_id' => 'required|numeric|unique:schools,school_id',
+            'division_id' => 'required|exists:division_offices,division_id',
+            'school_name' => 'required|string',
+            'school_address' => 'required|string',
+            'has_internet' => 'required|boolean',
+            'internet_provider' => 'nullable|string',
+            'electricity_provider' => 'nullable|string'
+        ]);
+
+        School::create($validated);
+        return back()->with('success', 'School added successfully.');
+    }
+
+    public function updateSchool(Request $request, $id)
+    {
+        $school = School::findOrFail($id);
+
+        $validated = $request->validate([
+            'division_id' => 'required|exists:division_offices,division_id',
+            'school_name' => 'required|string',
+            'school_address' => 'required|string',
+            'has_internet' => 'required|boolean',
+            'internet_provider' => 'nullable|string',
+            'electricity_provider' => 'nullable|string'
+        ]);
+
+        $school->update($validated);
+        return back()->with('success', 'School updated successfully.');
+    }
+
+    public function destroySchool($id)
+    {
+        School::destroy($id);
+        return back()->with('success', 'School deleted successfully.');
+    }
+
+    // DIVISION CRUD
+    public function storeDivision(Request $request)
+    {
+        $validated = $request->validate([
+            'division_id' => 'required|numeric|unique:division_offices,division_id',
+            'division_name' => 'required|string',
+            'regional_office_id' => 'required|exists:regional_offices,ro_id'
+        ]);
+
+        DivisionOffice::create($validated);
+        return back()->with('success', 'Division added successfully.');
+    }
+
+    public function updateDivision(Request $request, $id)
+    {
+        $division = DivisionOffice::findOrFail($id);
+
+        $validated = $request->validate([
+            'division_name' => 'required|string',
+            'regional_office_id' => 'required|exists:regional_offices,ro_id'
+        ]);
+
+        $division->update($validated);
+        return back()->with('success', 'Division updated successfully.');
+    }
+
+    public function destroyDivision($id)
+    {
+        DivisionOffice::destroy($id);
+        return back()->with('success', 'Division deleted successfully.');
+    }
+
+    // CSV Upload
+    public function uploadCsv(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt',
+            'type' => 'required|in:school,division'
+        ]);
+
+        if ($request->type === 'school') {
+            Excel::import(new SchoolsImport, $request->file('csv_file'));
+        } else {
+            Excel::import(new DivisionsImport, $request->file('csv_file'));
         }
 
-        $schools = $query->get();
-        $divisions = DivisionOffice::all();
-
-        return view('recipients.index', compact('schools', 'divisions'));
-    }
-
-    public function create()
-    {
-        $divisions = DivisionOffice::all();
-        return view('recipients.create', compact('divisions'));
-    }
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'school_id' => 'required|integer|unique:schools,school_id',
-            'school_name' => 'required|string|max:255',
-            'school_address' => 'required|string|max:255',
-            'school_head' => 'required|string|max:255',
-            'level' => 'required|string|max:50',
-            'division_id' => 'required|exists:division_offices,division_id',
-        ]);
-
-        $school = School::create(array_merge($validated, [
-            'created_by' => auth()->user()->name ?? 'Seeder',
-            'created_date' => now(),
-        ]));
-
-        $school->internet()->create($request->only([
-            'connected_to_internet', 'isp', 'type_of_isp', 'fund_source'
-        ]));
-
-        $school->electricity()->create($request->only([
-            'electricity_source'
-        ]));
-
-        return redirect()->route('recipients.index')->with('success', 'School added successfully.');
-    }
-
-    public function update(Request $request, $school_id)
-    {
-        $validated = $request->validate([
-            'school_name' => 'required|string|max:255',
-            'school_address' => 'required|string|max:255',
-            'school_head' => 'required|string|max:255',
-            'level' => 'required|string|max:50',
-            'division_id' => 'required|exists:division_offices,division_id',
-        ]);
-
-        $school = School::findOrFail($school_id);
-
-        $school->update(array_merge($validated, [
-            'modified_by' => auth()->user()->name ?? 'Seeder',
-            'modified_date' => now(),
-        ]));
-
-        $school->internet()->updateOrCreate(
-            ['school_id' => $school->school_id],
-            $request->only(['connected_to_internet', 'isp', 'type_of_isp', 'fund_source'])
-        );
-
-        $school->electricity()->updateOrCreate(
-            ['school_id' => $school->school_id],
-            $request->only(['electricity_source'])
-        );
-
-        return redirect()->route('recipient.index')->with('success', 'School updated successfully.');
-    }
-
-    public function destroy($school_id)
-    {
-        $school = School::findOrFail($school_id);
-        $school->delete();
-
-        return redirect()->route('recipients.index')->with('success', 'School deleted successfully.');
+        return back()->with('success', 'CSV uploaded successfully.');
     }
 }

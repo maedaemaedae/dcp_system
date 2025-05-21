@@ -46,38 +46,42 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// ✅ Group all Super Admin routes under auth + super_admin
+// ✅ Super Admin routes
 Route::middleware(['auth', 'superadmin'])->group(function () {
+
+    // Dashboard and user roles
     Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
     Route::get('/superadmin/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.users');
     Route::post('/superadmin/users/{user}/role', [SuperAdminController::class, 'updateUserRole'])->name('superadmin.users.updateRole');
-    Route::resource('recipients',RecipientController::class);
+
+    // Regional/Division/Inventory/Projects
     Route::resource('regional-offices', RegionalOfficeController::class);
     Route::resource('division-offices', DivisionOfficeController::class);
     Route::resource('inventory', InventoryController::class);
     Route::resource('package-types', PackageTypeController::class);
+    Route::resource('projects', ProjectController::class);
     Route::get('/projects/create', [SuperAdminController::class, 'createProjectForm'])->name('superadmin.projects.create');
     Route::post('/projects/store', [SuperAdminController::class, 'storeProject'])->name('superadmin.projects.store');
     Route::get('/superadmin/projects', [SuperAdminController::class, 'indexProjects'])->name('superadmin.projects.index');
-    Route::resource('projects', ProjectController::class);
+
+    // Deliveries
     Route::resource('deliveries', DeliveryController::class)->only(['index', 'edit', 'update']);
-});
 
-// ✅ Group all Admin routes under auth + admin
-Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/users', [App\Http\Controllers\AdminController::class, 'manageUsers'])->name('admin.users');
-    Route::get('/users/{id}/edit', [App\Http\Controllers\AdminController::class, 'editUser'])->name('admin.users.edit');
-    Route::post('/users/{id}', [App\Http\Controllers\AdminController::class, 'updateUser'])->name('admin.users.update');
-});
+    // Recipients Module
+    Route::get('/recipients', [RecipientController::class, 'index'])->name('recipients.index');
+    
+    // ✅ Custom School/Division CRUD
+    Route::post('/recipients/school', [RecipientController::class, 'storeSchool'])->name('recipients.school.store');
+    Route::put('/recipients/school/{id}', [RecipientController::class, 'updateSchool'])->name('recipients.school.update');
+    Route::delete('/recipients/school/{id}', [RecipientController::class, 'destroySchool'])->name('recipients.school.destroy');
 
+    Route::post('/recipients/division', [RecipientController::class, 'storeDivision'])->name('recipients.division.store');
+    Route::put('/recipients/division/{id}', [RecipientController::class, 'updateDivision'])->name('recipients.division.update');
+    Route::delete('/recipients/division/{id}', [RecipientController::class, 'destroyDivision'])->name('recipients.division.destroy');
+    
 
-
-Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('regional-offices', [RegionalOfficeController::class, 'index'])->name('admin.regional-offices.index');
-    Route::get('division-offices', [DivisionOfficeController::class, 'index'])->name('admin.division-offices.index');
-    Route::get('schools', [SchoolController::class, 'index'])->name('admin.schools.index');
-    Route::get('inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
-    Route::get('package-types', [PackageTypeController::class, 'index'])->name('admin.package-types.index');
+    // ✅ CSV Upload
+    Route::post('/recipients/upload-csv', [RecipientController::class, 'uploadCsv'])->name('recipients.uploadCsv');
 });
 
 Route::middleware(['auth', 'role:supplier'])
