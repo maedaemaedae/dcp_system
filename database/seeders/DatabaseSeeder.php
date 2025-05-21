@@ -22,11 +22,5 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'role_id' => 1, // safe now because roles table is seeded
         ]);
-
-        // 3. Continue with other seeders
-        $this->call([
-            RegionMimaropaSeeder::class,
-            MunicipalitySeeder::class,
-        ]);
     }
 }
