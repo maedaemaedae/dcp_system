@@ -25,26 +25,29 @@
                 <table class="min-w-full text-sm text-left border border-gray-200">
                     <thead class="bg-gray-100">
                         <tr>
+                            <th class="px-4 py-2">Region</th>
+                            <th class="px-4 py-2">Division</th>
                             <th class="px-4 py-2">School ID</th>
                             <th class="px-4 py-2">Name</th>
                             <th class="px-4 py-2">Address</th>
                             <th class="px-4 py-2">Internet?</th>
                             <th class="px-4 py-2">ISP</th>
                             <th class="px-4 py-2">Electricity</th>
-                            <th class="px-4 py-2">Division</th>
+                            
                             <th class="px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($schools as $school)
                             <tr class="border-t">
+                                <td class="px-4 py-2">{{ $school->division->regionalOffice->ro_office ?? 'N/A' }}</td>
+                                <td class="px-4 py-2">{{ $school->division->division_name ?? 'N/A' }}</td>
                                 <td class="px-4 py-2">{{ $school->school_id }}</td>
                                 <td class="px-4 py-2">{{ $school->school_name }}</td>
                                 <td class="px-4 py-2">{{ $school->school_address }}</td>
                                 <td class="px-4 py-2">{!! $school->has_internet ? '✅' : '❌' !!}</td>
                                 <td class="px-4 py-2">{{ $school->internet_provider }}</td>
                                 <td class="px-4 py-2">{{ $school->electricity_provider }}</td>
-                                <td class="px-4 py-2">{{ $school->division->division_name ?? 'N/A' }}</td>
                                 <td class="px-4 py-2 flex gap-2">
                                     <button onclick='openEditSchoolModal(@json($school))' class="text-blue-600 hover:underline">Edit</button>
                                     <button onclick='openDeleteModal("school", {{ $school->school_id }})' class="text-red-600 hover:underline">Delete</button>
