@@ -5,7 +5,7 @@
 
         <h2 class="text-xl font-semibold mb-4">Add New School</h2>
 
-        <form method="POST" action="{{ route('schools.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('recipients.store') }}" class="space-y-4">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -24,14 +24,7 @@
                     <label class="block font-medium">School Head</label>
                     <input type="text" name="school_head" class="w-full border rounded px-3 py-2" required>
                 </div>
-                <div>
-                    <label class="block font-medium">Level</label>
-                    <select name="level" class="w-full border rounded px-3 py-2" required>
-                        <option value="">Select Level</option>
-                        <option value="Elementary">Elementary</option>
-                        <option value="High School">High School</option>
-                    </select>
-                </div>
+       
                 <!-- Division Dropdown -->
                 <div>
                     <label class="block font-medium">Division</label>
@@ -42,16 +35,7 @@
                         @endforeach
                     </select>
                 </div>
-
-                <div>
-                    <label class="block font-medium">Municipality</label>
-                    <select name="municipality_id" class="w-full border rounded px-3 py-2" required>
-                        <option value="">Select Municipality</option>
-                        @foreach ($municipalities as $municipality)
-                            <option value="{{ $municipality->municipality_id }}">{{ $municipality->municipality_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                
             </div>
                             <h3 class="text-lg font-semibold mt-4">Internet Information</h3>
 

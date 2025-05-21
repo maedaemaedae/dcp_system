@@ -12,7 +12,7 @@
             </button>
         </div>
 
-        <form method="GET" action="{{ route('schools.index') }}" class="mb-4 flex items-center gap-2">
+        <form method="GET" action="{{ route('recipients.index') }}" class="mb-4 flex items-center gap-2">
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by ID, Name, or Address..." class="w-full md:w-1/3 border rounded px-3 py-2">
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                 Search
@@ -113,10 +113,10 @@
     </div>
 
     <!-- Include Create Modal -->
-    @include('schools.partials.create-modal')
+    @include('recipients.partials.create-modal')
 
     <!-- Include Edit Modal -->
-    @include('schools.partials.edit-modal')
+    @include('recipients.partials.edit-modal')
 
     <script>
         function openCreateModal() {
@@ -139,7 +139,6 @@
             document.getElementById('edit_school_head').value = school.school_head ?? '';
             document.getElementById('edit_level').value = school.level ?? '';
             document.getElementById('edit_division_id').value = school.division?.division_id ?? '';
-            document.getElementById('edit_municipality_id').value = school.municipality?.municipality_id ?? '';
             document.getElementById('edit_connected_to_internet').value = school.internet?.connected_to_internet ?? '';
             document.getElementById('edit_isp').value = school.internet?.isp ?? '';
             document.getElementById('edit_type_of_isp').value = school.internet?.type_of_isp ?? '';

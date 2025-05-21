@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdminController;
-use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\RecipientController;
 use App\Http\Controllers\RegionalOfficeController;
 use App\Http\Controllers\DivisionOfficeController;
 use App\Http\Controllers\InventoryController;
@@ -51,7 +51,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
     Route::get('/superadmin/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.users');
     Route::post('/superadmin/users/{user}/role', [SuperAdminController::class, 'updateUserRole'])->name('superadmin.users.updateRole');
-    Route::resource('schools',SchoolController::class);
+    Route::resource('recipients',RecipientController::class);
     Route::resource('regional-offices', RegionalOfficeController::class);
     Route::resource('division-offices', DivisionOfficeController::class);
     Route::resource('inventory', InventoryController::class);

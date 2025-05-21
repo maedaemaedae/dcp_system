@@ -44,8 +44,8 @@
                             {{ __('Division Offices') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('schools.index')" :active="request()->routeIs('schools.*')">
-                            {{ __('School List') }}
+                        <x-nav-link :href="route('recipients.index')" ...>
+                            {{ __('Recipients') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.*')">

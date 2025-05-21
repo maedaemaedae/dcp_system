@@ -6,7 +6,7 @@ use App\Models\School;
 use App\Models\DivisionOffice;
 use Illuminate\Http\Request;
 
-class SchoolController extends Controller
+class RecipientController extends Controller
 {
     public function index(Request $request)
     {
@@ -37,13 +37,13 @@ class SchoolController extends Controller
         $schools = $query->get();
         $divisions = DivisionOffice::all();
 
-        return view('schools.index', compact('schools', 'divisions'));
+        return view('recipients.index', compact('schools', 'divisions'));
     }
 
     public function create()
     {
         $divisions = DivisionOffice::all();
-        return view('schools.create', compact('divisions'));
+        return view('recipients.create', compact('divisions'));
     }
 
     public function store(Request $request)
@@ -70,7 +70,7 @@ class SchoolController extends Controller
             'electricity_source'
         ]));
 
-        return redirect()->route('schools.index')->with('success', 'School added successfully.');
+        return redirect()->route('recipients.index')->with('success', 'School added successfully.');
     }
 
     public function update(Request $request, $school_id)
@@ -100,7 +100,7 @@ class SchoolController extends Controller
             $request->only(['electricity_source'])
         );
 
-        return redirect()->route('schools.index')->with('success', 'School updated successfully.');
+        return redirect()->route('recipient.index')->with('success', 'School updated successfully.');
     }
 
     public function destroy($school_id)
@@ -108,6 +108,6 @@ class SchoolController extends Controller
         $school = School::findOrFail($school_id);
         $school->delete();
 
-        return redirect()->route('schools.index')->with('success', 'School deleted successfully.');
+        return redirect()->route('recipients.index')->with('success', 'School deleted successfully.');
     }
 }
