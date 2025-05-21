@@ -14,7 +14,7 @@ class RegionAndDivisionSeeder extends Seeder
         DB::table('regional_offices')->insert([
             [
                 'ro_id' => 1,
-                'ro_office' => 'Region IV-B MIMAROPA',
+                'ro_office' => 'MIMAROPA Region',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

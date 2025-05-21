@@ -21,7 +21,7 @@
                 <select name="regional_office_id" class="w-full border rounded px-3 py-2" required>
                     <option value="">Select Regional Office</option>
                     @foreach($regionalOffices as $ro)
-                        <option value="{{ $ro->ro_id }}">{{ $ro->ro_name }}</option>
+                        <option value="{{ $ro->ro_id }}">{{ $ro->ro_office }}</option>
                     @endforeach
                 </select>
             </div>

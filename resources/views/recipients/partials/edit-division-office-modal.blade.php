@@ -7,8 +7,6 @@
             @csrf
             @method('PUT')
 
-            <input type="hidden" name="division_id" id="editDivisionId">
-
             <div class="mb-3">
                 <label class="block text-sm font-medium">Division Name</label>
                 <input type="text" name="division_name" id="editDivisionName" class="w-full border rounded px-3 py-2">
@@ -17,9 +15,8 @@
             <div class="mb-3">
                 <label class="block text-sm font-medium">Regional Office</label>
                 <select name="regional_office_id" id="editRegionalOfficeId" class="w-full border rounded px-3 py-2">
-                    <option value="">Select Regional Office</option>
                     @foreach($regionalOffices as $ro)
-                        <option value="{{ $ro->ro_id }}">{{ $ro->ro_name }}</option>
+                        <option value="{{ $ro->ro_id }}">{{ $ro->ro_office }}</option>
                     @endforeach
                 </select>
             </div>
@@ -30,7 +27,6 @@
             </div>
         </form>
 
-        <!-- Close Button -->
         <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onclick="closeModal('editDivisionModal')">&times;</button>
     </div>
 </div>

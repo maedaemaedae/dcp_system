@@ -13,11 +13,12 @@ class School extends Model
     protected $fillable = [
         'school_id',
         'division_id',
-        'municipality_id',
         'school_name',
         'school_address',
+        'has_internet',
+        'internet_provider',   // ✅ must be included
+        'electricity_provider',
         'school_head',
-        'level',
         'created_by',
         'created_date',
         'modified_by',
@@ -27,11 +28,6 @@ class School extends Model
     public function division()
     {
         return $this->belongsTo(DivisionOffice::class, 'division_id');
-    }
-
-    public function municipality()
-    {
-        return $this->belongsTo(Municipality::class, 'municipality_id');
     }
 
     public function projects()
