@@ -4,52 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Models\School;
 use App\Models\DivisionOffice;
-use App\Models\Municipality;
 use Illuminate\Http\Request;
 
 class SchoolController extends Controller
 {
     public function index(Request $request)
     {
-        $query = School::with(['division', 'municipality', 'internet', 'electricity']);
+        $query = School::with(['division','internet', 'electricity']);
 
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('school_name', 'LIKE', "%{$search}%")
-                ->orWhere('school_id', 'LIKE', "%{$search}%")
-                ->orWhere('school_address', 'LIKE', "%{$search}%")
-                ->orWhere('school_head', 'LIKE', "%{$search}%")
-                ->orWhere('level', 'LIKE', "%{$search}%")
-                ->orWhereHas('division', function ($sub) use ($search) {
-                    $sub->where('division_name', 'LIKE', "%{$search}%");
-                })
-                ->orWhereHas('municipality', function ($sub) use ($search) {
-                    $sub->where('municipality_name', 'LIKE', "%{$search}%");
-                })
-                ->orWhereHas('internet', function ($sub) use ($search) {
-                    $sub->where('isp', 'LIKE', "%{$search}%")
-                        ->orWhere('type_of_isp', 'LIKE', "%{$search}%")
-                        ->orWhere('fund_source', 'LIKE', "%{$search}%");
-                })
-                ->orWhereHas('electricity', function ($sub) use ($search) {
-                    $sub->where('electricity_source', 'LIKE', "%{$search}%");
-                });
+                  ->orWhere('school_id', 'LIKE', "%{$search}%")
+                  ->orWhere('school_address', 'LIKE', "%{$search}%")
+                  ->orWhere('school_head', 'LIKE', "%{$search}%")
+                  ->orWhere('level', 'LIKE', "%{$search}%")
+                  ->orWhereHas('division', function ($sub) use ($search) {
+                      $sub->where('division_name', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('internet', function ($sub) use ($search) {
+                      $sub->where('isp', 'LIKE', "%{$search}%")
+                          ->orWhere('type_of_isp', 'LIKE', "%{$search}%")
+                          ->orWhere('fund_source', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('electricity', function ($sub) use ($search) {
+                      $sub->where('electricity_source', 'LIKE', "%{$search}%");
+                  });
             });
         }
 
         $schools = $query->get();
         $divisions = DivisionOffice::all();
-        $municipalities = Municipality::all();
 
-        return view('schools.index', compact('schools', 'divisions', 'municipalities'));
+        return view('schools.index', compact('schools', 'divisions'));
     }
 
     public function create()
     {
         $divisions = DivisionOffice::all();
-        $municipalities = Municipality::all();
-        return view('schools.create', compact('divisions', 'municipalities'));
+        return view('schools.create', compact('divisions'));
     }
 
     public function store(Request $request)
@@ -61,7 +55,6 @@ class SchoolController extends Controller
             'school_head' => 'required|string|max:255',
             'level' => 'required|string|max:50',
             'division_id' => 'required|exists:division_offices,division_id',
-            'municipality_id' => 'required|exists:municipalities,municipality_id',
         ]);
 
         $school = School::create(array_merge($validated, [
@@ -69,19 +62,16 @@ class SchoolController extends Controller
             'created_date' => now(),
         ]));
 
-        // Save Internet info
         $school->internet()->create($request->only([
             'connected_to_internet', 'isp', 'type_of_isp', 'fund_source'
         ]));
 
-        // Save Electricity info
         $school->electricity()->create($request->only([
             'electricity_source'
         ]));
 
         return redirect()->route('schools.index')->with('success', 'School added successfully.');
     }
-
 
     public function update(Request $request, $school_id)
     {
@@ -91,7 +81,6 @@ class SchoolController extends Controller
             'school_head' => 'required|string|max:255',
             'level' => 'required|string|max:50',
             'division_id' => 'required|exists:division_offices,division_id',
-            'municipality_id' => 'required|exists:municipalities,municipality_id',
         ]);
 
         $school = School::findOrFail($school_id);
@@ -101,13 +90,11 @@ class SchoolController extends Controller
             'modified_date' => now(),
         ]));
 
-        // Update or create Internet info
         $school->internet()->updateOrCreate(
             ['school_id' => $school->school_id],
             $request->only(['connected_to_internet', 'isp', 'type_of_isp', 'fund_source'])
         );
 
-        // Update or create Electricity info
         $school->electricity()->updateOrCreate(
             ['school_id' => $school->school_id],
             $request->only(['electricity_source'])
@@ -115,7 +102,6 @@ class SchoolController extends Controller
 
         return redirect()->route('schools.index')->with('success', 'School updated successfully.');
     }
-
 
     public function destroy($school_id)
     {
