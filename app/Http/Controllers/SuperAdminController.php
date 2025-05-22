@@ -19,6 +19,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class SuperAdminController extends Controller
 {
+
+    
     public function dashboard(Request $request)
   {$chartType = $request->input('chart_type', 'item_type');
     $selectedPackageId = $request->input('package_type_id');
@@ -117,6 +119,7 @@ class SuperAdminController extends Controller
         'deliveryData',
         'deliveries',
     ));
+
 }
 public function downloadChartReport(Request $request)
 {

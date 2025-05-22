@@ -46,15 +46,23 @@
             <!-- Form -->
             <form method="POST" action="{{ route('login') }}" class="flex flex-col">
                 @csrf
-                <!-- Email Address -->
+               <!-- Email Address -->
                 <div class="w-80 left-[33px] top-[220px] absolute inline-flex flex-col justify-start items-start">
-                    <label class="w-80 text-gray-600 text-xs font-medium font-['Poppins'] leading-normal">Email Address</label>
-                    <div class="relative w-full">
-                        <input type="email" id="email" name="email" required
-                            class="w-80 h-10 px-10 py-1 bg-white rounded-md border border-gray-300 text-gray-600 text-[10px] font-medium font-['Poppins'] leading-normal focus:ring-1 focus:ring-[#2D9CDB] focus:border-[#2D9CDB]"
-                            placeholder="Enter your email" />
+                <label class="w-80 text-gray-600 text-xs font-medium font-['Poppins'] leading-normal">Email</label>
+                <div class="relative w-full">
+                    <div class="absolute left-3 top-2.5 text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5.121 17.804A8.966 8.966 0 0112 15c2.403 0 4.58.947 6.121 2.804M15 11a3 3 0 10-6 0 3 3 0 006 0z" />
+                        </svg>
                     </div>
+                    <input type="text" id="email" name="email" required
+                        class="w-80 h-10 px-10 py-1 bg-white rounded-md border border-gray-300 text-gray-600 text-[10px] font-medium font-['Poppins'] leading-normal focus:ring-1 focus:ring-[#2D9CDB] focus:border-[#2D9CDB]"
+                        placeholder="Enter your email" />
+ 
                 </div>
+            </div>
 
                 <!-- Password Input -->
                 <div class="w-80 left-[33px] top-[315px] absolute inline-flex flex-col justify-start items-start">

@@ -1,59 +1,182 @@
-<x-app-layout>
-    <x-slot name="header">
-        @if (session('success'))
-            <div class="mb-4 text-green-600 font-medium">{{ session('success') }}</div>
-        @endif
+<!DOCTYPE html>
+<html lang="en" x-data="{ open: true }">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        @if (session('error'))
-            <div class="mb-4 text-red-600 font-medium">{{ session('error') }}</div>
-        @endif
 
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Manage Users</h2>
-    </x-slot>
+<style>
+    @keyframes fade-in-up {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
 
-    <div class="p-6">
-        <form method="GET" action="{{ route('superadmin.users') }}" class="mb-4">
-            <div class="flex items-center space-x-2">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name, email, or role"
-                    class="px-3 py-2 border rounded w-1/3">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Search</button>
-            </div>
-        </form>
+    @keyframes fade-out-down {
+        0% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 0; transform: translateY(20px); }
+    }
 
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead>
-                <tr>
-                    <th class="px-4 py-2 text-left">Name</th>
-                    <th class="px-4 py-2 text-left">Email</th>
-                    <th class="px-4 py-2 text-left">Current Role</th>
-                    <th class="px-4 py-2 text-left">Change Role</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                @foreach ($users as $user)
-                    <tr>
-                        <td class="px-4 py-2">{{ $user->name }}</td>
-                        <td class="px-4 py-2">{{ $user->email }}</td>
-                        <td class="px-4 py-2">{{ $user->role->role_name ?? '—' }}</td>
-                        <td class="px-4 py-2">
-                            @if (auth()->id() !== $user->id)
-                                <form method="POST" action="{{ route('superadmin.users.updateRole', $user->id) }}">
-                                    @csrf
-                                    <select name="role_id" class="border rounded px-2 py-1">
-                                        <option value="1" {{ $user->role_id == 1 ? 'selected' : '' }}>Super Admin</option>
-                                        <option value="2" {{ $user->role_id == 2 ? 'selected' : '' }}>Admin</option>
-                                        <option value="3" {{ $user->role_id == 3 ? 'selected' : '' }}>Regional Rep</option>
-                                        <option value="4" {{ $user->role_id == 4 ? 'selected' : '' }}>Division Rep</option>
-                                        <option value="5" {{ $user->role_id == 5 ? 'selected' : '' }}>School Rep</option>
-                                        <option value="6" {{ $user->role_id == 6 ? 'selected' : '' }}>Supplier</option>
-                                    </select>
-                                    <button type="submit" class="ml-2 bg-blue-600 text-white px-3 py-1 rounded">Update</button>
-                                </form>
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    .fade-in {
+        animation: fade-in-up 0.4s ease-out forwards;
+    }
+
+    .fade-out {
+        animation: fade-out-down 0.4s ease-in forwards;
+    }
+</style>
+
+
+<script>
+    function fadeOutAlert(id) {
+        const alertBox = document.getElementById(id);
+        if (alertBox) {
+            alertBox.classList.remove('fade-in');
+            alertBox.classList.add('fade-out');
+            setTimeout(() => alertBox.remove(), 400);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        ['alert-success', 'alert-error'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                setTimeout(() => fadeOutAlert(id), 4000);
+            }
+        });
+    });
+</script>
+
+
+</head>
+
+<body class="bg-white font-['Poppins']" x-data="{ open: true }">
+<div class="flex h-screen">
+
+    <div class="w-[1440px] h-[1024px] relative bg-white overflow-hidden">
+
+          @php
+            $authUser = auth()->user();
+            $isSuperAdmin = $authUser && $authUser->role_id === 1;
+            $isAdmin = $authUser && $authUser->role && $authUser->role->role_name === 'admin';
+        @endphp
+
+<!-- Side Bar -->
+@include('layouts.sidebar')
+<!-- Top Nav Bar -->
+@include('layouts.top-navbar')
+
+       <!-- Main content -->
+        <main :class="open ? 'ml-72' : 'ml-20'" class="transition-all duration-300 pt-24 p-8 relative">
+        <h2 class="text-[45px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide">
+            👥 Manage Users
+            </h2>
+
+<!-- Toast Alert -->
+@if (session('success'))
+    <div id="alert-success"
+        class="fixed bottom-6 left-1/2 transform -translate-x-1/2 fade-in bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg text-sm font-medium z-50 flex items-center space-x-2">
+        <span class="text-lg">✔</span>
+        <span>{{ session('success') }}</span>
+        <button onclick="fadeOutAlert('alert-success')" class="ml-3 text-white hover:text-gray-200 font-bold">
+            &times;
+        </button>
     </div>
-</x-app-layout>
+@endif
+
+@if (session('error'))
+    <div id="alert-error"
+        class="fixed bottom-6 left-1/2 transform -translate-x-1/2 fade-in bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg text-sm font-medium z-50 flex items-center space-x-2">
+        <span class="text-lg">⚠️</span>
+        <span>{{ session('error') }}</span>
+        <button onclick="fadeOutAlert('alert-error')" class="ml-3 text-white hover:text-gray-200 font-bold">
+            &times;
+        </button>
+    </div>
+@endif
+
+            <!-- Search Bar -->
+            <form method="GET" action="{{ route('superadmin.users') }}" class="mb-4">
+                <div class="flex items-center space-x-2">
+                    <div class="relative w-1/3">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name, email, or role"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 pl-10">
+                            
+                        <!-- Search Icon -->
+                        <i class="fa fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                    </div>
+                    <button type="submit" class="bg-[#4A90E2] hover:bg-[#357ABD] text-white px-6 py-2 rounded-full transition-colors duration-200">
+                        Search
+                    </button>
+                </div>
+            </form>
+
+
+
+            <!-- User Management Table -->
+            <div class="overflow-x-auto bg-white rounded-2xl shadow border">
+                <table class="min-w-full text-sm divide-y divide-gray-200">
+                    <thead class="bg-[#4A90E2] text-white">
+            <tr>
+                <th class="px-6 py-3 text-left font-semibold">Name</th>
+                <th class="px-6 py-3 text-left font-semibold">Email</th>
+                <th class="px-6 py-3 text-left font-semibold">Current Role</th>
+                <th class="px-6 py-3 text-center font-semibold">Change Role</th>
+            </tr>
+        </thead>
+       <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+    @foreach ($users as $user)
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <td class="px-6 py-4 text-gray-800 dark:text-gray-100">{{ $user->name }}</td>
+            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ $user->email }}</td>
+            <td class="px-6 py-4 text-gray-700 dark:text-gray-200">
+                <span class="inline-block px-2 py-0.5 rounded-full text-s font-semibold
+                    {{ $user->role->role_name === 'Super Admin' ? 'bg-red-100 text-red-700' :
+                    ($user->role->role_name === 'Admin' ? 'bg-blue-100 text-blue-700' :
+                    ($user->role->role_name === 'Regional Rep' ? 'bg-green-100 text-green-700' :
+                    ($user->role->role_name === 'Division Rep' ? 'bg-yellow-100 text-yellow-700' :
+                    ($user->role->role_name === 'School Rep' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700')))) }}">
+                    {{ $user->role->role_name ?? '—' }}
+                </span>
+            </td>
+           <td class="px-6 py-4">
+            @if ($authUser->id !== $user->id)
+                <form method="POST" action="{{ route('superadmin.users.updateRole', $user->id) }}" class="flex items-center space-x-2 border-[#033372]">
+                    @csrf
+                    <select name="role_id" class="bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A90E2] hover:border-[#4A90E2] transition-all duration-300 shadow-sm hover:shadow-md">
+                        <option value="1" {{ $user->role_id == 1 ? 'selected' : '' }}>Super Admin</option>
+                        <option value="2" {{ $user->role_id == 2 ? 'selected' : '' }}>Admin</option>
+                        <option value="3" {{ $user->role_id == 3 ? 'selected' : '' }}>Regional Rep</option>
+                        <option value="4" {{ $user->role_id == 4 ? 'selected' : '' }}>Division Rep</option>
+                        <option value="5" {{ $user->role_id == 5 ? 'selected' : '' }}>School Rep</option>
+                        <option value="6" {{ $user->role_id == 6 ? 'selected' : '' }}>Supplier</option>
+                    </select>
+
+                                <button type="submit" class="bg-[#4A90E2] hover:bg-[#357ABD] text-white px-6 py-3 rounded-full text-sm font-semibold shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all duration-300 transform hover:scale-105">
+                                Update
+                                    </button>
+
+                                </form>
+                            @else
+                            <span class="text-gray-400 text-sm italic transition-colors duration-300 hover:text-[#4A90E2] flex justify-center items-center w-full">
+                                    You
+                                 </span>
+
+
+                            @endif
+                           </td>
+
+                       </tr>
+                      @endforeach
+                  </tbody>
+
+              </table>
+           </div>
+
+        </div>
+    
+    </body>
+</html>
