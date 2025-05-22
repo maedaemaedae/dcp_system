@@ -123,4 +123,63 @@ class RecipientController extends Controller
 
         return back()->with('success', 'CSV uploaded successfully.');
     }
+
+    // Store STV Recipient
+    public function storeStvRecipient(Request $request)
+    {
+        $validated = $request->validate([
+            'region' => 'required|string|max:255',
+            'division' => 'required|string|max:255',
+            'school_id' => 'required|integer|exists:schools,school_id',
+            'school_name' => 'nullable|string|max:255',
+            'school_address' => 'nullable|string|max:255',
+            'quantity' => 'nullable|integer',
+            'contact_person' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'contact_number' => 'nullable|string|max:50',
+        ]);
+
+        DcpRecipientSchoolStv::create($validated);
+
+        return redirect()->route('recipients.index')->with('success', 'STV recipient added successfully!');
+    }
+
+    // Store L4T Recipient
+    public function storeL4tRecipient(Request $request)
+    {
+        $validated = $request->validate([
+            'region' => 'required|string|max:255',
+            'division' => 'required|string|max:255',
+            'school_id' => 'required|integer|exists:schools,school_id',
+            'school_name' => 'nullable|string|max:255',
+            'school_address' => 'nullable|string|max:255',
+            'quantity' => 'nullable|integer',
+            'contact_person' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'contact_number' => 'nullable|string|max:50',
+        ]);
+
+        DcpRecipientSchoolL4t::create($validated);
+
+        return redirect()->route('recipients.index')->with('success', 'L4T recipient added successfully!');
+    }
+
+    // Store Division Recipient
+    public function storeDivisionRecipient(Request $request)
+    {
+        $validated = $request->validate([
+            'region' => 'nullable|string|max:255',
+            'division_id' => 'required|integer|exists:division_offices,division_id',
+            'quantity' => 'nullable|integer',
+            'office' => 'nullable|string|max:255',
+            'sdo_address' => 'nullable|string|max:255',
+            'contact_person' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'contact_number' => 'nullable|string|max:50',
+        ]);
+
+        DcpRecipientDivisionOffice::create($validated);
+
+        return redirect()->route('recipients.index')->with('success', 'Division recipient added successfully!');
+    }
 }

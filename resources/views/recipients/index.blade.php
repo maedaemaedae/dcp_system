@@ -15,6 +15,9 @@
             <div id="addDropdown" class="absolute z-10 mt-2 bg-white shadow-md rounded hidden w-48">
                 <button onclick="openModal('createSchoolModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add School</button>
                 <button onclick="openModal('createDivisionModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add Division</button>
+                <button onclick="openModal('createStvRecipientModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add DCP Recipient School (STV)</button>
+                <button onclick="openModal('createL4tRecipientModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add DCP Recipient School (L4T)</button>
+                <button onclick="openModal('createDivisionRecipientModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add DCP Recipient Division Office</button>
             </div>
         </div>
 
@@ -194,6 +197,10 @@
     @include('recipients.partials.edit-school-modal')
     @include('recipients.partials.create-division-office-modal')
     @include('recipients.partials.edit-division-office-modal')
+    @include('recipients.partials.create-stv-recipient-modal')
+    @include('recipients.partials.create-l4t-recipient-modal')
+    @include('recipients.partials.create-division-recipient-modal')
+
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden justify-center items-center">
