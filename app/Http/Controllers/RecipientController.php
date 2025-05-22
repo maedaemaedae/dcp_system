@@ -170,7 +170,7 @@ class RecipientController extends Controller
     public function destroyStvRecipient($id)
     {
         DcpRecipientSchoolStv::destroy($id);
-        return redirect()->route('recipients.index')->with('success', 'STV recipient deleted successfully!');
+        return back()->with('success', 'STV recipient deleted successfully.');
     }
 
     // Store L4T Recipient
@@ -218,9 +218,10 @@ class RecipientController extends Controller
     // Destroy L4t Recipient
     public function destroyL4tRecipient($id)
     {
-        DcpRecipientSchoolStv::destroy($id);
-        return redirect()->route('recipients.index')->with('success', 'STV recipient deleted successfully!');
+        DcpRecipientSchoolL4t::destroy($id);
+        return back()->with('success', 'L4T recipient deleted successfully.');
     }
+
 
     // Store Division Recipient
     public function storeDivisionRecipient(Request $request)
@@ -266,6 +267,7 @@ class RecipientController extends Controller
     public function destroyDivisionRecipient($id)
     {
         DcpRecipientDivisionOffice::destroy($id);
-        return redirect()->route('recipients.index')->with('success', 'Division recipient deleted successfully!');
+        return back()->with('success', 'Division recipient deleted successfully.');
     }
+
 }
