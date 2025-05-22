@@ -3,10 +3,15 @@
     <h2 class="text-lg font-bold mb-4">Add DCP Recipient School (STV)</h2>
     <form action="{{ route('recipients.stv.store') }}" method="POST">
       @csrf
-      <label>Region</label>
-      <input type="text" name="region" required class="w-full border rounded px-3 py-2 mb-3">
-      
+     <label>Region</label>
+        <select name="regional_office_id" class="w-full border rounded px-3 py-2" required>
+            <option value="">Select Regional Office</option>
+                @foreach($regionalOffices as $ro)
+                    <option value="{{ $ro->ro_id }}">{{ $ro->ro_office }}</option>
+                @endforeach
+        </select>
       <label>Division</label>
+      
       <input type="text" name="division" required class="w-full border rounded px-3 py-2 mb-3">
       
       <label>School ID</label>
