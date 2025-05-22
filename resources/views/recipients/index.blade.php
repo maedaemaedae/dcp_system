@@ -36,7 +36,6 @@
                             <th class="px-4 py-2">Internet?</th>
                             <th class="px-4 py-2">ISP</th>
                             <th class="px-4 py-2">Electricity</th>
-                            
                             <th class="px-4 py-2">Actions</th>
                         </tr>
                     </thead>
@@ -106,6 +105,7 @@
                                 <th class="px-4 py-2">Contact Person</th>
                                 <th class="px-4 py-2">Position</th>
                                 <th class="px-4 py-2">Contact #</th>
+                                <th class="px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -119,6 +119,10 @@
                                 <td class="px-4 py-2">{{ $r->contact_person }}</td>
                                 <td class="px-4 py-2">{{ $r->position }}</td>
                                 <td class="px-4 py-2">{{ $r->contact_number }}</td>
+                                <td class="px-4 py-2 flex gap-2">
+                                    <button onclick='openEditDivisionModal(@json($division))' class="text-blue-600 hover:underline">Edit</button>
+                                    <button onclick='openDeleteModal("division", {{ $division->division_id }})' class="text-red-600 hover:underline">Delete</button>
+                                </td>  
                             </tr>
                             @endforeach
                         </tbody>
@@ -138,6 +142,7 @@
                                 <th class="px-4 py-2">Contact Person</th>
                                 <th class="px-4 py-2">Position</th>
                                 <th class="px-4 py-2">Contact #</th>
+                                <th class="px-4 py-2">Actions</th>
                             </tr>
                             </thead>
 
@@ -152,11 +157,16 @@
                                     <td class="px-4 py-2">{{ $r->contact_person }}</td>
                                     <td class="px-4 py-2">{{ $r->position }}</td>
                                     <td class="px-4 py-2">{{ $r->contact_number }}</td>
+                                    <td class="px-4 py-2 flex gap-2">
+                                        <button onclick='openEditDivisionModal(@json($division))' class="text-blue-600 hover:underline">Edit</button>
+                                        <button onclick='openDeleteModal("division", {{ $division->division_id }})' class="text-red-600 hover:underline">Delete</button>
+                                    </td> 
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
             </div>
+
             {{-- ✅ Recipient Division Office L4NT --}}
             <div class="bg-white shadow rounded p-4">
                 <h3 class="text-xl font-bold mt-8 mb-2">DCP Recipient Division Office Info</h3>
@@ -171,6 +181,7 @@
                                 <th class="px-4 py-2">Contact Person</th>
                                 <th class="px-4 py-2">Position</th>
                                 <th class="px-4 py-2">Contact #</th>
+                                <th class="px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -184,6 +195,10 @@
                                 <td class="px-4 py-2">{{ $r->contact_person }}</td>
                                 <td class="px-4 py-2">{{ $r->position }}</td>
                                 <td class="px-4 py-2">{{ $r->contact_number }}</td>
+                                <td class="px-4 py-2 flex gap-2">
+                                    <button onclick='openEditDivisionModal(@json($division))' class="text-blue-600 hover:underline">Edit</button>
+                                    <button onclick='openDeleteModal("division", {{ $division->division_id }})' class="text-red-600 hover:underline">Delete</button>
+                                </td> 
                             </tr>
                             @endforeach
                         </tbody>
