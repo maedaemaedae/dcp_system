@@ -144,6 +144,35 @@ class RecipientController extends Controller
         return redirect()->route('recipients.index')->with('success', 'STV recipient added successfully!');
     }
 
+    // Update STV Recipient
+    public function updateStvRecipient(Request $request, $id)
+    {
+        $recipient = DcpRecipientSchoolStv::findOrFail($id);
+
+        $validated = $request->validate([
+            'region' => 'required|string|max:255',
+            'division' => 'required|string|max:255',
+            'school_id' => 'required|integer|exists:schools,school_id',
+            'school_name' => 'nullable|string|max:255',
+            'school_address' => 'nullable|string|max:255',
+            'quantity' => 'nullable|integer',
+            'contact_person' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'contact_number' => 'nullable|string|max:50',
+        ]);
+
+        $recipient->update($validated);
+
+        return redirect()->route('recipients.index')->with('success', 'STV recipient updated successfully!');
+    }
+
+    // Destroy STV Recipient
+    public function destroyStvRecipient($id)
+    {
+        DcpRecipientSchoolStv::destroy($id);
+        return redirect()->route('recipients.index')->with('success', 'STV recipient deleted successfully!');
+    }
+
     // Store L4T Recipient
     public function storeL4tRecipient(Request $request)
     {
@@ -164,6 +193,35 @@ class RecipientController extends Controller
         return redirect()->route('recipients.index')->with('success', 'L4T recipient added successfully!');
     }
 
+    // Update L4T Recipient
+    public function updateL4tRecipient(Request $request, $id)
+    {
+        $recipient = DcpRecipientSchoolL4t::findOrFail($id);
+
+        $validated = $request->validate([
+            'region' => 'required|string|max:255',
+            'division' => 'required|string|max:255',
+            'school_id' => 'required|integer|exists:schools,school_id',
+            'school_name' => 'nullable|string|max:255',
+            'school_address' => 'nullable|string|max:255',
+            'quantity' => 'nullable|integer',
+            'contact_person' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'contact_number' => 'nullable|string|max:50',
+        ]);
+
+        $recipient->update($validated);
+
+        return redirect()->route('recipients.index')->with('success', 'L4T recipient updated successfully!');
+    }
+
+    // Destroy L4t Recipient
+    public function destroyL4tRecipient($id)
+    {
+        DcpRecipientSchoolStv::destroy($id);
+        return redirect()->route('recipients.index')->with('success', 'STV recipient deleted successfully!');
+    }
+
     // Store Division Recipient
     public function storeDivisionRecipient(Request $request)
     {
@@ -181,5 +239,33 @@ class RecipientController extends Controller
         DcpRecipientDivisionOffice::create($validated);
 
         return redirect()->route('recipients.index')->with('success', 'Division recipient added successfully!');
+    }
+
+    // Update Division Recipient
+    public function updateDivisionRecipient(Request $request, $id)
+    {
+        $recipient = DcpRecipientDivisionOffice::findOrFail($id);
+
+        $validated = $request->validate([
+            'region' => 'nullable|string|max:255',
+            'division_id' => 'required|integer|exists:division_offices,division_id',
+            'office' => 'nullable|string|max:255',
+            'sdo_address' => 'nullable|string|max:255',
+            'quantity' => 'nullable|integer',
+            'contact_person' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'contact_number' => 'nullable|string|max:50',
+        ]);
+
+        $recipient->update($validated);
+
+        return redirect()->route('recipients.index')->with('success', 'Division recipient updated successfully!');
+    }
+
+     // Destroy Division Recipient
+    public function destroyDivisionRecipient($id)
+    {
+        DcpRecipientDivisionOffice::destroy($id);
+        return redirect()->route('recipients.index')->with('success', 'Division recipient deleted successfully!');
     }
 }
