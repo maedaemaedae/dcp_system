@@ -8,17 +8,30 @@ use App\Models\RegionalOffice;
 use App\Models\DivisionOffice;
 use App\Imports\SchoolsImport;
 use App\Imports\DivisionsImport;
+use App\Models\DcpRecipientSchoolStv;
+use App\Models\DcpRecipientSchoolL4t;
+use App\Models\DcpRecipientDivisionOffice;
 use Maatwebsite\Excel\Facades\Excel;
 
 class RecipientController extends Controller
 {
     public function index()
     {
-        $schools = School::with('division')->get();
+        $regionalOffices = RegionalOffice::all();
+        $schools = School::with('division.regionalOffice')->get();
         $divisions = DivisionOffice::with('regionalOffice')->get();
-        $regionalOffices = RegionalOffice::all(); // add this
+        $stvRecipients = DcpRecipientSchoolStv::with('school')->get();
+        $l4tRecipients = DcpRecipientSchoolL4t::with('school')->get();
+        $divisionRecipients = DcpRecipientDivisionOffice::with('division')->get();
 
-        return view('recipients.index', compact('schools', 'divisions', 'regionalOffices'));
+        return view('recipients.index', compact(
+            'schools',
+            'divisions',
+            'stvRecipients',
+            'l4tRecipients',
+            'divisionRecipients',
+            'regionalOffices',
+        ));
     }
 
     // SCHOOL CRUD
@@ -32,6 +45,7 @@ class RecipientController extends Controller
             'has_internet' => 'required|boolean',
             'internet_provider' => 'nullable|string',
             'electricity_provider' => 'nullable|string'
+            
         ]);
 
         School::create($validated);

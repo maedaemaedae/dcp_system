@@ -88,6 +88,104 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- ✅ Recipient School STV --}}
+            <div class="bg-white shadow rounded p-4">
+                <h3 class="text-xl font-bold mt-8 mb-2">DCP Recipient School Info (STV)</h3>
+                    <table class="w-full border text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-4 py-2">Region</th>
+                                <th class="px-4 py-2">Division</th>
+                                <th class="px-4 py-2">School ID</th>
+                                <th class="px-4 py-2">School Name</th>
+                                <th class="px-4 py-2">Quantity</th>
+                                <th class="px-4 py-2">Contact Person</th>
+                                <th class="px-4 py-2">Position</th>
+                                <th class="px-4 py-2">Contact #</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($stvRecipients as $r)
+                            <tr class="border-t">
+                                <td class="px-4 py-2">{{ $division->regionalOffice->ro_office ?? 'N/A' }}</td>
+                                <td class="px-4 py-2">{{ $r->division }}</td>
+                                <td class="px-4 py-2">{{ $r->school_id }}</td>
+                                <td class="px-4 py-2">{{ $r->school_name }}</td>
+                                <td class="px-4 py-2">{{ $r->quantity }}</td>
+                                <td class="px-4 py-2">{{ $r->contact_person }}</td>
+                                <td class="px-4 py-2">{{ $r->position }}</td>
+                                <td class="px-4 py-2">{{ $r->contact_number }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+            </div>
+            {{-- ✅ Recipient School L4T --}}
+            <div class="bg-white shadow rounded p-4">
+                <h3 class="text-xl font-bold mt-8 mb-2">DCP Recipient School Info (L4T)</h3>
+                    <table class="w-full border text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-4 py-2">Region</th>
+                                <th class="px-4 py-2">Division</th>
+                                <th class="px-4 py-2">School ID</th>
+                                <th class="px-4 py-2">School Name</th>
+                                <th class="px-4 py-2">Quantity</th>
+                                <th class="px-4 py-2">Contact Person</th>
+                                <th class="px-4 py-2">Position</th>
+                                <th class="px-4 py-2">Contact #</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($l4tRecipients as $r)
+                                <tr class="border-t">
+                                    <td class="px-4 py-2">{{ $division->regionalOffice->ro_office ?? 'N/A' }}</td>
+                                    <td class="px-4 py-2">{{ $r->division }}</td>
+                                    <td class="px-4 py-2">{{ $r->school_id }}</td>
+                                    <td class="px-4 py-2">{{ $r->school_name }}</td>
+                                    <td class="px-4 py-2">{{ $r->quantity }}</td>
+                                    <td class="px-4 py-2">{{ $r->contact_person }}</td>
+                                    <td class="px-4 py-2">{{ $r->position }}</td>
+                                    <td class="px-4 py-2">{{ $r->contact_number }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+            </div>
+            {{-- ✅ Recipient Division Office L4NT --}}
+            <div class="bg-white shadow rounded p-4">
+                <h3 class="text-xl font-bold mt-8 mb-2">DCP Recipient Division Office Info</h3>
+                    <table class="w-full border text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-4 py-2">Region</th>
+                                <th class="px-4 py-2">Division ID</th>
+                                <th class="px-4 py-2">Office</th>
+                                <th class="px-4 py-2">SDO Address</th>
+                                <th class="px-4 py-2">Quantity</th>
+                                <th class="px-4 py-2">Contact Person</th>
+                                <th class="px-4 py-2">Position</th>
+                                <th class="px-4 py-2">Contact #</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($divisionRecipients as $r)
+                            <tr class="border-t">
+                                <td class="px-4 py-2">{{ $division->regionalOffice->ro_office ?? 'N/A' }}</td>
+                                <td class="px-4 py-2">{{ $r->division_id }}</td>
+                                <td class="px-4 py-2">{{ $r->office }}</td>
+                                <td class="px-4 py-2">{{ $r->sdo_address }}</td>
+                                <td class="px-4 py-2">{{ $r->quantity }}</td>
+                                <td class="px-4 py-2">{{ $r->contact_person }}</td>
+                                <td class="px-4 py-2">{{ $r->position }}</td>
+                                <td class="px-4 py-2">{{ $r->contact_number }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+            </div>
         </div>
     </div>
 
