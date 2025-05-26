@@ -3,35 +3,46 @@
     <h2 class="text-lg font-bold mb-4">Add DCP Recipient School (L4T)</h2>
     <form action="{{ route('recipients.l4t.store') }}" method="POST">
       @csrf
+
       <label>Region</label>
-        <select name="regional_office_id" class="w-full border rounded px-3 py-2" required>
-            <option value="">Select Regional Office</option>
-                @foreach($regionalOffices as $ro)
-                    <option value="{{ $ro->ro_id }}">{{ $ro->ro_office }}</option>
-                @endforeach
-        </select>
-        
+      <select name="region_id" class="w-full border rounded px-3 py-2 mb-3" required>
+        <option value="">Select Regional Office</option>
+        @foreach($regionalOffices as $ro)
+          <option value="{{ $ro->ro_id }}">{{ $ro->ro_office }}</option>
+        @endforeach
+      </select>
+
       <label>Division</label>
-      <input type="text" name="division" required class="w-full border rounded px-3 py-2 mb-3">
-      
-      <label>School ID</label>
-      <input type="number" name="school_id" required class="w-full border rounded px-3 py-2 mb-3">
-      
-      <label>School Name</label>
+      <select name="division_id" class="w-full border rounded px-3 py-2 mb-3" required>
+        <option value="">Select Division</option>
+        @foreach($divisions as $division)
+          <option value="{{ $division->division_id }}">{{ $division->division_name }}</option>
+        @endforeach
+      </select>
+
+      <label>School</label>
+      <select name="school_id" class="w-full border rounded px-3 py-2 mb-3" required>
+        <option value="">Select School</option>
+        @foreach($schools as $school)
+          <option value="{{ $school->school_id }}">{{ $school->school_name }}</option>
+        @endforeach
+      </select>
+
+      <label>School Name (Override)</label>
       <input type="text" name="school_name" class="w-full border rounded px-3 py-2 mb-3">
-      
+
       <label>School Address</label>
       <input type="text" name="school_address" class="w-full border rounded px-3 py-2 mb-3">
-      
+
       <label>Quantity</label>
       <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-3">
-      
+
       <label>Contact Person</label>
       <input type="text" name="contact_person" class="w-full border rounded px-3 py-2 mb-3">
-      
+
       <label>Position</label>
       <input type="text" name="position" class="w-full border rounded px-3 py-2 mb-3">
-      
+
       <label>Contact Number</label>
       <input type="text" name="contact_number" class="w-full border rounded px-3 py-2 mb-3">
 

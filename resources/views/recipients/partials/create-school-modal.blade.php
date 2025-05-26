@@ -5,16 +5,17 @@
 
         <form id="createSchoolForm" method="POST" action="{{ route('recipients.school.store') }}">
             @csrf
+
             <div class="mb-3">
-            <label>Region</label>
-                <select name="regional_office_id" class="w-full border rounded px-3 py-2" required>
+                <label class="block text-sm font-medium">Region</label>
+                <select name="regional_office_id" class="w-full border rounded px-3 py-2">
                     <option value="">Select Regional Office</option>
-                        @foreach($regionalOffices as $ro)
-                            <option value="{{ $ro->ro_id }}">{{ $ro->ro_office }}</option>
-                        @endforeach
+                    @foreach($regionalOffices as $ro)
+                        <option value="{{ $ro->ro_id }}">{{ $ro->ro_office }}</option>
+                    @endforeach
                 </select>
             </div>
-            
+
             <div class="mb-3">
                 <label class="block text-sm font-medium">School ID</label>
                 <input type="number" name="school_id" required class="w-full border rounded px-3 py-2">

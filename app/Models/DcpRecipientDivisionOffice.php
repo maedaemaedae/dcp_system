@@ -12,7 +12,7 @@ class DcpRecipientDivisionOffice extends Model
     protected $table = 'dcp_recipient_division_offices';
 
     protected $fillable = [
-        'region',
+        'region_id',
         'division_id',
         'quantity',
         'office',
@@ -21,6 +21,11 @@ class DcpRecipientDivisionOffice extends Model
         'position',
         'contact_number',
     ];
+
+        public function region()
+    {
+        return $this->belongsTo(RegionalOffice::class, 'region_id');
+    }
 
     public function division()
     {

@@ -21,6 +21,21 @@
                 </select>
             </div>
 
+            <div class="mb-3">
+                <label class="block text-sm font-medium">Person In Charge</label>
+                <input type="text" name="person_in_charge" id="editPersonInCharge" class="w-full border rounded px-3 py-2">
+            </div>
+
+            <div class="mb-3">
+                <label class="block text-sm font-medium">Email</label>
+                <input type="email" name="email" id="editEmail" class="w-full border rounded px-3 py-2">
+            </div>
+
+            <div class="mb-3">
+                <label class="block text-sm font-medium">Contact Number</label>
+                <input type="text" name="contact_no" id="editContactNo" class="w-full border rounded px-3 py-2">
+            </div>
+
             <div class="flex justify-end gap-2 mt-4">
                 <button type="button" onclick="closeModal('editDivisionModal')" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
                 <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Update</button>

@@ -9,10 +9,26 @@ return new class extends Migration {
     {
         Schema::create('dcp_recipient_schools_l4t', function (Blueprint $table) {
             $table->id();
-            $table->string('region')->nullable();
-            $table->string('division')->nullable(); 
+
+            // Fix all foreign key references to match actual PKs
+            $table->unsignedBigInteger('region_id')->nullable();
+            $table->foreign('region_id')
+                ->references('ro_id')
+                ->on('regional_offices')
+                ->nullOnDelete();
+
+            $table->unsignedBigInteger('division_id')->nullable();
+            $table->foreign('division_id')
+                ->references('division_id')
+                ->on('division_offices')
+                ->nullOnDelete();
+
             $table->unsignedBigInteger('school_id')->nullable();
-            $table->foreign('school_id')->references('school_id')->on('schools')->onDelete('set null');
+            $table->foreign('school_id')
+                ->references('school_id')
+                ->on('schools')
+                ->nullOnDelete();
+
             $table->string('school_name')->nullable();
             $table->string('school_address')->nullable();
             $table->integer('quantity')->nullable();

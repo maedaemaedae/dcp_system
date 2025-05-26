@@ -6,11 +6,11 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label>Region</label>
-                    <select name="region" class="form-select" required>
-                        @foreach ($regionalOffices as $region)
-                            <option value="{{ $region->ro_office }}">{{ $region->ro_office }}</option>
-                        @endforeach
-                    </select>
+                        <select name="region_id" class="form-select" required>
+                            @foreach ($regionalOffices as $region)
+                                <option value="{{ $region->ro_id }}">{{ $region->ro_office }}</option>
+                            @endforeach
+                        </select>
                 </div>
                 <div>
                     <label>Division</label>

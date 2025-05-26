@@ -12,8 +12,8 @@ class DcpRecipientSchoolStv extends Model
     protected $table = 'dcp_recipient_schools_stv';
 
     protected $fillable = [
-        'region',
-        'division',
+        'region_id',
+        'division_id',
         'school_id',
         'school_name',
         'school_address',
@@ -23,8 +23,19 @@ class DcpRecipientSchoolStv extends Model
         'contact_number',
     ];
 
+    public function region()
+    {
+        return $this->belongsTo(RegionalOffice::class, 'region_id');
+    }
+
+    public function division()
+    {
+        return $this->belongsTo(DivisionOffice::class, 'division_id');
+    }
+
     public function school()
     {
-        return $this->belongsTo(School::class, 'school_id', 'school_id');
+        return $this->belongsTo(School::class, 'school_id');
     }
 }
+
