@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Http\Controllers;
@@ -8,18 +7,28 @@ use Illuminate\Http\Request;
 
 class PackageController extends Controller
 {
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'package_type_id' => 'required|exists:package_types,id',
-            'batch' => 'nullable|string|max:100',
-            'lot' => 'nullable|string|max:100',
-            'description' => 'nullable|string|max:500',
+            'package_code' => 'required|string|max:50|unique:package_types,package_code',
+            'description' => 'nullable|string|max:255',
+            'items' => 'required|array',
+            'items.*.item_name' => 'required|string|max:255',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.description' => 'nullable|string|max:255',
         ]);
 
-        Package::create($validated);
+        $type = \App\Models\PackageType::create([
+            'package_code' => $validated['package_code'],
+            'description' => $validated['description'],
+        ]);
 
-        return back()->with('success', 'Package created successfully.');
+        foreach ($validated['items'] as $item) {
+            $type->contents()->create($item);
+        }
+
+        return back()->with('success', 'Package type created successfully.');
     }
+
 }

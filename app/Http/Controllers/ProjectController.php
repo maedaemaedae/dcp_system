@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\PackageType;
+use App\Models\Package;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -12,8 +13,9 @@ class ProjectController extends Controller
     {
         $projects = Project::with('packages.packageType')->get();
         $packageTypes = PackageType::all();
+        $packages = Package::with(['packageType', 'project'])->get(); // 🔹 this is missing
 
-        return view('projects.index', compact('projects', 'packageTypes'));
+        return view('projects.index', compact('projects', 'packageTypes', 'packages'));
     }
 
     public function store(Request $request)
