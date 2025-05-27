@@ -49,27 +49,30 @@ Route::middleware('auth')->group(function () {
 // ✅ Super Admin routes
 Route::middleware(['auth', 'superadmin'])->group(function () {
 
-    // Dashboard and user roles
+    // Dashboard and user management
     Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
     Route::get('/superadmin/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.users');
     Route::post('/superadmin/users/{user}/role', [SuperAdminController::class, 'updateUserRole'])->name('superadmin.users.updateRole');
 
-    // Regional/Division/Inventory/Projects
+    // ✅ Resource routes
     Route::resource('regional-offices', RegionalOfficeController::class);
     Route::resource('division-offices', DivisionOfficeController::class);
     Route::resource('inventory', InventoryController::class);
     Route::resource('package-types', PackageTypeController::class);
     Route::resource('projects', ProjectController::class);
-    Route::get('/projects/create', [SuperAdminController::class, 'createProjectForm'])->name('superadmin.projects.create');
-    Route::post('/projects/store', [SuperAdminController::class, 'storeProject'])->name('superadmin.projects.store');
-    Route::get('/superadmin/projects', [SuperAdminController::class, 'indexProjects'])->name('superadmin.projects.index');
 
-    // Deliveries
+    // ✅ Package creation (used by package modal)
+    Route::post('/packages', [PackageController::class, 'store'])->name('packages.store');
+
+    // ✅ Deliveries (limited to index/edit/update)
     Route::resource('deliveries', DeliveryController::class)->only(['index', 'edit', 'update']);
 
-    // Recipients Module
+    // ✅ Recipients
     Route::get('/recipients', [RecipientController::class, 'index'])->name('recipients.index');
-    
+    Route::post('/recipients', [RecipientController::class, 'store'])->name('recipients.store');
+    Route::put('/recipients/{id}', [RecipientController::class, 'update'])->name('recipients.update');
+    Route::delete('/recipients/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
+
     // ✅ Custom School/Division CRUD
     Route::post('/recipients/school', [RecipientController::class, 'storeSchool'])->name('recipients.school.store');
     Route::put('/recipients/school/{id}', [RecipientController::class, 'updateSchool'])->name('recipients.school.update');
@@ -78,15 +81,11 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::post('/recipients/division', [RecipientController::class, 'storeDivision'])->name('recipients.division.store');
     Route::put('/recipients/division/{id}', [RecipientController::class, 'updateDivision'])->name('recipients.division.update');
     Route::delete('/recipients/division/{id}', [RecipientController::class, 'destroyDivision'])->name('recipients.division.destroy');
-    
-    // ✅ Updated recipients table
-    Route::post('/recipients', [RecipientController::class, 'store'])->name('recipients.store');
-    Route::put('/recipients/{id}', [RecipientController::class, 'update'])->name('recipients.update');
-    Route::delete('/recipients/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
 
     // ✅ CSV Upload
     Route::post('/recipients/upload-csv', [RecipientController::class, 'uploadCsv'])->name('recipients.uploadCsv');
 });
+
 
 Route::middleware(['auth', 'role:supplier'])
     ->prefix('supplier')

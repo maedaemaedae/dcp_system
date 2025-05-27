@@ -3,140 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Models\Package;
-use App\Models\ProjectSchoolAssignment;
+use App\Models\PackageType;
 use Illuminate\Http\Request;
-use App\Models\Delivery;
-use App\Models\School;
 
 class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with(['packages.packageType', 'schools'])->get();
-        $packageTypes = \App\Models\PackageType::all();
-        $divisions = \App\Models\DivisionOffice::all();
-        $packages = \App\Models\Package::whereNull('project_id')->get();
+        $projects = Project::with('packages.packageType')->get();
+        $packageTypes = PackageType::all();
 
-        return view('projects.index', compact('projects', 'packages', 'packageTypes', 'divisions'));
+        return view('projects.index', compact('projects', 'packageTypes'));
     }
-
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'package_types' => 'required|array',
-            'package_types.*' => 'exists:package_types,id',
-            'school_ids' => 'required|array',
-            'school_ids.*' => 'exists:schools,school_id',
-            'target_delivery_date' => 'required|date',
-            'target_arrival_date' => 'required|date',
+            'target_delivery_date' => 'nullable|date',
+            'target_arrival_date' => 'nullable|date',
         ]);
 
-        // Create the project
-        $project = Project::create([
-            'name' => $validated['name'],
-            'target_delivery_date' => $validated['target_delivery_date'],
-            'target_arrival_date' => $validated['target_arrival_date'],
-            'status' => 'Pending'
-        ]);
+        Project::create($validated);
 
-        foreach ($validated['package_types'] as $typeId) {
-            Package::create([
-                'project_id' => $project->id,
-                'package_type_id' => $typeId,
-            ]);
-}
-
-
-        // Link schools via pivot table
-        $project->schools()->sync($validated['school_ids']);
-
-        // Track used packages per type to avoid duplication
-        $assignedPackages = [];
-
-        // Loop schools and package types to assign deliveries
-        foreach ($validated['school_ids'] as $schoolId) {
-            Delivery::create([
-                'project_id' => $project->id,
-                'school_id' => $schoolId,
-                'status' => 'Pending',
-                'delivery_date' => $validated['target_delivery_date'],
-                'arrival_date' => $validated['target_arrival_date']
-            ]);
-        }
-
-        return redirect()->route('projects.index')->with('success', 'Project created and deliveries assigned.');
+        return back()->with('success', 'Project created successfully.');
     }
-
-
-
-    public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'target_delivery_date' => 'required|date',
-            'target_arrival_date' => 'required|date',
-            'status' => 'required|in:Pending,In Progress,Delivered,Cancelled',
-            'package_types' => 'required|array',
-            'package_types.*' => 'exists:package_types,id',
-            'school_ids' => 'required|array',
-            'school_ids.*' => 'exists:schools,school_id',
-        ]);
-
-        $project = Project::findOrFail($id);
-
-        $project->update([
-            'name' => $validated['name'],
-            'target_delivery_date' => $validated['target_delivery_date'],
-            'target_arrival_date' => $validated['target_arrival_date'],
-            'status' => $validated['status'],
-        ]);
-
-        Package::where('project_id', $project->id)->delete();
-        foreach ($validated['package_types'] as $typeId) {
-            Package::create([
-                'package_type_id' => $typeId,
-                'project_id' => $project->id,
-            ]);
-        }
-
-        ProjectSchoolAssignment::where('project_id', $project->id)->delete();
-        foreach ($validated['school_ids'] as $schoolId) {
-            ProjectSchoolAssignment::create([
-                'project_id' => $project->id,
-                'school_id' => $schoolId,
-            ]);
-        }
-
-        return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
-    }
-
-        public function showDeliveries($id)
-    {
-        $project = Project::findOrFail($id);
-        $deliveries = PackageDelivery::with(['school', 'packageType'])
-                        ->where('project_id', $id)
-                        ->get();
-
-        return view('deliveries.deliveries', compact('deliveries', 'project'));
-    }
-
-        public function destroy($id)
-    {
-        $project = Project::findOrFail($id);
-
-        // Delete related packages
-        Package::where('project_id', $project->id)->delete();
-
-        // Delete school assignments
-        ProjectSchoolAssignment::where('project_id', $project->id)->delete();
-
-        // Delete the project
-        $project->delete();
-
-        return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
-    }
-
 }

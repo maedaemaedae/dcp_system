@@ -56,7 +56,7 @@
                             {{ __('Packages') }}
                         </x-nav-link>
                         
-                        <x-nav-link :href="route('superadmin.projects.index')" :active="request()->routeIs('superadmin.projects.index')">
+                        <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                             {{ __('Projects') }}
                         </x-nav-link>
 

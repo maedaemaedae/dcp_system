@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Http\Controllers;
@@ -6,10 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Project;
-use App\Models\Package;
-use App\Models\PackageType;
-use App\Models\DivisionOffice;
 
 class SuperAdminController extends Controller
 {
@@ -23,7 +20,7 @@ class SuperAdminController extends Controller
     public function manageUsers(Request $request)
     {
         $query = User::with('role');
-    
+
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
@@ -35,37 +32,21 @@ class SuperAdminController extends Controller
             });
         }
 
-        $users = $query->get();
-        $roles = Role::all(); // ✅ This is what your view needs
+        $users = $query->paginate(10);
 
-        return view('superadmin.users.index', compact('users', 'roles'));
+        return view('superadmin.users', compact('users'));
     }
 
-    public function updateUserRole(Request $request, $userId)
+    public function updateUserRole(Request $request, User $user)
     {
-        if (auth()->id() == $userId) {
-            return redirect()->back()->with('error', 'You cannot change your own role.');
-        }
-
-        $request->validate([
-            'role_id' => 'required|exists:roles,role_id', // ✅ Validate the new role_id
+        $validated = $request->validate([
+            'role_id' => 'required|exists:roles,id',
         ]);
 
-        $user = User::findOrFail($userId);
-        $user->role_id = $request->role_id; // ✅ Directly assign role_id
-        $user->save();
+        $user->update([
+            'role_id' => $validated['role_id']
+        ]);
 
-        return redirect()->back()->with('success', 'Role updated successfully!');
-    }
-
-
-    public function indexProjects()
-    {
-        $projects = Project::with('packages')->orderByDesc('id')->get();
-        $packageTypes = PackageType::all(); // ✅ Add this
-        $divisions = DivisionOffice::all(); // ✅ Needed for dropdown
-        $packages = Package::whereNull('project_id')->get();
-    
-        return view('projects.index', compact('projects', 'packages', 'packageTypes', 'divisions'));
+        return back()->with('success', 'User role updated successfully.');
     }
 }

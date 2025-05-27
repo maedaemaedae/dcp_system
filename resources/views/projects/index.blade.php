@@ -1,104 +1,74 @@
+
 <x-app-layout>
-    <div class="max-w-7xl mx-auto py-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold">DCP Projects</h2>
-            <button id="openAddModalBtn" class="bg-green-600 text-white px-4 py-2 rounded">+ Create Project</button>
+    <x-slot name="header">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
+            Project and Package Management
+        </h2>
+    </x-slot>
+
+    <div class="p-6 space-y-12">
+        <!-- Add Project Button -->
+        <div class="flex justify-end mb-4">
+            <button onclick="openModal('createProjectModal')" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                + Add Project
+            </button>
         </div>
 
-        @if (session('success'))
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
-                {{ session('success') }}
-            </div>
-        @endif
+        <!-- Project Table -->
+        <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+            <table class="min-w-full text-sm text-left border border-gray-300">
+                <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                    <tr>
+                        <th class="px-4 py-2 border">Project Name</th>
+                        <th class="px-4 py-2 border">Target Delivery</th>
+                        <th class="px-4 py-2 border">Target Arrival</th>
+                        <th class="px-4 py-2 border">Packages</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($projects as $project)
+                        <tr>
+                            <td class="px-4 py-2 border">{{ $project->name }}</td>
+                            <td class="px-4 py-2 border">{{ $project->target_delivery_date ?? '—' }}</td>
+                            <td class="px-4 py-2 border">{{ $project->target_arrival_date ?? '—' }}</td>
+                            <td class="px-4 py-2 border">
+                                @foreach($project->packages as $package)
+                                    <div class="mb-2 p-2 bg-gray-100 rounded">
+                                        <div class="font-semibold">{{ $package->packageType->package_code ?? 'N/A' }}</div>
+                                        <div class="text-xs text-gray-600">{{ $package->description ?? 'No description' }}</div>
+                                    </div>
+                                @endforeach
 
-        @foreach ($projects as $project)
-            <div class="bg-white p-4 shadow rounded mb-4">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-lg font-semibold">{{ $project->name }}</h3>
+                                <button onclick="openModal('createPackageModal_{{ $project->id }}')" class="mt-2 text-blue-500 hover:underline text-xs">
+                                    + Add Package
+                                </button>
 
-                        {{-- Status Badge --}}
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mt-1">
-                            {{ $project->status }}
-                        </span>
-
-                        {{-- Packages --}}
-                        <div class="mt-2">
-                            <strong class="text-sm">Packages:</strong>
-                            @forelse ($project->packages as $pkg)
-                                <span class="inline-block bg-gray-100 text-xs px-2 py-1 rounded mr-1 mt-1">
-                                    {{ $pkg->packageType->description ?? 'Unknown Package' }}
-                                </span>
-                            @empty
-                                <span class="text-gray-400 italic text-sm">No packages assigned.</span>
-                            @endforelse
-                        </div>
-
-                        {{-- Recipient Schools --}}
-                        <div class="mt-2">
-                            <strong class="text-sm">Recipient Schools:</strong>
-                            <ul class="list-disc list-inside text-sm text-gray-700">
-                                @forelse ($project->schools as $school)
-                                    <li>{{ $school->school_name }}</li>
-                                @empty
-                                    <li class="italic text-gray-400">No schools assigned.</li>
-                                @endforelse
-                            </ul>
-                        </div>
-
-                        {{-- Dates --}}
-                        <p class="text-sm text-gray-600 mt-2">
-                            📅 Delivery: {{ $project->target_delivery_date }}<br>
-                            📦 Arrival: {{ $project->target_arrival_date }}
-                        </p>
-                    </div>
-
-                    {{-- 🔧 Action Buttons --}}
-                    <div class="flex flex-col gap-2 items-end">
-                        <button onclick="openEditModal({{ $project->id }})"
-                            class="text-blue-600 hover:underline">✏️ Edit</button>
-
-                        <form method="POST"
-                              action="{{ route('projects.destroy', $project->id) }}"
-                              onsubmit="return confirm('Are you sure you want to delete this project?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:underline">🗑️ Delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Edit Modal for this project --}}
-                @include('projects.partials.edit-modal', ['project' => $project])
-                @endforeach
-
-            {{-- Create Modal (only once) --}}
-                @include('projects.partials.create-modal', [
-                    'packageTypes' => $packageTypes,
-                    'divisions' => $divisions
-            ])
+                                @include('projects.partials.create-package-modal', ['project' => $project])
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    {{-- Modal JS --}}
+    @include('projects.partials.create-project-modal')
+
+
     <script>
-        const addModal = document.getElementById('addProjectModal');
-        const openAddBtn = document.getElementById('openAddModalBtn');
-        const closeAddBtn = document.getElementById('closeAddProjectModalBtn');
-
-        openAddBtn?.addEventListener('click', () => addModal?.classList.remove('hidden'));
-        closeAddBtn?.addEventListener('click', () => addModal?.classList.add('hidden'));
-
-        function openEditModal(projectId) {
-            const modal = document.getElementById(`editProjectModal-${projectId}`);
-            modal?.classList.remove('hidden');
+    function openModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.remove('hidden');
         }
+    }
 
-        document.querySelectorAll('[id^="closeEditProjectModalBtn-"]').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const projectId = button.getAttribute('data-project-id');
-                document.getElementById(`editProjectModal-${projectId}`)?.classList.add('hidden');
-            });
-        });
-    </script>
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+</script>
+
 </x-app-layout>
