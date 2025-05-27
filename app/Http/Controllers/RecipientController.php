@@ -6,34 +6,30 @@ use Illuminate\Http\Request;
 use App\Models\School;
 use App\Models\RegionalOffice;
 use App\Models\DivisionOffice;
-use App\Imports\SchoolsImport;
 use App\Imports\DivisionsImport;
-use App\Models\DcpRecipientSchoolStv;
-use App\Models\DcpRecipientSchoolL4t;
-use App\Models\DcpRecipientDivisionOffice;
+use App\Models\Recipient;
+use App\Models\Package;
+use App\Models\PackageType;
 use Maatwebsite\Excel\Facades\Excel;
 
 class RecipientController extends Controller
 {
     public function index()
     {
-        $regionalOffices = RegionalOffice::all();
-        $schools = School::with('division.regionalOffice')->get();
-        $divisions = DivisionOffice::with('regionalOffice')->get();
-        $stvRecipients = DcpRecipientSchoolStv::with('school')->get();
-        $l4tRecipients = DcpRecipientSchoolL4t::with('school')->get();
-        $divisionRecipients = DcpRecipientDivisionOffice::with('division')->get();
+        $recipients = Recipient::with([
+            'package.packageType',
+            'school.division.regionalOffice',
+            'division.regionalOffice'
+        ])->get();
 
-    return view('recipients.index', [
-        'schools' => $schools,
-        'divisions' => $divisions,
-        'regionalOffices' => $regionalOffices,
-        'stvRecipients' => $stvRecipients,
-        'l4tRecipients' => $l4tRecipients,
-        'divisionRecipients' => $divisionRecipients,
-        'divisionListJson' => $divisions->toJson(),
-        'schoolListJson' => $schools->toJson(),
-    ]);
+        $schools = School::all();
+        $divisions = DivisionOffice::all();
+        $packages = Package::with('packageType')->get();
+        $regionalOffices = RegionalOffice::all();
+
+        return view('recipients.index', compact(
+            'recipients', 'schools', 'divisions', 'packages', 'regionalOffices'
+        ));
     }
 
     // SCHOOL CRUD
