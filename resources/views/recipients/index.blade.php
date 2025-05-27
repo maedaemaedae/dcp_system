@@ -15,9 +15,7 @@
             <div id="addDropdown" class="absolute z-10 mt-2 bg-white shadow-md rounded hidden w-48">
                 <button onclick="openModal('createSchoolModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add School</button>
                 <button onclick="openModal('createDivisionModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add Division</button>
-                <button onclick="openModal('createStvRecipientModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add DCP Recipient School (STV)</button>
-                <button onclick="openModal('createL4tRecipientModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add DCP Recipient School (L4T)</button>
-                <button onclick="openModal('createDivisionRecipientModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add DCP Recipient Division Office</button>
+                <button onclick="openModal('createRecipientModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add Recipient</button>
             </div>
         </div>
 
@@ -111,6 +109,7 @@
                                     <th class="px-4 py-2 border" class="px-4 py-2">Position</th>
                                     <th class="px-4 py-2 border" class="px-4 py-2">Contact Number</th>
                                     <th class="px-4 py-2 border" class="px-4 py-2">Notes</th>
+                                    <th class="px-4 py-2 border" class="px-4 py-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -142,6 +141,11 @@
                                         <td class="px-4 py-2 border" class="px-4 py-2">—</td> <!-- Optional for contact -->
                                         <td class="px-4 py-2 border" class="px-4 py-2">—</td>
                                         <td class="px-4 py-2 border" class="px-4 py-2">{{ $r->notes }}</td>
+                                        <td class="px-4 py-2 border" class="px-4 py-2">
+                                            <button onclick="openEditModal({{ $r->id }}, '{{ $r->package_id }}', '{{ $r->recipient_type }}', '{{ $r->recipient_id }}', `{{ $r->notes }}`)">
+                                                Edit
+                                            </button>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -160,6 +164,10 @@
     @include('recipients.partials.edit-school-modal')
     @include('recipients.partials.create-division-office-modal')
     @include('recipients.partials.edit-division-office-modal')
+    @include('recipients.partials.create-recipient-modal')
+    @include('recipients.partials.edit-recipient-modal')
+
+
 
 
     <!-- Delete Confirmation Modal -->

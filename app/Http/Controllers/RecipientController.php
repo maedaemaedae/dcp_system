@@ -122,123 +122,41 @@ class RecipientController extends Controller
         return back()->with('success', 'CSV uploaded successfully.');
     }
 
-    //Recipient CRUD
-    public function storeStvRecipient(Request $request)
+    // Recipient Table CRUD
+    public function store(Request $request)
     {
         $validated = $request->validate([
-            'region_id' => 'required|exists:regional_offices,ro_id',
-            'division_id' => 'required|exists:division_offices,division_id',
-            'school_id' => 'required|exists:schools,school_id',
-            'school_name' => 'nullable|string|max:255',
-            'school_address' => 'nullable|string|max:255',
-            'quantity' => 'nullable|integer',
-            'contact_person' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'contact_number' => 'nullable|string|max:50',
+            'package_id' => 'required|exists:packages,id',
+            'recipient_type' => 'required|in:school,division',
+            'recipient_id' => 'required|integer',
+            'notes' => 'nullable|string|max:500',
         ]);
 
-        DcpRecipientSchoolStv::create($validated);
+        Recipient::create($validated);
 
-        return redirect()->route('recipients.index')->with('success', 'STV recipient added successfully!');
+        return back()->with('success', 'Recipient added successfully.');
     }
 
-    public function updateStvRecipient(Request $request, $id)
+    public function update(Request $request, $id)
     {
-        $recipient = DcpRecipientSchoolStv::findOrFail($id);
+        $recipient = Recipient::findOrFail($id);
 
         $validated = $request->validate([
-            'region_id' => 'required|exists:regional_offices,ro_id',
-            'division_id' => 'required|exists:division_offices,division_id',
-            'school_id' => 'required|exists:schools,school_id',
-            'school_name' => 'nullable|string|max:255',
-            'school_address' => 'nullable|string|max:255',
-            'quantity' => 'nullable|integer',
-            'contact_person' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'contact_number' => 'nullable|string|max:50',
+            'package_id' => 'required|exists:packages,id',
+            'recipient_type' => 'required|in:school,division',
+            'recipient_id' => 'required|integer',
+            'notes' => 'nullable|string|max:500',
         ]);
 
         $recipient->update($validated);
 
-        return redirect()->route('recipients.index')->with('success', 'STV recipient updated successfully!');
+        return back()->with('success', 'Recipient updated successfully.');
     }
 
-    public function storeL4tRecipient(Request $request)
+    public function destroy($id)
     {
-        $validated = $request->validate([
-            'region_id' => 'required|exists:regional_offices,ro_id',
-            'division_id' => 'required|exists:division_offices,division_id',
-            'school_id' => 'required|exists:schools,school_id',
-            'school_name' => 'nullable|string|max:255',
-            'school_address' => 'nullable|string|max:255',
-            'quantity' => 'nullable|integer',
-            'contact_person' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'contact_number' => 'nullable|string|max:50',
-        ]);
-
-        DcpRecipientSchoolL4t::create($validated);
-
-        return redirect()->route('recipients.index')->with('success', 'L4T recipient added successfully!');
-    }
-
-    public function updateL4tRecipient(Request $request, $id)
-    {
-        $recipient = DcpRecipientSchoolL4t::findOrFail($id);
-
-        $validated = $request->validate([
-            'region_id' => 'required|exists:regional_offices,ro_id',
-            'division_id' => 'required|exists:division_offices,division_id',
-            'school_id' => 'required|exists:schools,school_id',
-            'school_name' => 'nullable|string|max:255',
-            'school_address' => 'nullable|string|max:255',
-            'quantity' => 'nullable|integer',
-            'contact_person' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'contact_number' => 'nullable|string|max:50',
-        ]);
-
-        $recipient->update($validated);
-
-        return redirect()->route('recipients.index')->with('success', 'L4T recipient updated successfully!');
-    }
-
-    public function storeDivisionRecipient(Request $request)
-    {
-        $validated = $request->validate([
-            'region_id' => 'nullable|exists:regional_offices,ro_id',
-            'division_id' => 'required|exists:division_offices,division_id',
-            'quantity' => 'nullable|integer',
-            'office' => 'nullable|string|max:255',
-            'sdo_address' => 'nullable|string|max:255',
-            'contact_person' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'contact_number' => 'nullable|string|max:50',
-        ]);
-
-        DcpRecipientDivisionOffice::create($validated);
-
-        return redirect()->route('recipients.index')->with('success', 'Division recipient added successfully!');
-    }
-
-    public function updateDivisionRecipient(Request $request, $id)
-    {
-        $recipient = DcpRecipientDivisionOffice::findOrFail($id);
-
-        $validated = $request->validate([
-            'region_id' => 'nullable|exists:regional_offices,ro_id',
-            'division_id' => 'required|exists:division_offices,division_id',
-            'office' => 'nullable|string|max:255',
-            'sdo_address' => 'nullable|string|max:255',
-            'quantity' => 'nullable|integer',
-            'contact_person' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'contact_number' => 'nullable|string|max:50',
-        ]);
-
-        $recipient->update($validated);
-
-        return redirect()->route('recipients.index')->with('success', 'Division recipient updated successfully!');
+        Recipient::destroy($id);
+        return back()->with('success', 'Recipient deleted successfully.');
     }
 
 

@@ -79,10 +79,10 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::put('/recipients/division/{id}', [RecipientController::class, 'updateDivision'])->name('recipients.division.update');
     Route::delete('/recipients/division/{id}', [RecipientController::class, 'destroyDivision'])->name('recipients.division.destroy');
     
-    Route::post('/recipients/stv', [RecipientController::class, 'storeStvRecipient'])->name('recipients.stv.store');
-    Route::post('/recipients/l4t', [RecipientController::class, 'storeL4tRecipient'])->name('recipients.l4t.store');
-    Route::post('/recipients/division', [RecipientController::class, 'storeDivisionRecipient'])->name('recipients.division.store');
-
+    // ✅ Updated recipients table
+    Route::post('/recipients', [RecipientController::class, 'store'])->name('recipients.store');
+    Route::put('/recipients/{id}', [RecipientController::class, 'update'])->name('recipients.update');
+    Route::delete('/recipients/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
 
     // ✅ CSV Upload
     Route::post('/recipients/upload-csv', [RecipientController::class, 'uploadCsv'])->name('recipients.uploadCsv');
