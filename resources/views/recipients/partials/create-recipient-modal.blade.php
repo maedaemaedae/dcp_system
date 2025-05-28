@@ -37,7 +37,7 @@
                     <label for="division_id" class="block font-medium text-sm text-gray-700">Select Division</label>
                     <select name="recipient_id" id="division_id" class="w-full border-gray-300 rounded" disabled>
                         @foreach($divisions as $division)
-                            <option value="{{ $division->id }}">{{ $division->division_name }}</option>
+                            <option value="{{ $division->division_id }}">{{ $division->division_name }}</option>
                         @endforeach
                     </select>
                 </div>
