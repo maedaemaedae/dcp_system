@@ -96,61 +96,63 @@
         <div class="bg-white shadow rounded p-4">
             <h3 class="text-lg font-bold mb-4">Recipients</h3>
             <div class="overflow-x-auto">
-                <div class="overflow-x-auto rounded-lg"><table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg overflow-hidden" class="min-w-full text-sm text-left border border-gray-200">
-                    <th class="px-4 py-2 border"ead class="bg-gray-100 text-gray-700 uppercase text-xs" class="bg-gray-100">
-                                <tr>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Region</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Division</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Recipient Type</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">School/Office Name</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Address</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Package Type</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Contact Person</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Position</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Contact Number</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Notes</th>
-                                    <th class="px-4 py-2 border" class="px-4 py-2">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($recipients as $r)
-                                    <tr class="border-t">
-                                        <td class="px-4 py-2 border" class="px-4 py-2">
-                                            {{ $r->recipient_type === 'school'
-                                                ? $r->school->division->regionalOffice->ro_office ?? '—'
-                                                : $r->division->regionalOffice->ro_office ?? '—' }}
-                                        </td>
-                                        <td class="px-4 py-2 border" class="px-4 py-2">
-                                            {{ $r->recipient_type === 'school'
-                                                ? $r->school->division->division_name ?? '—'
-                                                : $r->division->division_name ?? '—' }}
-                                        </td>
-                                        <td class="px-4 py-2 border" class="px-4 py-2">{{ ucfirst($r->recipient_type) }}</td>
-                                        <td class="px-4 py-2 border" class="px-4 py-2">
-                                            {{ $r->recipient_type === 'school'
-                                                ? $r->school->school_name ?? '—'
-                                                : $r->division->office ?? '—' }}
-                                        </td>
-                                        <td class="px-4 py-2 border" class="px-4 py-2">
-                                            {{ $r->recipient_type === 'school'
-                                                ? $r->school->school_address ?? '—'
-                                                : $r->division->sdo_address ?? '—' }}
-                                        </td>
-                                        <td class="px-4 py-2 border" class="px-4 py-2">{{ $r->package->packageType->package_code ?? '—' }}</td>
-                                        <td class="px-4 py-2 border" class="px-4 py-2">{{ $r->notes }}</td>
-                                        <td class="px-4 py-2 border" class="px-4 py-2">—</td> <!-- Optional for contact -->
-                                        <td class="px-4 py-2 border" class="px-4 py-2">—</td>
-                                        <td class="px-4 py-2 border" class="px-4 py-2">{{ $r->notes }}</td>
-                                        <td class="px-4 py-2 border" class="px-4 py-2">
-                                            <button onclick="openEditModal({{ $r->id }}, '{{ $r->package_id }}', '{{ $r->recipient_type }}', '{{ $r->recipient_id }}', `{{ $r->notes }}`)">
-                                                Edit
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                        <div class="overflow-x-auto rounded-lg">
+                            <table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg overflow-hidden" class="min-w-full text-sm text-left border border-gray-200">
+                                        <th class="px-4 py-2 border"ead class="bg-gray-100 text-gray-700 uppercase text-xs" class="bg-gray-100">
+                                            <tr>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Region</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Division</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Recipient Type</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">School/Office Name</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Address</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Package Type</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Contact Person</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Position</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Contact Number</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Notes</th>
+                                                <th class="px-4 py-2 border" class="px-4 py-2">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($recipients as $r)
+                                                <tr class="border-t">
+                                                    <td class="px-4 py-2 border">
+                                                        {{ $r->recipient_type === 'school'
+                                                            ? $r->school->division->regionalOffice->ro_office ?? '—'
+                                                            : $r->division->regionalOffice->ro_office ?? '—' }}
+                                                    </td>
+                                                    <td class="px-4 py-2 border">
+                                                        {{ $r->recipient_type === 'school'
+                                                            ? $r->school->division->division_name ?? '—'
+                                                            : $r->division->division_name ?? '—' }}
+                                                    </td>
+                                                    <td class="px-4 py-2 border">{{ ucfirst($r->recipient_type) }}</td>
+                                                    <td class="px-4 py-2 border">
+                                                        {{ $r->recipient_type === 'school'
+                                                            ? $r->school->school_name ?? '—'
+                                                            : $r->division->division_name ?? '—' }} {{-- fallback to division_name if "office" is not defined --}}
+                                                    </td>
+                                                    <td class="px-4 py-2 border">
+                                                        {{ $r->recipient_type === 'school'
+                                                            ? $r->school->school_address ?? '—'
+                                                            : $r->division->sdo_address ?? '—' }}
+                                                    </td>
+                                                    <td class="px-4 py-2 border">{{ $r->package->packageType->package_code ?? '—' }}</td>
+                                                    <td class="px-4 py-2 border">{{ $r->notes }}</td>
+                                                    <td class="px-4 py-2 border">—</td> {{-- Optional: Position --}}
+                                                    <td class="px-4 py-2 border">—</td> {{-- Optional: Contact Number --}}
+                                                    <td class="px-4 py-2 border">{{ $r->notes }}</td>
+                                                    <td class="px-4 py-2 border">
+                                                        <button onclick="openEditModal({{ $r->id }}, '{{ $r->package_id }}', '{{ $r->recipient_type }}', '{{ $r->recipient_id }}', `{{ $r->notes }}`)">
+                                                            Edit
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+
+                            </table>
+                        </div>
                 </div>
             </div>
         </div>

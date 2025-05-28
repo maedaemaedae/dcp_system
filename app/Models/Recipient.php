@@ -28,7 +28,8 @@ class Recipient extends Model
 
     public function division()
     {
-        return $this->belongsTo(DivisionOffice::class, 'recipient_id');
+        return $this->belongsTo(DivisionOffice::class, 'recipient_id', 'division_id');
     }
+
 }
 

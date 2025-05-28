@@ -23,3 +23,6 @@ class DivisionOffice extends Model
         'modified_date',
     ];
 }
+
+
+
