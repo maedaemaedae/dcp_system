@@ -7,12 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class PackageContent extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'package_type_id',
-        'item_id',
+        'item_name',
         'quantity',
+        'description',
     ];
 
     public function packageType()
@@ -20,8 +19,9 @@ class PackageContent extends Model
         return $this->belongsTo(PackageType::class);
     }
 
-    public function inventory()
+    public function package()
     {
-        return $this->belongsTo(Inventory::class, 'item_id');
+        return $this->belongsTo(Package::class);
     }
 }
+

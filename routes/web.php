@@ -8,6 +8,7 @@ use App\Http\Controllers\RegionalOfficeController;
 use App\Http\Controllers\DivisionOfficeController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PackageTypeController;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\Auth\OtpVerificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\DeliveryController;

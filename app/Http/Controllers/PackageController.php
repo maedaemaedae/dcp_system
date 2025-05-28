@@ -2,33 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Package;
 use Illuminate\Http\Request;
+use App\Models\Package;
+use App\Models\PackageType;
+use App\Models\Project;
+use Illuminate\Support\Facades\Log;
 
 class PackageController extends Controller
 {
-    
+    public function index()
+    {
+        $projects = Project::with('packages.packageType')->get();
+        $packageTypes = PackageType::with('contents')->get();
+        $packages = Package::with(['packageType', 'project'])->get();
+
+        return view('projects.index', compact('projects', 'packageTypes', 'packages'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'package_code' => 'required|string|max:50|unique:package_types,package_code',
-            'description' => 'nullable|string|max:255',
-            'items' => 'required|array',
-            'items.*.item_name' => 'required|string|max:255',
-            'items.*.quantity' => 'required|integer|min:1',
-            'items.*.description' => 'nullable|string|max:255',
+            'project_id' => 'required|exists:projects,id',
+            'package_type_id' => 'required|exists:package_types,id',
+            'batch' => 'nullable|string|max:100',
+            'lot' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:500',
         ]);
 
-        $type = \App\Models\PackageType::create([
-            'package_code' => $validated['package_code'],
+        Log::info('PACKAGE STORE HIT', $validated);
+
+        $package = Package::create([
+            'project_id' => $validated['project_id'],
+            'package_type_id' => $validated['package_type_id'],
+            'batch' => $validated['batch'],
+            'lot' => $validated['lot'],
             'description' => $validated['description'],
         ]);
 
-        foreach ($validated['items'] as $item) {
-            $type->contents()->create($item);
-        }
+        Log::info('PACKAGE CREATED', ['id' => $package->id]);
 
-        return back()->with('success', 'Package type created successfully.');
+        return back()->with('success', 'Package created successfully.');
     }
-
 }

@@ -6,17 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Package extends Model
 {
-    protected $fillable = ['package_type_id', 'project_id'];
-
-    public function project()
-    {
-        return $this->belongsTo(Project::class);
-    }
+    protected $fillable = [
+        'project_id',
+        'package_type_id',
+        'batch',
+        'lot',
+        'description',
+    ];
 
     public function packageType()
     {
-        return $this->belongsTo(\App\Models\PackageType::class, 'package_type_id');
-    }    
+        return $this->belongsTo(PackageType::class);
+    }
+
+    public function contents()
+    {
+        return $this->hasMany(PackageContent::class);
+    }
+
+        public function project()
+    {
+        return $this->belongsTo(\App\Models\Project::class);
+    }
+
 }
+
 
 

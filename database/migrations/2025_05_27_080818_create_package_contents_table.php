@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('package_contents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('package_type_id')->constrained();
+            $table->foreignId('package_type_id')->constrained()->onDelete('cascade');
             $table->string('item_name');
             $table->integer('quantity');
             $table->text('description')->nullable();
-            $table->timestamps(); // 👈 this is missing
+            $table->timestamps();
         });
     }
 
