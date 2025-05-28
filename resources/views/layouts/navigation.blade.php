@@ -40,26 +40,18 @@
                             {{ __('Regional Offices') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('division-offices.index')" :active="request()->routeIs('division-offices.*')">
-                            {{ __('Division Offices') }}
-                        </x-nav-link>
-
                         <x-nav-link :href="route('recipients.index')" ...>
                             {{ __('Recipients') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.*')">
-                            {{ __('Inventory') }}
-                        </x-nav-link>
-
-                        <x-nav-link :href="route('package-types.index')" :active="request()->routeIs('package-types.*')">
-                            {{ __('Packages') }}
-                        </x-nav-link>
-                        
                         <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                             {{ __('Projects') }}
                         </x-nav-link>
-
+                        
+                        <x-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.*')">
+                            {{ __('Inventory') }}
+                        </x-nav-link>
+                        
                         <x-nav-link :href="route('deliveries.index')" :active="request()->routeIs('deliveries.*')">
                             {{ __('Deliveries') }}
                         </x-nav-link>
