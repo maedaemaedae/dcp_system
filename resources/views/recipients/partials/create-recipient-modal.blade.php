@@ -1,4 +1,3 @@
-
 <div id="createRecipientModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6">
         <h2 class="text-xl font-semibold mb-4">Add Recipient</h2>
@@ -29,14 +28,14 @@
                     <label for="school_id" class="block font-medium text-sm text-gray-700">Select School</label>
                     <select name="recipient_id" id="school_id" class="w-full border-gray-300 rounded">
                         @foreach($schools as $school)
-                            <option value="{{ $school->id }}">{{ $school->school_name }}</option>
+                            <option value="{{ $school->school_id }}">{{ $school->school_name }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div id="divisionRecipient" class="col-span-1 md:col-span-2 hidden">
                     <label for="division_id" class="block font-medium text-sm text-gray-700">Select Division</label>
-                    <select name="recipient_id" id="division_id" class="w-full border-gray-300 rounded">
+                    <select name="recipient_id" id="division_id" class="w-full border-gray-300 rounded" disabled>
                         @foreach($divisions as $division)
                             <option value="{{ $division->id }}">{{ $division->division_name }}</option>
                         @endforeach
@@ -59,7 +58,26 @@
 
 <script>
     function toggleRecipientOptions(type) {
-        document.getElementById('schoolRecipient').classList.toggle('hidden', type !== 'school');
-        document.getElementById('divisionRecipient').classList.toggle('hidden', type !== 'division');
+        const schoolSection = document.getElementById('schoolRecipient');
+        const divisionSection = document.getElementById('divisionRecipient');
+        const schoolSelect = document.getElementById('school_id');
+        const divisionSelect = document.getElementById('division_id');
+
+        if (type === 'school') {
+            schoolSection.classList.remove('hidden');
+            divisionSection.classList.add('hidden');
+            schoolSelect.disabled = false;
+            divisionSelect.disabled = true;
+        } else {
+            schoolSection.classList.add('hidden');
+            divisionSection.classList.remove('hidden');
+            schoolSelect.disabled = true;
+            divisionSelect.disabled = false;
+        }
     }
+
+    // run once on page load to ensure correct state
+    window.addEventListener('DOMContentLoaded', () => {
+        toggleRecipientOptions(document.getElementById('recipient_type').value);
+    });
 </script>

@@ -125,6 +125,8 @@ class RecipientController extends Controller
     // Recipient Table CRUD
     public function store(Request $request)
     {
+        \Log::info('STORE HIT', $request->all()); // ← add this
+
         $validated = $request->validate([
             'package_id' => 'required|exists:packages,id',
             'recipient_type' => 'required|in:school,division',
@@ -132,7 +134,11 @@ class RecipientController extends Controller
             'notes' => 'nullable|string|max:500',
         ]);
 
-        Recipient::create($validated);
+        \Log::info('VALIDATED:', $validated); // ← add this
+
+        $recipient = Recipient::create($validated);
+
+        \Log::info('CREATED ID:', ['id' => $recipient->id]); // ← and this
 
         return back()->with('success', 'Recipient added successfully.');
     }
