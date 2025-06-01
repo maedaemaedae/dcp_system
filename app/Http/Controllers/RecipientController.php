@@ -16,20 +16,34 @@ class RecipientController extends Controller
 {
     public function index()
     {
-        $recipients = Recipient::with([
-            'package.packageType',
-            'school.division.regionalOffice',
-            'division.regionalOffice'
-        ])->get();
+        $recipients = Recipient::with(['package.packageType', 'creator', 'modifier'])
+            ->get()
+            ->map(function ($recipient) {
+                $recipient->school_office_name = $recipient->recipient_type === 'school'
+                    ? optional($recipient->school)->school_name
+                    : optional($recipient->division)->division_name;
 
-        $schools = School::all();
-        $divisions = DivisionOffice::all();
-        $packages = Package::with('packageType')->get();
-        $regionalOffices = RegionalOffice::all();
+                $recipient->address = $recipient->recipient_type === 'school'
+                    ? optional($recipient->school)->school_address
+                    : optional($recipient->division)->sdo_address;
 
-        return view('recipients.index', compact(
-            'recipients', 'schools', 'divisions', 'packages', 'regionalOffices'
-        ));
+                $recipient->region = $recipient->recipient_type === 'school'
+                    ? optional($recipient->school->division)->regionalOffice->ro_office ?? null
+                    : optional($recipient->division)->regionalOffice->ro_office ?? null;
+
+                $recipient->division_name = $recipient->recipient_type === 'school'
+                    ? optional($recipient->school->division)->division_name
+                    : optional($recipient->division)->division_name;
+
+                return $recipient;
+            });
+
+        $schools = \App\Models\School::with('division.regionalOffice')->get();
+        $divisions = \App\Models\DivisionOffice::with('regionalOffice')->get();
+        $regionalOffices = \App\Models\RegionalOffice::all(); // ✅ ADD THIS
+        $packages = \App\Models\Package::with('packageType')->get();
+
+        return view('recipients.index', compact('recipients', 'schools', 'divisions', 'regionalOffices', 'packages'));
     }
 
     // SCHOOL CRUD
@@ -125,20 +139,19 @@ class RecipientController extends Controller
     // Recipient Table CRUD
     public function store(Request $request)
     {
-        \Log::info('STORE HIT', $request->all()); // ← add this
-
         $validated = $request->validate([
             'package_id' => 'required|exists:packages,id',
             'recipient_type' => 'required|in:school,division',
             'recipient_id' => 'required|integer',
+            'contact_person' => 'required|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'contact_number' => 'nullable|string|max:50',
             'notes' => 'nullable|string|max:500',
         ]);
 
-        \Log::info('VALIDATED:', $validated); // ← add this
+        $validated['created_by'] = auth()->id();
 
-        $recipient = Recipient::create($validated);
-
-        \Log::info('CREATED ID:', ['id' => $recipient->id]); // ← and this
+        Recipient::create($validated);
 
         return back()->with('success', 'Recipient added successfully.');
     }

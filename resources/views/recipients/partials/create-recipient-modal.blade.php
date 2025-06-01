@@ -43,9 +43,20 @@
                 </div>
 
                 <div class="col-span-1 md:col-span-2">
-                    <label for="notes" class="block font-medium text-sm text-gray-700">Notes</label>
-                    <textarea name="notes" id="notes" rows="3" class="w-full border-gray-300 rounded"></textarea>
+                    <label for="contact_person" class="block font-medium text-sm text-gray-700">Contact Person</label>
+                    <input type="text" name="contact_person" id="contact_person" class="w-full border-gray-300 rounded" required>
                 </div>
+
+                <div class="col-span-1 md:col-span-1">
+                    <label for="position" class="block font-medium text-sm text-gray-700">Position</label>
+                    <input type="text" name="position" id="position" class="w-full border-gray-300 rounded">
+                </div>
+
+                <div class="col-span-1 md:col-span-1">
+                    <label for="contact_number" class="block font-medium text-sm text-gray-700">Contact Number</label>
+                    <input type="text" name="contact_number" id="contact_number" class="w-full border-gray-300 rounded">
+                </div>
+
             </div>
 
             <div class="mt-6 flex justify-end space-x-2">

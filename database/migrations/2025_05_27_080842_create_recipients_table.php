@@ -15,11 +15,23 @@ return new class extends Migration
     {
         Schema::create('recipients', function (Blueprint $table) {
             $table->id();
+
+            // Existing
             $table->foreignId('package_id')->constrained()->onDelete('cascade');
             $table->enum('recipient_type', ['school', 'division']);
-            $table->unsignedBigInteger('recipient_id');
+            $table->unsignedBigInteger('recipient_id'); // Foreign key (manual polymorphic)
             $table->text('notes')->nullable();
-            $table->timestamps();
+
+            // New columns based on requested headers
+            $table->string('contact_person')->nullable();
+            $table->string('position')->nullable();
+            $table->string('contact_number')->nullable();
+
+            // Created by / Modified by tracking
+            $table->foreignId('created_by')->constrained('users');
+            $table->foreignId('modified_by')->nullable()->constrained('users');
+
+            $table->timestamps(); // includes created_at and updated_at
         });
     }
 

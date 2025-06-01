@@ -14,22 +14,37 @@ class Recipient extends Model
         'recipient_type',
         'recipient_id',
         'notes',
+        'contact_person',
+        'position',
+        'contact_number',
+        'created_by',
+        'modified_by',
     ];
 
-    public function package()
-    {
-        return $this->belongsTo(Package::class);
-    }
+        public function package()
+        {
+            return $this->belongsTo(Package::class);
+        }
 
-    public function school()
-    {
-        return $this->belongsTo(School::class, 'recipient_id');
-    }
+        public function school()
+        {
+            return $this->belongsTo(School::class, 'recipient_id');
+        }
 
-    public function division()
-    {
-        return $this->belongsTo(DivisionOffice::class, 'recipient_id', 'division_id');
-    }
+        public function division()
+        {
+            return $this->belongsTo(\App\Models\DivisionOffice::class, 'division_id', 'division_id');
+        }
+
+        public function creator()
+        {
+            return $this->belongsTo(User::class, 'created_by');
+        }
+
+        public function modifier()
+        {
+            return $this->belongsTo(User::class, 'modified_by');
+        }
 
 }
 

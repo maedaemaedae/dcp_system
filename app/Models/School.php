@@ -27,7 +27,7 @@ class School extends Model
 
     public function division()
     {
-        return $this->belongsTo(DivisionOffice::class, 'division_id');
+        return $this->belongsTo(\App\Models\DivisionOffice::class, 'division_id', 'division_id');
     }
 
     public function projects()
