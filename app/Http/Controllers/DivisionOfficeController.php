@@ -7,12 +7,7 @@ use Illuminate\Http\Request;
 
 class DivisionOfficeController extends Controller
 {
-    public function index()
-    {
-        $divisions = \App\Models\DivisionOffice::with('regionalOffice')->get();
-        return view('divisionoffices.index', compact('divisions'));
-    }
-    
+
     public function create()
     {
         return view('divisions.create');
@@ -34,7 +29,7 @@ class DivisionOfficeController extends Controller
             'created_date' => now(),
         ]));
     
-        return redirect()->route('divisionoffices.index')->with('success', 'Division office added successfully.');
+        return back()->with('success', 'Division office added successfully.');
     }
     
 }

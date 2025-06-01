@@ -1,4 +1,4 @@
-<div id="editModal-{{ $ro->ro_id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+<div id="editRegionalModal-{{ $ro->ro_id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white p-6 rounded shadow-lg w-full max-w-2xl relative">
         <button onclick="closeEditModal({{ $ro->ro_id }})" class="absolute top-2 right-2 text-gray-500 text-xl hover:text-black">&times;</button>
 

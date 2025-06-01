@@ -13,8 +13,9 @@
                         + Add
                     </button>
                     <div id="addDropdown" class="absolute z-10 mt-2 bg-white shadow-md rounded hidden w-48">
+                        <button onclick="openModal('createRegionalModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100"> ➕ Add Regional Office</button>
+                        <button onclick="openModal('createDivisionModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add Division Office</button>
                         <button onclick="openModal('createSchoolModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add School</button>
-                        <button onclick="openModal('createDivisionModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add Division</button>
                         <button onclick="openModal('createRecipientModal'); closeAddDropdown();" class="w-full text-left px-4 py-2 hover:bg-gray-100">➕ Add Recipient</button>
                     </div>
                 </div>
@@ -225,6 +226,8 @@
     @include('recipients.partials.edit-school-modal')
     @include('recipients.partials.create-division-office-modal')
     @include('recipients.partials.edit-division-office-modal')
+    @include('recipients.partials.create-regional-office-modal')
+    @include('recipients.partials.edit-regional-office-modal', ['ro' => $ro])
     @include('recipients.partials.create-recipient-modal')
     @include('recipients.partials.edit-recipient-modal')
 
