@@ -20,6 +20,9 @@ return new class extends Migration
                   ->references('ro_id')
                   ->on('regional_offices')
                   ->onDelete('cascade');
+            
+            $table->string('office')->nullable();
+            $table->string('sdo_address')->nullable();
         });
     }
 

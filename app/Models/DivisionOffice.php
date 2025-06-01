@@ -18,6 +18,8 @@ class DivisionOffice extends Model
         'division_id',
         'division_name',
         'regional_office_id',
+        'office',
+        'sdo_address',
         'person_in_charge',
         'email',
         'contact_no',
@@ -26,6 +28,8 @@ class DivisionOffice extends Model
         'modified_by',
         'modified_date',
     ];
+
+
 
     public function regionalOffice()
     {
