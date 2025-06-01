@@ -8,8 +8,16 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
+                    <label class="block font-medium">RO ID</label>
+                    <input type="number" name="ro_id" class="w-full border rounded px-3 py-2" required>
+                </div>
+                <div>
                     <label class="block font-medium">Office Name</label>
                     <input type="text" name="ro_office" class="w-full border rounded px-3 py-2" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block font-medium">RO Address</label>
+                    <input type="text" name="ro_address" class="w-full border rounded px-3 py-2">
                 </div>
                 <div>
                     <label class="block font-medium">Person in Charge</label>
@@ -19,7 +27,7 @@
                     <label class="block font-medium">Email</label>
                     <input type="email" name="email" class="w-full border rounded px-3 py-2">
                 </div>
-                <div>
+                <div class="md:col-span-2">
                     <label class="block font-medium">Contact No.</label>
                     <input type="text" name="contact_no" class="w-full border rounded px-3 py-2">
                 </div>
@@ -31,4 +39,3 @@
         </form>
     </div>
 </div>
-    

@@ -9,6 +9,10 @@
             @method('PUT')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="md:col-span-2">
+                    <label class="block font-medium">RO ID</label>
+                    <input type="text" value="{{ $ro->ro_id }}" class="w-full border rounded px-3 py-2 bg-gray-100" readonly>
+                </div>
                 <div>
                     <label class="block font-medium">Office Name</label>
                     <input type="text" name="ro_office" value="{{ $ro->ro_office }}" class="w-full border rounded px-3 py-2" required>
@@ -16,6 +20,10 @@
                 <div>
                     <label class="block font-medium">Person in Charge</label>
                     <input type="text" name="person_in_charge" value="{{ $ro->person_in_charge }}" class="w-full border rounded px-3 py-2" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block font-medium">RO Address</label>
+                    <input type="text" name="ro_address" value="{{ $ro->ro_address }}" class="w-full border rounded px-3 py-2">
                 </div>
                 <div>
                     <label class="block font-medium">Email</label>

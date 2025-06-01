@@ -15,9 +15,17 @@ class RegionAndDivisionSeeder extends Seeder
             [
                 'ro_id' => 1,
                 'ro_office' => 'MIMAROPA Region',
+                'ro_address' => 'Calapan City, Oriental Mindoro',
+                'person_in_charge' => 'Mr. Regional Director',
+                'email' => 'director@mimaropa.deped.gov.ph',
+                'contact_no' => '09171234567',
+                'created_by' => 'Seeder',
+                'created_date' => Carbon::now(),
+                'modified_by' => null,
+                'modified_date' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
+            ]
         ]);
 
         // Seed Division Offices under Region IV-B
