@@ -36,10 +36,6 @@
                             {{ __('User Management') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('regional-offices.index')" :active="request()->routeIs('regional-offices.*')">
-                            {{ __('Regional Offices') }}
-                        </x-nav-link>
-
                         <x-nav-link :href="route('recipients.index')" ...>
                             {{ __('Recipients') }}
                         </x-nav-link>

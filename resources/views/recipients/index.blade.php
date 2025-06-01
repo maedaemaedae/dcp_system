@@ -27,7 +27,6 @@
                             <table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg overflow-hidden">
                                 <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
                                     <tr>
-                                        <th class="px-4 py-2 border">Region</th>
                                         <th class="px-4 py-2 border">RO ID</th>
                                         <th class="px-4 py-2 border">RO Office</th>
                                         <th class="px-4 py-2 border">RO Address</th>
@@ -39,7 +38,6 @@
                                 <tbody>
                                     @foreach($regionalOffices as $ro)
                                         <tr class="border-t">
-                                            <td class="px-4 py-2 border">Region {{ $ro->ro_id }}</td>
                                             <td class="px-4 py-2 border">{{ $ro->ro_id }}</td>
                                             <td class="px-4 py-2 border">{{ $ro->ro_office }}</td>
                                             <td class="px-4 py-2 border">{{ $ro->ro_address ?? '—' }}</td>

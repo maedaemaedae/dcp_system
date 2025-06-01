@@ -56,7 +56,6 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::post('/superadmin/users/{user}/role', [SuperAdminController::class, 'updateUserRole'])->name('superadmin.users.updateRole');
 
     // ✅ Resource routes
-    Route::resource('regional-offices', RegionalOfficeController::class);
     Route::resource('division-offices', DivisionOfficeController::class);
     Route::resource('inventory', InventoryController::class);
     Route::resource('package-types', PackageTypeController::class);
@@ -74,7 +73,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::put('/recipients/{id}', [RecipientController::class, 'update'])->name('recipients.update');
     Route::delete('/recipients/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
 
-    // ✅ Custom School/Division CRUD
+    // ✅ Custom Regional/Division/School CRUD
     Route::post('/recipients/school', [RecipientController::class, 'storeSchool'])->name('recipients.school.store');
     Route::put('/recipients/school/{id}', [RecipientController::class, 'updateSchool'])->name('recipients.school.update');
     Route::delete('/recipients/school/{id}', [RecipientController::class, 'destroySchool'])->name('recipients.school.destroy');
@@ -82,6 +81,10 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::post('/recipients/division', [RecipientController::class, 'storeDivision'])->name('recipients.division.store');
     Route::put('/recipients/division/{id}', [RecipientController::class, 'updateDivision'])->name('recipients.division.update');
     Route::delete('/recipients/division/{id}', [RecipientController::class, 'destroyDivision'])->name('recipients.division.destroy');
+
+    Route::post('/regional-offices', [RegionalOfficeController::class, 'store'])->name('regional-offices.store');
+    Route::put('/regional-offices/{id}', [RegionalOfficeController::class, 'update'])->name('regional-offices.update');
+    Route::delete('/regional-offices/{id}', [RegionalOfficeController::class, 'destroy'])->name('regional-offices.destroy');
 
     // ✅ CSV Upload
     Route::post('/recipients/upload-csv', [RecipientController::class, 'uploadCsv'])->name('recipients.uploadCsv');
