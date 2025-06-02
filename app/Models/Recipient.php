@@ -31,11 +31,10 @@ class Recipient extends Model
             return $this->belongsTo(School::class, 'recipient_id');
         }
 
-        public function division()
-        {
-            return $this->belongsTo(\App\Models\DivisionOffice::class, 'division_id', 'division_id');
+        public function division() {
+            return $this->belongsTo(DivisionOffice::class, 'recipient_id', 'division_id');
         }
-
+        
         public function creator()
         {
             return $this->belongsTo(User::class, 'created_by');
