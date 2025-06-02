@@ -148,12 +148,13 @@ class RecipientController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'package_id' => 'required|exists:packages,id',
+            'package_id'     => 'required|exists:packages,id',
             'recipient_type' => 'required|in:school,division',
-            'recipient_id' => 'required|integer',
+            'recipient_id'   => 'required|integer',
             'contact_person' => 'required|string|max:255',
-            'position' => 'nullable|string|max:255',
+            'position'       => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',
+            'quantity'       => 'required|integer|min:1', // ✅ Add this line
         ]);
 
         $validated['created_by'] = auth()->id();
@@ -163,20 +164,34 @@ class RecipientController extends Controller
         return back()->with('success', 'Recipient added successfully.');
     }
 
+
     public function update(Request $request, $id)
     {
-        $recipient = Recipient::findOrFail($id);
-
         $validated = $request->validate([
-            'package_id' => 'required|exists:packages,id',
+            'package_id'     => 'required|exists:packages,id',
             'recipient_type' => 'required|in:school,division',
-            'recipient_id' => 'required|integer',
+            'recipient_id'   => 'required|integer',
+            'contact_person' => 'required|string|max:255',
+            'position'       => 'nullable|string|max:255',
+            'contact_number' => 'nullable|string|max:50',
+            'quantity'       => 'required|integer|min:1', // ✅ Add this line
         ]);
 
-        $recipient->update($validated);
+        $recipient = Recipient::findOrFail($id);
+
+        $recipient->update([
+            'package_id'     => $validated['package_id'],
+            'recipient_type' => $validated['recipient_type'],
+            'recipient_id'   => $validated['recipient_id'],
+            'contact_person' => $validated['contact_person'],
+            'position'       => $validated['position'],
+            'contact_number' => $validated['contact_number'],
+            'quantity'       => $validated['quantity'], // ✅ Save updated quantity
+        ]);
 
         return back()->with('success', 'Recipient updated successfully.');
     }
+
 
     public function destroy($id)
     {

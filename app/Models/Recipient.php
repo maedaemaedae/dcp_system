@@ -13,7 +13,7 @@ class Recipient extends Model
         'package_id',
         'recipient_type',
         'recipient_id',
-        'notes',
+        'quantity',
         'contact_person',
         'position',
         'contact_number',

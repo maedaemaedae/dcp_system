@@ -189,7 +189,7 @@
                                                     : $r->division->sdo_address ?? '—' }}
                                             </td>
                                             <td class="px-4 py-2 border">{{ $r->package->packageType->package_code ?? '—' }}</td>
-                                            <td class="px-4 py-2 border">{{ $r->package->quantity ?? '—' }}</td>
+                                            <td class="px-4 py-2 border">{{ $r->quantity ?? '—' }}</td>
                                             <td class="px-4 py-2 border">{{ $r->contact_person ?? '—' }}</td>
                                             <td class="px-4 py-2 border">{{ $r->position ?? '—' }}</td>
                                             <td class="px-4 py-2 border">{{ $r->contact_number ?? '—' }}</td>

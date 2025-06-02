@@ -16,6 +16,12 @@
                     </select>
                 </div>
 
+                <div class="col-span-2">
+                    <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+                    <input type="number" name="quantity" id="quantity" min="1"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                </div>
+
                 <div>
                     <label for="recipient_type" class="block font-medium text-sm text-gray-700">Recipient Type</label>
                     <select name="recipient_type" id="recipient_type" class="w-full border-gray-300 rounded" onchange="toggleRecipientOptions(this.value)">

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('contact_person')->nullable();
             $table->string('position')->nullable();
             $table->string('contact_number')->nullable();
+            $table->unsignedInteger('quantity');
 
             // Created by / Modified by tracking
             $table->foreignId('created_by')->constrained('users');

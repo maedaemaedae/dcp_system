@@ -161,6 +161,7 @@ class UnifiedSeeder extends Seeder
                 'recipient_type' => 'school',
                 'recipient_id' => 101,
                 'contact_person' => 'Mr. Juan Dela Cruz',
+                'quantity' => 3,
                 'position' => 'Principal',
                 'contact_number' => '09170001111',
                 'created_by' => 1,
