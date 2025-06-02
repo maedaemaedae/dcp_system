@@ -43,4 +43,29 @@ class PackageController extends Controller
 
         return back()->with('success', 'Package created successfully.');
     }
+
+    public function update(Request $request, $id)
+    {
+        $package = Package::findOrFail($id);
+
+        $validated = $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'package_type_id' => 'required|exists:package_types,id',
+            'batch' => 'nullable|string|max:100',
+            'lot' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:500',
+        ]);
+
+        $package->update($validated);
+
+        return back()->with('success', 'Package updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        Package::destroy($id);
+
+        return back()->with('success', 'Package deleted successfully.');
+    }
+
 }

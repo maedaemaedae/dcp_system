@@ -30,4 +30,27 @@ class ProjectController extends Controller
 
         return back()->with('success', 'Project created successfully.');
     }
+
+    public function update(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'target_delivery_date' => 'nullable|date',
+            'target_arrival_date' => 'nullable|date',
+        ]);
+
+        $project->update($validated);
+
+        return back()->with('success', 'Project updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        Project::destroy($id);
+
+        return back()->with('success', 'Project deleted successfully.');
+    }
+
 }

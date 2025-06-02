@@ -67,6 +67,19 @@
 
                                 @include('projects.partials.create-package-modal', ['project' => $project, 'packageTypes' => $packageTypes])
                             </td>
+                            <td class="border px-4 py-2 flex gap-2">
+                            <button
+                                onclick="openEditProjectModal({{ $project->id }}, '{{ $project->name }}', '{{ $project->target_delivery_date }}', '{{ $project->target_arrival_date }}')"
+                                class="bg-yellow-500 text-white px-3 py-1 rounded">
+                                Edit
+                            </button>
+
+                            <form action="{{ route('projects.destroy', $project->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this project?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
+                            </form>
+                        </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -76,6 +89,8 @@
 
     @include('projects.partials.create-project-modal')
     @include('projects.partials.create-package-type-modal')
+    @include('projects.partials.edit-project-modal')
+
 
     <script>
         function toggleAddDropdown() {
