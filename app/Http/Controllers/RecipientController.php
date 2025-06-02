@@ -116,9 +116,10 @@ class RecipientController extends Controller
             'sdo_address' => 'nullable|string|max:255',
         ]);
 
+        $division->update($validated);
+
         return back()->with('success', 'Division updated successfully.');
     }
-
 
     public function destroyDivision($id)
     {
