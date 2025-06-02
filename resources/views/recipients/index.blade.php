@@ -293,6 +293,20 @@
             openModal('editDivisionModal');
         }
 
+        function openEditModal(id) {
+            const modal = document.getElementById(`editRegionalModal-${id}`);
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeEditModal(id) {
+            const modal = document.getElementById(`editRegionalModal-${id}`);
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
         function openDeleteModal(type, id) {
             const form = document.getElementById('deleteForm');
             form.action = `/recipients/${type}/${id}`;
