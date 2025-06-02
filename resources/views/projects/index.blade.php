@@ -36,6 +36,42 @@
             </div>
         </div>
 
+        <!-- 📦 Packages List -->
+        <div>
+            <h3 class="text-lg font-semibold mt-10 mb-3">Packages</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                @foreach($packages as $package)
+                    <div class="bg-white rounded shadow p-4">
+                        <div class="text-sm text-gray-600 mb-1">Project: {{ $package->project->name }}</div>
+                        <div class="text-lg font-bold">{{ $package->packageType->package_code }}</div>
+                        <div class="text-sm">Batch: {{ $package->batch }}</div>
+                        <div class="text-sm">Lot: {{ $package->lot }}</div>
+                        <div class="text-sm mb-3">Desc: {{ $package->description }}</div>
+
+                        <div class="flex gap-2">
+                            <button
+                                onclick="openEditPackageModal(
+                                    {{ $package->id }},
+                                    {{ $package->package_type_id }},
+                                    '{{ $package->batch }}',
+                                    '{{ $package->lot }}',
+                                    `{{ $package->description }}`
+                                )"
+                                class="bg-yellow-500 text-white px-3 py-1 rounded">
+                                Edit
+                            </button>
+
+                            <form action="{{ route('packages.destroy', $package->id) }}" method="POST" onsubmit="return confirm('Delete this package?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         <!-- 📁 Projects Table -->
         <div class="overflow-x-auto bg-white shadow-md rounded-lg">
             <table class="min-w-full text-sm text-left border border-gray-300 mt-12">
@@ -90,6 +126,7 @@
     @include('projects.partials.create-project-modal')
     @include('projects.partials.create-package-type-modal')
     @include('projects.partials.edit-project-modal')
+    @include('projects.partials.edit-package-modal')
 
 
     <script>

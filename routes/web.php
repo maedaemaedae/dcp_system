@@ -63,6 +63,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 
     // ✅ Package creation (used by package modal)
     Route::post('/packages', [PackageController::class, 'store'])->name('packages.store');
+    Route::delete('/packages/{id}', [PackageController::class, 'destroy'])->name('packages.destroy');
 
     // ✅ Deliveries (limited to index/edit/update)
     Route::resource('deliveries', DeliveryController::class)->only(['index', 'edit', 'update']);
