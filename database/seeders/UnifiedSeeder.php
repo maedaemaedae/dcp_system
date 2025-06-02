@@ -8,6 +8,7 @@ use App\Models\DivisionOffice;
 use App\Models\School;
 use App\Models\Project;
 use App\Models\Package;
+use App\Models\PackageContent;
 use App\Models\PackageType;
 use App\Models\Recipient;
 
@@ -107,6 +108,38 @@ class UnifiedSeeder extends Seeder
                 'updated_at' => now(),
             ]
         ]);
+
+        // Package Content
+        PackageContent::insert([
+        [
+            'package_type_id' => 1, // L4T
+            'item_name' => 'Laptop',
+            'quantity' => 30,
+            'created_at' => now(),
+            'updated_at' => now()
+        ],
+        [
+            'package_type_id' => 1, // L4T
+            'item_name' => 'Router',
+            'quantity' => 1,
+            'created_at' => now(),
+            'updated_at' => now()
+        ],
+        [
+            'package_type_id' => 2, // STV
+            'item_name' => 'Smart TV',
+            'quantity' => 2,
+            'created_at' => now(),
+            'updated_at' => now()
+        ],
+        [
+            'package_type_id' => 3, // L4NT
+            'item_name' => 'Tablet',
+            'quantity' => 50,
+            'created_at' => now(),
+            'updated_at' => now()
+        ],
+    ]);
 
         // Packages
         Package::insert([
