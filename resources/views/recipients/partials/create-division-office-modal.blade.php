@@ -26,20 +26,16 @@
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label class="block text-sm font-medium">Person In Charge</label>
-                <input type="text" name="person_in_charge" class="w-full border rounded px-3 py-2">
+            <div>
+                <label class="block font-medium">Office</label>
+                <input type="text" name="office" value="{{ old('office', $division->office ?? '') }}" class="w-full border rounded px-3 py-2">
             </div>
 
-            <div class="mb-3">
-                <label class="block text-sm font-medium">Email</label>
-                <input type="email" name="email" class="w-full border rounded px-3 py-2">
+            <div>
+                <label class="block font-medium">SDO Address</label>
+                <input type="text" name="sdo_address" value="{{ old('sdo_address', $division->sdo_address ?? '') }}" class="w-full border rounded px-3 py-2">
             </div>
 
-            <div class="mb-3">
-                <label class="block text-sm font-medium">Contact Number</label>
-                <input type="text" name="contact_no" class="w-full border rounded px-3 py-2">
-            </div>
 
             <div class="flex justify-end gap-2 mt-4">
                 <button type="button" onclick="closeModal('createDivisionModal')" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>

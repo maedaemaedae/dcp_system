@@ -87,16 +87,21 @@ class RecipientController extends Controller
         return back()->with('success', 'School deleted successfully.');
     }
 
-    // DIVISION CRUD
     public function storeDivision(Request $request)
     {
         $validated = $request->validate([
             'division_id' => 'required|numeric|unique:division_offices,division_id',
-            'division_name' => 'required|string',
-            'regional_office_id' => 'required|exists:regional_offices,ro_id'
+            'division_name' => 'required|string|max:255',
+            'regional_office_id' => 'required|exists:regional_offices,ro_id',
+            'office' => 'nullable|string|max:255',
+            'sdo_address' => 'nullable|string|max:255',
         ]);
 
-        DivisionOffice::create($validated);
+        DivisionOffice::create(array_merge($validated, [
+            'created_at' => auth()->user()->name ?? 'Seeder',
+            'created_at' => now(),
+        ]));
+
         return back()->with('success', 'Division added successfully.');
     }
 
@@ -105,13 +110,15 @@ class RecipientController extends Controller
         $division = DivisionOffice::findOrFail($id);
 
         $validated = $request->validate([
-            'division_name' => 'required|string',
-            'regional_office_id' => 'required|exists:regional_offices,ro_id'
+            'division_name' => 'required|string|max:255',
+            'regional_office_id' => 'required|exists:regional_offices,ro_id',
+            'office' => 'nullable|string|max:255',
+            'sdo_address' => 'nullable|string|max:255',
         ]);
 
-        $division->update($validated);
         return back()->with('success', 'Division updated successfully.');
     }
+
 
     public function destroyDivision($id)
     {

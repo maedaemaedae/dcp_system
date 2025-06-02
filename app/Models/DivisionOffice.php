@@ -30,7 +30,6 @@ class DivisionOffice extends Model
     ];
 
 
-
     public function regionalOffice()
     {
         return $this->belongsTo(RegionalOffice::class, 'regional_office_id');
