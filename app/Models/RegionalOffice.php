@@ -17,6 +17,7 @@ class RegionalOffice extends Model
     protected $fillable = [
         'ro_id',
         'ro_office',
+        'ro_address', // ✅ ADD THIS
         'person_in_charge',
         'email',
         'contact_no',

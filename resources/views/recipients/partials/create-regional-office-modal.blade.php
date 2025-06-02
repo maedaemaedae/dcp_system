@@ -27,13 +27,16 @@
                     <label class="block font-medium">Email</label>
                     <input type="email" name="email" class="w-full border rounded px-3 py-2">
                 </div>
-                <div class="md:col-span-2">
-                    <label class="block font-medium">Contact No.</label>
+                <div>
+                    <label class="block font-medium">Contact Number</label>
                     <input type="text" name="contact_no" class="w-full border rounded px-3 py-2">
                 </div>
             </div>
+
             <div class="mt-6 text-right">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Save
+                </button>
             </div>
         </form>
     </div>

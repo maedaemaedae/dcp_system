@@ -17,24 +17,26 @@ class RegionalOfficeController extends Controller
     {
         return view('regionaloffices.create');
     }
-
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
             'ro_id' => 'required|integer|unique:regional_offices,ro_id',
             'ro_office' => 'required|string|max:255',
+            'ro_address' => 'nullable|string|max:255',
             'person_in_charge' => 'required|string|max:255',
             'email' => 'nullable|email',
             'contact_no' => 'nullable|string|max:20',
         ]);
-    
+
         RegionalOffice::create(array_merge($validated, [
             'created_by' => auth()->user()->name ?? 'Seeder',
             'created_date' => now(),
         ]));
-    
-       return back()->with('success', 'Regional office added successfully.');
+
+        return back()->with('success', 'Regional office added successfully.');
     }
+
     
 
     public function edit($id)
@@ -49,6 +51,7 @@ class RegionalOfficeController extends Controller
 
         $request->validate([
             'ro_office' => 'required|string|max:255',
+            'ro_address' => 'required|string|max:255',
             'person_in_charge' => 'required|string|max:255',
             'email' => 'nullable|email',
             'contact_no' => 'nullable|string|max:255',
@@ -57,6 +60,7 @@ class RegionalOfficeController extends Controller
         $regionalOffice->update([
             'ro_office' => $request->ro_office,
             'person_in_charge' => $request->person_in_charge,
+            'ro_address' => $request->ro_address,
             'email' => $request->email,
             'contact_no' => $request->contact_no,
             'modified_by' => auth()->user()->name ?? 'System',
