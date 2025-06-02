@@ -81,6 +81,7 @@
                         <th class="px-4 py-2 border">Target Delivery</th>
                         <th class="px-4 py-2 border">Target Arrival</th>
                         <th class="px-4 py-2 border">Packages</th>
+                        <th class="px-4 py-2 border">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -103,7 +104,7 @@
 
                                 @include('projects.partials.create-package-modal', ['project' => $project, 'packageTypes' => $packageTypes])
                             </td>
-                            <td class="border px-4 py-2 flex gap-2">
+                            <td class="px-4 py-2 border">
                             <button
                                 onclick="openEditProjectModal({{ $project->id }}, '{{ $project->name }}', '{{ $project->target_delivery_date }}', '{{ $project->target_arrival_date }}')"
                                 class="bg-yellow-500 text-white px-3 py-1 rounded">
