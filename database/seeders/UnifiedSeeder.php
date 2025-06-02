@@ -130,7 +130,6 @@ class UnifiedSeeder extends Seeder
                 'contact_person' => 'Mr. Juan Dela Cruz',
                 'position' => 'Principal',
                 'contact_number' => '09170001111',
-                'notes' => 'First batch recipient',
                 'created_by' => 1,
                 'created_at' => now(),
                 'updated_at' => now()

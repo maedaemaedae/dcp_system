@@ -154,7 +154,6 @@ class RecipientController extends Controller
             'contact_person' => 'required|string|max:255',
             'position' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',
-            'notes' => 'nullable|string|max:500',
         ]);
 
         $validated['created_by'] = auth()->id();
@@ -172,7 +171,6 @@ class RecipientController extends Controller
             'package_id' => 'required|exists:packages,id',
             'recipient_type' => 'required|in:school,division',
             'recipient_id' => 'required|integer',
-            'notes' => 'nullable|string|max:500',
         ]);
 
         $recipient->update($validated);

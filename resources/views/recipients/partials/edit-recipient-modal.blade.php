@@ -74,11 +74,10 @@
         document.getElementById('edit_divisionRecipient').classList.toggle('hidden', type !== 'division');
     }
 
-    function openEditModal(id, package_id, recipient_type, recipient_id, notes) {
+    function openEditModal(id, package_id, recipient_type, recipient_id) {
         document.getElementById('editRecipientForm').action = `/recipients/${id}`;
         document.getElementById('edit_package_id').value = package_id;
         document.getElementById('edit_recipient_type').value = recipient_type;
-        document.getElementById('edit_notes').value = notes;
 
         toggleEditRecipientOptions(recipient_type);
         if (recipient_type === 'school') {

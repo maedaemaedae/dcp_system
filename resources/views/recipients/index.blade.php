@@ -206,7 +206,6 @@
                                                     `{{ $r->contact_person }}`,
                                                     `{{ $r->position }}`,
                                                     `{{ $r->contact_number }}`,
-                                                    `{{ $r->notes }}`
                                                 )" class="text-blue-600 hover:underline">
                                                     Edit
                                                 </button>

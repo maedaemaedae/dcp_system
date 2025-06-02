@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreignId('package_id')->constrained()->onDelete('cascade');
             $table->enum('recipient_type', ['school', 'division']);
             $table->unsignedBigInteger('recipient_id'); // Foreign key (manual polymorphic)
-            $table->text('notes')->nullable();
 
             // New columns based on requested headers
             $table->string('contact_person')->nullable();
