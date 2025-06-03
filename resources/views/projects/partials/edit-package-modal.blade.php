@@ -5,6 +5,13 @@
             @csrf
             @method('PUT')
             <h2 class="text-xl font-semibold mb-4">Edit Package</h2>
+           
+            <label class="block mb-1 font-medium">Project</label>
+            <select name="project_id" id="editProjectId" class="w-full mb-3 border px-3 py-2 rounded" required>
+                @foreach ($projects as $project)
+                    <option value="{{ $project->id }}">{{ $project->name }}</option>
+                @endforeach
+            </select>
 
             <label class="block mb-1 font-medium">Package Type</label>
             <select name="package_type_id" id="editPackageTypeId" class="w-full mb-3 border px-3 py-2 rounded">
@@ -31,9 +38,10 @@
 </div>
 
 <script>
-function openEditPackageModal(id, typeId, batch, lot, description) {
+function openEditPackageModal(id, projectId, typeId, batch, lot, description) {
     const form = document.getElementById('editPackageForm');
     form.action = `/packages/${id}`;
+    document.getElementById('editProjectId').value = projectId;
     document.getElementById('editPackageTypeId').value = typeId;
     document.getElementById('editBatch').value = batch;
     document.getElementById('editLot').value = lot;

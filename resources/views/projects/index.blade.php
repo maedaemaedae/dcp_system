@@ -49,18 +49,19 @@
                         <div class="text-sm mb-3">Desc: {{ $package->description }}</div>
 
                         <div class="flex gap-2">
-                            <button
-                                onclick="openEditPackageModal(
-                                    {{ $package->id }},
-                                    {{ $package->package_type_id }},
-                                    '{{ $package->batch }}',
-                                    '{{ $package->lot }}',
-                                    `{{ $package->description }}`
-                                )"
-                                class="bg-yellow-500 text-white px-3 py-1 rounded">
-                                Edit
-                            </button>
-
+                                <button
+                                    onclick="openEditPackageModal(
+                                        {{ $package->id }},
+                                        {{ $package->project_id }},
+                                        {{ $package->package_type_id }},
+                                        '{{ $package->batch }}',
+                                        '{{ $package->lot }}',
+                                        '{{ $package->description }}'
+                                    )"
+                                    class="bg-yellow-500 text-white px-3 py-1 rounded"
+                                >
+                                    Edit
+                                </button>
                             <form action="{{ route('packages.destroy', $package->id) }}" method="POST" onsubmit="return confirm('Delete this package?')">
                                 @csrf
                                 @method('DELETE')
