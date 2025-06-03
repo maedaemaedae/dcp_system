@@ -149,7 +149,7 @@ class RecipientController extends Controller
             $office          = trim($row['Office']);
             $sdoAddress      = trim($row['SDO Address']);
 
-            $regional_office_id = \App\Models\RegionalOffice::where('ro_office', $region)->value('id');
+            $regional_office_id = \App\Models\RegionalOffice::where('ro_office', $region)->value('ro_id');
 
             if (!$regional_office_id || !$divisionId || !$divisionName) {
                 continue;
