@@ -20,8 +20,8 @@ class UnifiedSeeder extends Seeder
         RegionalOffice::insert([
             [
                 'ro_id' => 1,
-                'ro_office' => 'MIMAROPA Regional Office',
-                'ro_address' => 'Calapan City',
+                'ro_office' => 'MIMAROPA Region',
+                'ro_address' => 'Pasig, City',
                 'person_in_charge' => 'Director Maria Lopez',
                 'email' => 'maria.lopez@deped.gov.ph',
                 'contact_no' => '09191234567',
@@ -33,7 +33,7 @@ class UnifiedSeeder extends Seeder
                 'updated_at' => now()
             ],
         ]);
-
+   
         // Division Offices
         DivisionOffice::insert([
             [

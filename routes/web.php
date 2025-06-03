@@ -72,7 +72,8 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/recipients', [RecipientController::class, 'index'])->name('recipients.index');
     Route::post('/recipients', [RecipientController::class, 'store'])->name('recipients.store');
     Route::put('/recipients/{id}', [RecipientController::class, 'update'])->name('recipients.update');
-    Route::delete('/recipients/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
+    Route::delete('/recipients/recipient/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
+    
 
     // ✅ Custom Regional/Division/School CRUD
     Route::post('/recipients/school', [RecipientController::class, 'storeSchool'])->name('recipients.school.store');
@@ -81,15 +82,13 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 
     Route::post('/recipients/division', [RecipientController::class, 'storeDivision'])->name('recipients.division.store');
     Route::put('/recipients/division/{id}', [RecipientController::class, 'updateDivision'])->name('recipients.division.update');
-    Route::delete('/recipients/recipient/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
-
-
+    Route::delete('/recipients/division/{id}', [RecipientController::class, 'destroyDivision'])->name('division.destroy');
+    Route::post('/divisions/import', [RecipientController::class, 'importDivisions'])->name('divisions.import');
+    
     Route::post('/regional-offices', [RegionalOfficeController::class, 'store'])->name('regional-offices.store');
     Route::put('/regional-offices/{id}', [RegionalOfficeController::class, 'update'])->name('regional-offices.update');
     Route::delete('/regional-offices/{id}', [RegionalOfficeController::class, 'destroy'])->name('regional-offices.destroy');
 
-    // ✅ CSV Upload
-    Route::post('/recipients/upload-csv', [RecipientController::class, 'uploadCsv'])->name('recipients.uploadCsv');
 });
 
 

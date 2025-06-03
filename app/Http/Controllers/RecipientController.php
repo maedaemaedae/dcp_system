@@ -127,22 +127,50 @@ class RecipientController extends Controller
         return back()->with('success', 'Division deleted successfully.');
     }
 
-    // CSV Upload
-    public function uploadCsv(Request $request)
+    //CSV Upload
+    public function importDivisions(Request $request)
     {
-        $request->validate([
-            'csv_file' => 'required|file|mimes:csv,txt',
-            'type' => 'required|in:school,division'
-        ]);
+        $request->validate(['csv_file' => 'required|mimes:csv,txt']);
 
-        if ($request->type === 'school') {
-            Excel::import(new SchoolsImport, $request->file('csv_file'));
-        } else {
-            Excel::import(new DivisionsImport, $request->file('csv_file'));
+        $file = fopen($request->file('csv_file'), 'r');
+        $header = fgetcsv($file);
+        $rows = [];
+
+        while (($line = fgetcsv($file)) !== false) {
+            $rows[] = array_combine($header, $line);
         }
 
-        return back()->with('success', 'CSV uploaded successfully.');
+        fclose($file);
+
+        foreach ($rows as $row) {
+            $region          = trim($row['Region']);
+            $divisionId      = trim($row['Division ID']);
+            $divisionName    = trim($row['Division Name']);
+            $office          = trim($row['Office']);
+            $sdoAddress      = trim($row['SDO Address']);
+
+            $regional_office_id = \App\Models\RegionalOffice::where('ro_office', $region)->value('id');
+
+            if (!$regional_office_id || !$divisionId || !$divisionName) {
+                continue;
+            }
+
+            if (\App\Models\DivisionOffice::where('division_id', $divisionId)->exists()) {
+                continue;
+            }
+
+            \App\Models\DivisionOffice::create([
+                'division_id'        => $divisionId,
+                'division_name'      => $divisionName,
+                'office'             => $office,
+                'sdo_address'        => $sdoAddress,
+                'regional_office_id' => $regional_office_id,
+            ]);
+        }
+
+        return back()->with('success', 'Divisions imported successfully.');
     }
+
 
     // Recipient Table CRUD
     public function store(Request $request)
