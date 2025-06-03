@@ -171,6 +171,54 @@ class RecipientController extends Controller
         return back()->with('success', 'Divisions imported successfully.');
     }
 
+    public function importSchools(Request $request)
+    {
+        $request->validate(['csv_file' => 'required|mimes:csv,txt']);
+
+        $file = fopen($request->file('csv_file'), 'r');
+        $header = fgetcsv($file);
+        $rows = [];
+
+        while (($line = fgetcsv($file)) !== false) {
+            $rows[] = array_combine($header, $line);
+        }
+
+        fclose($file);
+
+        foreach ($rows as $row) {
+            $division_name = trim($row['Division']);
+            $school_id     = trim($row['School ID']);
+            $school_name   = trim($row['School Name']);
+            $address       = trim($row['School Address']);
+            $internet      = strtolower(trim($row['Connected to Internet?'] ?? 'no')) === 'yes' ? 1 : 0;
+            $isp           = trim($row['ISP'] ?? '');
+            $electricity   = trim($row['Electricity'] ?? '');
+
+            $division_id = DivisionOffice::where('division_name', $division_name)->value('division_id');
+
+            if (!$division_id || !$school_id || !$school_name) {
+                continue;
+            }
+
+            if (School::where('school_id', $school_id)->exists()) {
+                continue;
+            }
+
+            School::create([
+                'school_id'           => $school_id,
+                'division_id'         => $division_id,
+                'school_name'         => $school_name,
+                'school_address'      => $address,
+                'has_internet'        => $internet,
+                'internet_provider'   => $isp,
+                'electricity_provider'=> $electricity,
+            ]);
+        }
+
+
+        return back()->with('success', 'Schools imported successfully.');
+    }
+
 
     // Recipient Table CRUD
     public function store(Request $request)

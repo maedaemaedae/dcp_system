@@ -79,7 +79,8 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::post('/recipients/school', [RecipientController::class, 'storeSchool'])->name('recipients.school.store');
     Route::put('/recipients/school/{id}', [RecipientController::class, 'updateSchool'])->name('recipients.school.update');
     Route::delete('/recipients/school/{id}', [RecipientController::class, 'destroySchool'])->name('recipients.school.destroy');
-
+    Route::post('/schools/import', [RecipientController::class, 'importSchools'])->name('schools.import');
+    
     Route::post('/recipients/division', [RecipientController::class, 'storeDivision'])->name('recipients.division.store');
     Route::put('/recipients/division/{id}', [RecipientController::class, 'updateDivision'])->name('recipients.division.update');
     Route::delete('/recipients/division/{id}', [RecipientController::class, 'destroyDivision'])->name('division.destroy');

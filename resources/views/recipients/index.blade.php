@@ -112,6 +112,12 @@
                 <div class="bg-white shadow rounded p-4">
                     <h3 class="text-lg font-bold mb-4">School Info</h3>
                     <div class="overflow-x-auto">
+                        <form method="POST" action="{{ route('schools.import') }}" enctype="multipart/form-data" class="mb-6">
+                            @csrf
+                            <label class="block font-semibold mb-2">Upload Schools CSV</label>
+                            <input type="file" name="csv_file" accept=".csv" required class="mb-2 border rounded">
+                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Import Schools</button>
+                        </form>
                         <div class="overflow-x-auto rounded-lg"><table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg overflow-hidden" class="min-w-full text-sm text-left border border-gray-200">
                             <th class="px-4 py-2 border"ead class="bg-gray-100 text-gray-700 uppercase text-xs" class="bg-gray-100">
                                 <tr>
