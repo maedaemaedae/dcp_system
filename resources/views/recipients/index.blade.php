@@ -6,7 +6,11 @@
     </x-slot>
 
         <div class="p-6 space-y-12">
-
+                @if(session('success'))
+                    <div class="bg-green-100 text-green-800 border border-green-300 rounded p-3 mb-4">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <!-- ✅ Add Dropdown -->
                 <div class="relative mb-4">
                     <button onclick="toggleAddDropdown()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
@@ -198,15 +202,10 @@
                                             <td class="px-4 py-2 border">{{ $r->modifier->name ?? '—' }}</td>
                                             <td class="px-4 py-2 border">{{ $r->updated_at->format('Y-m-d') }}</td>
                                             <td class="px-4 py-2 border">
-                                                <button onclick="openEditModal(
-                                                    {{ $r->id }},
-                                                    '{{ $r->package_id }}',
-                                                    '{{ $r->recipient_type }}',
-                                                    '{{ $r->recipient_id }}',
-                                                    `{{ $r->contact_person }}`,
-                                                    `{{ $r->position }}`,
-                                                    `{{ $r->contact_number }}`,
-                                                )" class="text-blue-600 hover:underline">
+                                                <button 
+                                                    onclick="openEditRecipientModal({{ $r->id }}, '{{ $r->contact_person }}', '{{ $r->position }}', '{{ $r->contact_number }}', {{ $r->quantity }})"
+                                                    class="text-blue-600 hover:underline"
+                                                >
                                                     Edit
                                                 </button>
                                             </td>
@@ -304,6 +303,30 @@
             if (modal) {
                 modal.classList.add('hidden');
             }
+        }
+
+        function openEditRecipientModal(id, contact_person, position, contact_number, quantity) {
+            const form = document.getElementById('editRecipientForm');
+            form.action = `/recipients/${id}`;
+
+            document.getElementById('edit_contact_person').value = contact_person;
+            document.getElementById('edit_position').value = position;
+            document.getElementById('edit_contact_number').value = contact_number;
+            document.getElementById('edit_quantity').value = quantity;
+
+            openModal('editRecipientModal');
+        }
+
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
 
         function openDeleteModal(type, id) {
