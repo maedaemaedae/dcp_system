@@ -33,55 +33,22 @@ class UnifiedSeeder extends Seeder
                 'updated_at' => now()
             ],
         ]);
-   
-        // Division Offices
-        DivisionOffice::insert([
-            [
-                'division_id' => 1,
-                'division_name' => 'Palawan',
-                'regional_office_id' => 1,
-                'sdo_address' => 'Puerto Princesa City',
-                'office' => 'Palawan Regional Office',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
-        ]);
 
-        // Schools
-        School::insert([
-            [
-                'school_id' => 101,
-                'division_id' => 1,
-                'school_name' => 'Calapan Elementary School',
-                'school_address' => 'Calapan City',
-                'has_internet' => true,
-                'internet_provider' => 'PLDT',
-                'electricity_provider' => 'Meralco',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'school_id' => 102,
-                'division_id' => 1,
-                'school_name' => 'Roxas National High School',
-                'school_address' => 'Roxas, Palawan',
-                'has_internet' => false,
-                'internet_provider' => null,
-                'electricity_provider' => 'Paleco',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
-        ]);
 
         // Projects
         Project::insert([
             [
-                'name' => 'Digital Education Rollout Phase 1',
+                'name' => 'DCP L4T 2025',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'DepEd ICT Enhancement 2024',
+                'name' => 'DCP STV 2025',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'DCP L4NT 2025',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
@@ -114,28 +81,28 @@ class UnifiedSeeder extends Seeder
         [
             'package_type_id' => 1, // L4T
             'item_name' => 'Laptop',
-            'quantity' => 30,
-            'created_at' => now(),
-            'updated_at' => now()
-        ],
-        [
-            'package_type_id' => 1, // L4T
-            'item_name' => 'Router',
-            'quantity' => 1,
+            'quantity' => 5,
             'created_at' => now(),
             'updated_at' => now()
         ],
         [
             'package_type_id' => 2, // STV
             'item_name' => 'Smart TV',
-            'quantity' => 2,
+            'quantity' => 5,
             'created_at' => now(),
             'updated_at' => now()
         ],
         [
-            'package_type_id' => 3, // L4NT
-            'item_name' => 'Tablet',
+            'package_type_id' => 2, // STV
+            'item_name' => 'External Hard Drive',
             'quantity' => 50,
+            'created_at' => now(),
+            'updated_at' => now()
+        ],
+             [
+            'package_type_id' => 3, // L4NT
+            'item_name' => 'Laptop',
+            'quantity' => 1,
             'created_at' => now(),
             'updated_at' => now()
         ],
@@ -151,20 +118,22 @@ class UnifiedSeeder extends Seeder
                 'project_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now()
-            ]
-        ]);
-
-        // Recipients
-        Recipient::insert([
+            ],
             [
-                'package_id' => 1,
-                'recipient_type' => 'school',
-                'recipient_id' => 101,
-                'contact_person' => 'Mr. Juan Dela Cruz',
-                'quantity' => 3,
-                'position' => 'Principal',
-                'contact_number' => '09170001111',
-                'created_by' => 1,
+                'id' => 2,
+                'project_id' => 2,
+                'package_type_id' => 2,
+                'description' => 'PKG-MIM-002',
+                'project_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+                        [
+                'id' => 3,
+                'project_id' => 3,
+                'package_type_id' => 3,
+                'description' => 'PKG-MIM-003',
+                'project_id' => 3,
                 'created_at' => now(),
                 'updated_at' => now()
             ]
