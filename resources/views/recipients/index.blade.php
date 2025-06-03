@@ -208,6 +208,12 @@
                                                 >
                                                     Edit
                                                 </button>
+                                                <button 
+                                                    onclick="openDeleteModal('recipient', {{ $r->id }})" 
+                                                    class="text-red-600 hover:underline"
+                                                >
+                                                    Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach

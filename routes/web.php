@@ -81,7 +81,8 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 
     Route::post('/recipients/division', [RecipientController::class, 'storeDivision'])->name('recipients.division.store');
     Route::put('/recipients/division/{id}', [RecipientController::class, 'updateDivision'])->name('recipients.division.update');
-    Route::delete('/recipients/division/{id}', [RecipientController::class, 'destroyDivision'])->name('recipients.division.destroy');
+    Route::delete('/recipients/recipient/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
+
 
     Route::post('/regional-offices', [RegionalOfficeController::class, 'store'])->name('regional-offices.store');
     Route::put('/regional-offices/{id}', [RegionalOfficeController::class, 'update'])->name('regional-offices.update');
