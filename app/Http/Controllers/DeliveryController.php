@@ -26,20 +26,24 @@ class DeliveryController extends Controller
     {
         $request->validate([
             'recipient_id' => 'required|exists:recipients,id',
-            'supplier_id' => 'required|exists:users,id',
+            'supplier_id'  => 'required|exists:users,id',
             'target_delivery' => 'nullable|date',
         ]);
 
+        $recipient = Recipient::findOrFail($request->recipient_id); // ✅ define it here
+
         Delivery::create([
-            'recipient_id' => $request->recipient_id,
-            'supplier_id' => $request->supplier_id,
-            'status' => 'pending',
+            'recipient_id'    => $request->recipient_id,
+            'supplier_id'     => $request->supplier_id,
+            'quantity'        => $recipient->quantity, // ✅ now safe to use
+            'status'          => 'pending',
             'target_delivery' => $request->target_delivery,
-            'created_by' => auth()->id(),
+            'created_by'      => auth()->id(),
         ]);
 
         return back()->with('success', 'Delivery assignment recorded.');
     }
+
 
     public function list()
     {
