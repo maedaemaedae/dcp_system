@@ -10,24 +10,32 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Seed roles first
+        // ✅ Step 1: Seed roles
         $this->call([
             RoleSeeder::class,
         ]);
 
-        // 2. Then create the Super Admin user
-        $user = User::create([
+        // ✅ Step 2: Create Super Admin
+        User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@example.com',
             'password' => Hash::make('password'),
-            'role_id' => 1, // safe now because roles table is seeded
+            'role_id' => 1,
         ]);
 
+        // ✅ Step 3: Create Supplier
+        User::create([
+            'name' => 'Supplier Test',
+            'email' => 'supplier@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => 6,
+            'is_activated' => true,
+        ]);
+
+        // ✅ Step 4: Other seeders
         $this->call([
-            RoleSeeder::class,
             UnifiedSeeder::class,
-            //SchoolSeeder::class,
+            // SchoolSeeder::class,
         ]);
-
     }
 }

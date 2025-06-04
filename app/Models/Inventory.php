@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\DivisionOffice;
+use App\Models\School;
+use App\Models\DivisionOffice; // or App\Models\Division if you made an alias
 use Illuminate\Database\Eloquent\Model;
 
 class Inventory extends Model
@@ -18,7 +19,7 @@ class Inventory extends Model
 
     public function school()
     {
-        return $this->belongsTo(School::class);
+        return $this->belongsTo(School::class, 'school_id', 'school_id');
     }
 
     public function division()

@@ -79,22 +79,29 @@ class DeliveryController extends Controller
             'proof_file' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $delivery = Delivery::with('recipient.package.packageType')->where('id', $id)
+        $delivery = Delivery::with('recipient.package.packageType', 'recipient.school', 'recipient.division')
+            ->where('id', $id)
             ->where('supplier_id', auth()->id())
             ->where('status', 'pending')
             ->firstOrFail();
 
-        // Store proof
+        // Store proof file
         $path = $request->file('proof_file')->store('proofs', 'public');
 
-        // ✅ Auto-create inventory entries
-        $packageTypeId = $delivery->recipient->package->package_type_id;
+        // Determine recipient location
+        $recipient = $delivery->recipient;
+        $schoolId = $recipient->recipient_type === 'school' ? optional($recipient->school)->school_id : null;
+        $divisionId = $recipient->recipient_type === 'division' ? optional($recipient->division)->division_id : null;
+
+        // Fetch contents of the package
+        $packageTypeId = $recipient->package->package_type_id;
         $contents = PackageContent::where('package_type_id', $packageTypeId)->get();
 
+        // Create inventory records based on package contents
         foreach ($contents as $content) {
             Inventory::create([
-                'school_id'    => $delivery->recipient->school_id,
-                'division_id'  => $delivery->recipient->division_id,
+                'school_id'    => $schoolId,
+                'division_id'  => $divisionId,
                 'item_name'    => $content->item_name,
                 'quantity'     => $content->quantity * $delivery->quantity,
                 'status'       => 'in use',
@@ -102,7 +109,7 @@ class DeliveryController extends Controller
             ]);
         }
 
-        // Finalize delivery
+        // Finalize the delivery
         $delivery->proof_file = $path;
         $delivery->status = 'delivered';
         $delivery->save();
