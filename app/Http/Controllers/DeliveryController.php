@@ -2,52 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Recipient;
+use App\Models\User;
 use App\Models\Delivery;
 use Illuminate\Http\Request;
 
 class DeliveryController extends Controller
 {
-
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->input('search');
+        $recipients = Recipient::with(['package.packageType', 'school', 'division'])
+            ->doesntHave('deliveries') // ✅ uses hasMany relationship
+            ->get();
 
-        $deliveries = \App\Models\Delivery::with(['project', 'school', 'package.packageType'])
-            ->get()
-            ->filter(function ($delivery) use ($search) {
-                if (!$search) return true;
+        $suppliers = User::whereHas('role', fn($q) => $q->where('role_name', 'supplier'))->get();
 
-                $search = strtolower($search);
-
-                return str_contains(strtolower($delivery->school->school_name ?? ''), $search)
-                    || str_contains(strtolower($delivery->package->packageType->name ?? ''), $search)
-                    || str_contains(strtolower($delivery->status ?? ''), $search)
-                    || str_contains(strtolower($delivery->project->name ?? ''), $search);
-            });
-
-        $deliveries = $deliveries->sortBy(function ($delivery) {
-            return $delivery->project->name ?? '';
-        });
-
-        return view('deliveries.index', compact('deliveries', 'search'));
+        return view('superadmin.deliveries.index', compact('recipients', 'suppliers'));
     }
 
-    public function edit(Delivery $delivery)
+    public function assign(Request $request)
     {
-        return view('deliveries.edit', compact('delivery'));
-    }
-
-    public function update(Request $request, Delivery $delivery)
-    {
-        $validated = $request->validate([
-            'status' => 'required|string',
-            'delivery_date' => 'nullable|date',
-            'arrival_date' => 'nullable|date',
-            'remarks' => 'nullable|string',
+        $request->validate([
+            'recipient_id' => 'required|exists:recipients,id',
+            'supplier_id' => 'required|exists:users,id',
+            'target_delivery' => 'nullable|date',
         ]);
 
-        $delivery->update($validated);
+        Delivery::create([
+            'recipient_id' => $request->recipient_id,
+            'supplier_id' => $request->supplier_id,
+            'status' => 'pending',
+            'target_delivery' => $request->target_delivery,
+            'created_by' => auth()->id(),
+        ]);
 
-        return redirect()->route('deliveries.index')->with('success', 'Delivery updated successfully.');
+        return back()->with('success', 'Delivery assignment recorded.');
     }
 }

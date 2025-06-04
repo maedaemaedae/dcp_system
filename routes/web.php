@@ -67,7 +67,8 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::delete('/packages/{id}', [PackageController::class, 'destroy'])->name('packages.destroy');
 
     // ✅ Deliveries (limited to index/edit/update)
-    Route::resource('deliveries', DeliveryController::class)->only(['index', 'edit', 'update']);
+    Route::get('/superadmin/deliveries', [DeliveryController::class, 'index'])->name('superadmin.deliveries.index');
+    Route::post('/superadmin/deliveries/assign', [DeliveryController::class, 'assign'])->name('superadmin.deliveries.assign');
 
     //Regional Office
     Route::post('/regional-offices/import-csv', [RegionalOfficeController::class, 'importRegionalOffices'])

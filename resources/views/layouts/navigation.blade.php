@@ -44,13 +44,15 @@
                             {{ __('Projects') }}
                         </x-nav-link>
                         
+                        <x-nav-link :href="route('superadmin.deliveries.index')" :active="request()->routeIs('superadmin.deliveries.index')">
+                            {{ __('Deliveries') }}
+                        </x-nav-link>
+                        
                         <x-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.*')">
                             {{ __('Inventory') }}
                         </x-nav-link>
                         
-                        <x-nav-link :href="route('deliveries.index')" :active="request()->routeIs('deliveries.*')">
-                            {{ __('Deliveries') }}
-                        </x-nav-link>
+             
 
                     @endif
 

@@ -45,5 +45,9 @@ class Recipient extends Model
             return $this->belongsTo(User::class, 'modified_by');
         }
 
+        public function deliveries()
+        {
+            return $this->hasMany(\App\Models\Delivery::class);
+        }
 }
 
