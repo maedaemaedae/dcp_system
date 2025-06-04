@@ -51,15 +51,12 @@
                         <x-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.*')">
                             {{ __('Inventory') }}
                         </x-nav-link>
-                        
-             
-
                     @endif
 
                     {{-- ✅ Supplier Links  --}}
                     @if ($user && $user->role_id === 6)
-                        <x-nav-link :href="route('supplier.deliveries.index')" :active="request()->routeIs('supplier.deliveries.*')">
-                            {{ __('Deliveries') }}
+                        <x-nav-link :href="route('supplier.deliveries')" :active="request()->routeIs('supplier.deliveries')">
+                            {{ __('My Deliveries') }}
                         </x-nav-link>
                     @endif
                 </div>
