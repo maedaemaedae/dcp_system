@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Recipient;
 use App\Models\User;
 use App\Models\Delivery;
+use App\Models\PackageContent;
+use App\Models\Inventory;
 use Illuminate\Http\Request;
 
 class DeliveryController extends Controller
@@ -77,18 +79,35 @@ class DeliveryController extends Controller
             'proof_file' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $delivery = Delivery::where('id', $id)
+        $delivery = Delivery::with('recipient.package.packageType')->where('id', $id)
             ->where('supplier_id', auth()->id())
             ->where('status', 'pending')
             ->firstOrFail();
 
+        // Store proof
         $path = $request->file('proof_file')->store('proofs', 'public');
 
+        // ✅ Auto-create inventory entries
+        $packageTypeId = $delivery->recipient->package->package_type_id;
+        $contents = PackageContent::where('package_type_id', $packageTypeId)->get();
+
+        foreach ($contents as $content) {
+            Inventory::create([
+                'school_id'    => $delivery->recipient->school_id,
+                'division_id'  => $delivery->recipient->division_id,
+                'item_name'    => $content->item_name,
+                'quantity'     => $content->quantity * $delivery->quantity,
+                'status'       => 'in use',
+                'remarks'      => $content->description,
+            ]);
+        }
+
+        // Finalize delivery
         $delivery->proof_file = $path;
         $delivery->status = 'delivered';
         $delivery->save();
 
-        return redirect()->route('supplier.deliveries')->with('success', 'Delivery marked as delivered with proof.');
+        return redirect()->route('supplier.deliveries')->with('success', 'Delivery confirmed and inventory recorded.');
     }
 
 }

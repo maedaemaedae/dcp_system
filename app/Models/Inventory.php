@@ -2,25 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\DivisionOffice;
 use Illuminate\Database\Eloquent\Model;
 
 class Inventory extends Model
 {
-    use HasFactory;
-
-    protected $table = 'inventory';
-    protected $primaryKey = 'item_id';
-
     protected $fillable = [
+        'school_id',
+        'division_id',
         'item_name',
-        'description',
-        'quantity', // ✅ Add this line
-        'created_by',
-        'created_date',
-        'modified_by',
-        'modified_date',
+        'quantity',
+        'status',
+        'remarks',
     ];
-    
-    
+
+    public function school()
+    {
+        return $this->belongsTo(School::class);
+    }
+
+    public function division()
+    {
+        return $this->belongsTo(DivisionOffice::class, 'division_id', 'division_id');
+    }
 }
