@@ -32,17 +32,34 @@
                         <td class="px-4 py-2">{{ $delivery->target_delivery ?? '—' }}</td>
                         <td class="px-4 py-2 capitalize">{{ $delivery->status }}</td>
                         <td class="px-4 py-2">
-                            @if ($delivery->status === 'pending')
-                                <form method="POST" action="{{ route('supplier.deliveries.confirm', $delivery->id) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">
-                                        Mark as Delivered
-                                    </button>
-                                </form>
-                            @else
-                                <span class="text-green-700 font-semibold">Delivered</span>
-                            @endif
+                        @if ($delivery->status === 'pending')
+                            <form method="POST"
+                                action="{{ route('supplier.deliveries.confirm', $delivery->id) }}"
+                                enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+
+                                @if ($errors->any())
+                                    <div class="mb-2 text-red-600 text-sm">
+                                        {{ $errors->first('proof_file') }}
+                                    </div>
+                                @endif
+
+                                <input type="file"
+                                    name="proof_file"
+                                    accept="image/*"
+                                    required
+                                    class="mb-2 block text-sm text-gray-600"
+                                    onchange="if(this.files[0].size > 2 * 1024 * 1024) { alert('Image must be less than 2MB'); this.value = ''; }" />
+
+                                <button type="submit"
+                                        class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">
+                                    Mark as Delivered
+                                </button>
+                            </form>
+                        @else
+                            <span class="text-green-700 font-semibold">Delivered</span>
+                        @endif
                         </td>
                     </tr>
                 @endforeach

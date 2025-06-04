@@ -71,19 +71,24 @@ class DeliveryController extends Controller
         return view('supplier.deliveries.index', compact('deliveries'));
     }
 
-    public function confirmDelivery($id)
+    public function confirmDelivery(Request $request, $id)
     {
+        $request->validate([
+            'proof_file' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
         $delivery = Delivery::where('id', $id)
             ->where('supplier_id', auth()->id())
             ->where('status', 'pending')
             ->firstOrFail();
 
+        $path = $request->file('proof_file')->store('proofs', 'public');
+
+        $delivery->proof_file = $path;
         $delivery->status = 'delivered';
         $delivery->save();
 
-        return redirect()->route('supplier.deliveries')->with('success', 'Delivery marked as delivered.');
+        return redirect()->route('supplier.deliveries')->with('success', 'Delivery marked as delivered with proof.');
     }
-
-
 
 }

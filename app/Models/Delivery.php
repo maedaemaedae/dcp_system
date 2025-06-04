@@ -15,6 +15,7 @@ class Delivery extends Model
         'status',
         'target_delivery',
         'created_by',
+        'proof_file',
     ];
 
     // Relationships

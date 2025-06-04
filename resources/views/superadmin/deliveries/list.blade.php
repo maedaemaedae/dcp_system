@@ -16,6 +16,7 @@
                     <th class="px-4 py-2">Target Delivery</th>
                     <th class="px-4 py-2">Status</th>
                     <th class="px-4 py-2">Created By</th>
+                    <th class="px-4 py-2">Proof of Delivery</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -42,6 +43,15 @@
                             </form>
                         </td>
                         <td class="px-4 py-2">{{ $delivery->creator->name ?? '—' }}</td>
+                        <td class="px-4 py-2">
+                            @if ($delivery->proof_file)
+                                <img src="{{ asset('storage/' . $delivery->proof_file) }}"
+                                    alt="Proof"
+                                    class="h-16 w-auto rounded border" />
+                            @else
+                                <span class="text-gray-400">—</span>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
