@@ -69,6 +69,8 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     // ✅ Deliveries (limited to index/edit/update)
     Route::get('/superadmin/deliveries', [DeliveryController::class, 'index'])->name('superadmin.deliveries.index');
     Route::post('/superadmin/deliveries/assign', [DeliveryController::class, 'assign'])->name('superadmin.deliveries.assign');
+    Route::get('/superadmin/deliveries/list', [DeliveryController::class, 'list'])->name('superadmin.deliveries.list');
+
 
     //Regional Office
     Route::post('/regional-offices/import-csv', [RegionalOfficeController::class, 'importRegionalOffices'])

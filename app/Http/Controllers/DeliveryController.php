@@ -38,4 +38,14 @@ class DeliveryController extends Controller
 
         return back()->with('success', 'Delivery assignment recorded.');
     }
+
+    public function list()
+    {
+        $deliveries = Delivery::with(['recipient.school', 'recipient.division', 'recipient.package.packageType', 'supplier', 'creator'])
+            ->latest()
+            ->get();
+
+        return view('superadmin.deliveries.list', compact('deliveries'));
+    }
+
 }

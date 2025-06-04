@@ -7,6 +7,12 @@
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
             Assign Deliveries to Suppliers
         </h2>
+
+        <a href="{{ route('superadmin.deliveries.list') }}"
+        class="inline-block mt-2 mb-4 text-sm text-blue-600 hover:text-blue-800 underline">
+            → View Assigned Deliveries
+        </a>
+
     </x-slot>
 
     <div class="p-6">
