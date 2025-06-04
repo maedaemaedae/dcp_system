@@ -16,7 +16,13 @@ class RecipientController extends Controller
 {
     public function index()
     {
-        $recipients = Recipient::with(['package.packageType', 'creator', 'modifier'])
+        $recipients = Recipient::with([
+            'package.packageType',
+            'creator',
+            'modifier',
+            'school.division.regionalOffice',
+            'division.regionalOffice'
+        ])
             ->get()
             ->map(function ($recipient) {
                 $recipient->school_office_name = $recipient->recipient_type === 'school'
@@ -218,7 +224,7 @@ class RecipientController extends Controller
         return back()->with('success', 'Schools imported successfully.');
     }
 
-    
+
     public function importRecipients(Request $request)
     {
         $request->validate(['csv_file' => 'required|mimes:csv,txt']);
