@@ -16,25 +16,6 @@ class UnifiedSeeder extends Seeder
 {
     public function run(): void
     {
-        // Regional Offices
-        RegionalOffice::insert([
-            [
-                'ro_id' => 1,
-                'ro_office' => 'MIMAROPA Region',
-                'ro_address' => 'Pasig, City',
-                'person_in_charge' => 'Director Maria Lopez',
-                'email' => 'maria.lopez@deped.gov.ph',
-                'contact_no' => '09191234567',
-                'created_by' => 'Seeder',
-                'created_date' => now(),
-                'modified_by' => null,
-                'modified_date' => null,
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-        ]);
-
-
         // Projects
         Project::insert([
             [

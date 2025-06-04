@@ -69,6 +69,10 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     // ✅ Deliveries (limited to index/edit/update)
     Route::resource('deliveries', DeliveryController::class)->only(['index', 'edit', 'update']);
 
+    //Regional Office
+    Route::post('/regional-offices/import-csv', [RegionalOfficeController::class, 'importRegionalOffices'])
+    ->name('regional-offices.import.csv');
+    
     // ✅ Recipients
     Route::get('/recipients', [RecipientController::class, 'index'])->name('recipients.index');
     Route::post('/recipients', [RecipientController::class, 'store'])->name('recipients.store');

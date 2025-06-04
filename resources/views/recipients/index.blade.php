@@ -28,6 +28,12 @@
                 <div class="bg-white shadow rounded p-4">
                     <h3 class="text-lg font-bold mb-4">Regional Office Info</h3>
                     <div class="overflow-x-auto">
+                        <form method="POST" action="{{ route('regional-offices.import.csv') }}" enctype="multipart/form-data" class="mb-6">
+                            @csrf
+                            <label class="block font-semibold mb-2">Upload Regional Offices CSV</label>
+                            <input type="file" name="csv_file" accept=".csv" required class="mb-2 border rounded">
+                            <button type="submit" class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded">Import Regional Offices</button>
+                        </form>
                         <div class="overflow-x-auto rounded-lg">
                             <table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg overflow-hidden">
                                 <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
@@ -249,7 +255,9 @@
     @include('recipients.partials.create-division-office-modal')
     @include('recipients.partials.edit-division-office-modal')
     @include('recipients.partials.create-regional-office-modal')
+    @foreach ($regionalOffices as $ro)
     @include('recipients.partials.edit-regional-office-modal', ['ro' => $ro])
+    @endforeach
     @include('recipients.partials.create-recipient-modal')
     @include('recipients.partials.edit-recipient-modal')
 

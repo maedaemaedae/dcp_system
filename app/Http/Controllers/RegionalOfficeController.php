@@ -70,6 +70,47 @@ class RegionalOfficeController extends Controller
         return back()->with('success', 'Regional office updated successfully.');
     }
 
+    public function importRegionalOffices(Request $request)
+    {
+        $request->validate(['csv_file' => 'required|mimes:csv,txt']);
+
+        $file = fopen($request->file('csv_file'), 'r');
+        $header = fgetcsv($file);
+        $rows = [];
+
+        while (($line = fgetcsv($file)) !== false) {
+            $rows[] = array_combine($header, $line);
+        }
+
+        fclose($file);
+
+        foreach ($rows as $row) {
+            $data = [
+                'ro_id'            => trim($row['RO ID'] ?? ''),
+                'ro_office'        => trim($row['RO Office'] ?? ''),
+                'ro_address'       => trim($row['RO Address'] ?? ''),
+                'person_in_charge' => trim($row['Person In Charge'] ?? ''),
+                'email'            => trim($row['Email'] ?? ''),
+                'contact_no'       => trim($row['Contact No'] ?? ''),
+                'created_by'       => auth()->id(), // ✅ fallback from Seeder
+                'created_date'     => now(),
+            ];
+
+            // Skip if required fields are missing
+            if (empty($data['ro_id']) || empty($data['ro_office']) || empty($data['email'])) {
+                continue;
+            }
+
+            if (\App\Models\RegionalOffice::where('ro_id', $data['ro_id'])->exists()) {
+                continue;
+            }
+
+            \App\Models\RegionalOffice::create($data);
+        }
+
+        return back()->with('success', 'Regional offices imported successfully.');
+    }
+
     public function destroy($id)
     {
         $regionalOffice = RegionalOffice::findOrFail($id);
