@@ -215,8 +215,67 @@ class RecipientController extends Controller
             ]);
         }
 
-
         return back()->with('success', 'Schools imported successfully.');
+    }
+
+    
+    public function importRecipients(Request $request)
+    {
+        $request->validate(['csv_file' => 'required|mimes:csv,txt']);
+
+        $file = fopen($request->file('csv_file'), 'r');
+        $header = fgetcsv($file);
+        $rows = [];
+
+        while (($line = fgetcsv($file)) !== false) {
+            $rows[] = array_combine($header, $line);
+        }
+
+        fclose($file);
+
+        foreach ($rows as $row) {
+            $recipientType   = strtolower(trim($row['Recipient Type'] ?? ''));
+            $recipientId     = trim($row['Recipient ID'] ?? '');
+            $packageId       = trim($row['Package ID'] ?? '');
+            $contactPerson   = trim($row['Contact Person'] ?? '');
+            $position        = trim($row['Position'] ?? '');
+            $contactNumber   = trim($row['Contact Number'] ?? '');
+            $quantity        = trim($row['Quantity'] ?? '');
+
+            // Basic validation
+            if (!$recipientType || !$recipientId || !$packageId || !$contactPerson || !$position || !$contactNumber || !$quantity) {
+                continue;
+            }
+
+            // Check if package exists
+            if (!\App\Models\Package::find($packageId)) {
+                continue;
+            }
+
+            // Check if recipient ID is valid depending on type
+            $isValidRecipient = match ($recipientType) {
+                'school' => \App\Models\School::where('school_id', $recipientId)->exists(),
+                'division' => \App\Models\DivisionOffice::where('division_id', $recipientId)->exists(),
+                default => false,
+            };
+
+            if (!$isValidRecipient) {
+                continue;
+            }
+
+            \App\Models\Recipient::create([
+                'recipient_type'  => $recipientType,
+                'recipient_id'    => $recipientId,
+                'package_id'      => $packageId,
+                'contact_person'  => $contactPerson,
+                'position'        => $position,
+                'contact_number'  => $contactNumber,
+                'quantity'        => $quantity,
+                'created_by'      => auth()->id(),
+            ]);
+        }
+
+        return back()->with('success', 'Recipients imported successfully.');
     }
 
 

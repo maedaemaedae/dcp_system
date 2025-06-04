@@ -73,6 +73,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/recipients', [RecipientController::class, 'index'])->name('recipients.index');
     Route::post('/recipients', [RecipientController::class, 'store'])->name('recipients.store');
     Route::put('/recipients/{id}', [RecipientController::class, 'update'])->name('recipients.update');
+    Route::post('/recipients/import-csv', [RecipientController::class, 'importRecipients'])->name('recipients.import.csv');
     Route::delete('/recipients/recipient/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
     
 
