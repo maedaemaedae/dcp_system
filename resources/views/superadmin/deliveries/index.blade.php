@@ -41,16 +41,17 @@
                                 </select>
                         </td>
                         <td class="px-4 py-2">
-                                <input type="date" name="target_delivery" class="border rounded px-2 py-1 w-full">
+                            <input type="date" name="target_delivery" class="border rounded px-2 py-1 w-full">
                         </td>
                         <td class="px-4 py-2">
                                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">
                                     Assign
                                 </button>
-                            </form>
+                            </form> {{-- Close form after all fields --}}
                         </td>
                     </tr>
                 @endforeach
+
             </tbody>
         </table>
     </div>

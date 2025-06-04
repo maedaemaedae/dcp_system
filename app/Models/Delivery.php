@@ -2,28 +2,34 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Delivery extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'project_id', 'school_id', 'package_id',
-        'status', 'delivery_date', 'arrival_date', 'remarks', 'proof_path',
+        'recipient_id',
+        'supplier_id',
+        'status',
+        'target_delivery',
+        'created_by',
     ];
 
-    public function project()
+    // Relationships
+    public function recipient()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Recipient::class);
     }
 
-    public function school()
+    public function supplier()
     {
-        return $this->belongsTo(School::class, 'school_id', 'school_id');
+        return $this->belongsTo(User::class, 'supplier_id');
     }
 
-    public function package()
+    public function creator()
     {
-        return $this->belongsTo(Package::class);
+        return $this->belongsTo(User::class, 'created_by');
     }
 }
-
