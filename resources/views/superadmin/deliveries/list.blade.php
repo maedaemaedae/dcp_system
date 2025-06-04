@@ -30,7 +30,17 @@
                         <td class="px-4 py-2">{{ $delivery->recipient->quantity }}</td>
                         <td class="px-4 py-2">{{ $delivery->supplier->name }}</td>
                         <td class="px-4 py-2">{{ $delivery->target_delivery ?? '—' }}</td>
-                        <td class="px-4 py-2 capitalize">{{ $delivery->status }}</td>
+                        <td class="px-4 py-2">
+                            <form action="{{ route('superadmin.deliveries.updateStatus', $delivery->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <select name="status" onchange="this.form.submit()" class="border px-2 py-1 rounded">
+                                    <option value="pending" {{ $delivery->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="delivered" {{ $delivery->status === 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                    <option value="cancelled" {{ $delivery->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                </select>
+                            </form>
+                        </td>
                         <td class="px-4 py-2">{{ $delivery->creator->name ?? '—' }}</td>
                     </tr>
                 @endforeach

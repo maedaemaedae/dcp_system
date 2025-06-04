@@ -48,4 +48,17 @@ class DeliveryController extends Controller
         return view('superadmin.deliveries.list', compact('deliveries'));
     }
 
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,delivered,cancelled',
+        ]);
+
+        $delivery = Delivery::findOrFail($id);
+        $delivery->status = $request->status;
+        $delivery->save();
+
+        return redirect()->route('superadmin.deliveries.list')->with('success', 'Delivery status updated.');
+    }
+
 }

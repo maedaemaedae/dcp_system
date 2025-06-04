@@ -70,7 +70,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/deliveries', [DeliveryController::class, 'index'])->name('superadmin.deliveries.index');
     Route::post('/superadmin/deliveries/assign', [DeliveryController::class, 'assign'])->name('superadmin.deliveries.assign');
     Route::get('/superadmin/deliveries/list', [DeliveryController::class, 'list'])->name('superadmin.deliveries.list');
-
+    Route::put('/superadmin/deliveries/{id}/status', [DeliveryController::class, 'updateStatus'])->name('superadmin.deliveries.updateStatus');
 
     //Regional Office
     Route::post('/regional-offices/import-csv', [RegionalOfficeController::class, 'importRegionalOffices'])
