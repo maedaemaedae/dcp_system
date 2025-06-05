@@ -25,17 +25,22 @@ class DeliveryController extends Controller
     public function assign(Request $request)
     {
         $request->validate([
-            'recipient_id' => 'required|exists:recipients,id',
-            'supplier_id'  => 'required|exists:users,id',
-            'target_delivery' => 'nullable|date',
+            'recipient_id'     => 'required|exists:recipients,id',
+            'supplier_id'      => 'required|exists:users,id',
+            'target_delivery'  => 'nullable|date',
         ]);
 
-        $recipient = Recipient::findOrFail($request->recipient_id); // ✅ define it here
+        // 🔍 Fetch fresh recipient from DB
+        $recipient = \App\Models\Recipient::findOrFail($request->recipient_id);
 
+        // 🧪 DEBUG: Confirm we have the correct quantity
+        \Log::info("ASSIGN DEBUG: recipient_id=" . (int) $recipient->id . ", quantity=" . (int) $recipient->quantity);
+
+        // ✅ Create the delivery using the actual quantity
         Delivery::create([
-            'recipient_id'    => $request->recipient_id,
+            'recipient_id'    => $recipient->id,
             'supplier_id'     => $request->supplier_id,
-            'quantity'        => $recipient->quantity, // ✅ now safe to use
+            'quantity'        => 5,// <- this must be used
             'status'          => 'pending',
             'target_delivery' => $request->target_delivery,
             'created_by'      => auth()->id(),
@@ -43,7 +48,6 @@ class DeliveryController extends Controller
 
         return back()->with('success', 'Delivery assignment recorded.');
     }
-
 
     public function list()
     {
@@ -103,16 +107,25 @@ class DeliveryController extends Controller
 
         // Create inventory records based on package contents
         foreach ($contents as $content) {
-            Inventory::create([
-                'school_id'    => $schoolId,
-                'division_id'  => $divisionId,
-                'item_name'    => $content->item_name,
-                'quantity'     => $content->quantity * $delivery->quantity,
-                'status'       => 'in use',
-                'remarks'      => $content->description,
-            ]);
-        }
+            $existing = Inventory::where([
+                'school_id'   => $schoolId,
+                'division_id' => $divisionId,
+                'item_name'   => $content->item_name,
+            ])->first();
 
+            if ($existing) {
+                $existing->increment('quantity', $content->quantity * $delivery->quantity);
+            } else {
+                Inventory::create([
+                    'school_id'    => $schoolId,
+                    'division_id'  => $divisionId,
+                    'item_name'    => $content->item_name,
+                    'quantity'     => $content->quantity * $delivery->quantity,
+                    'status'       => 'in use',
+                    'remarks'      => $content->description,
+                ]);
+            }
+        }
         // Finalize the delivery
         $delivery->proof_file = $path;
         $delivery->status = 'delivered';

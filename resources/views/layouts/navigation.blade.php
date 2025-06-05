@@ -36,12 +36,12 @@
                             {{ __('User Management') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('recipients.index')" ...>
-                            {{ __('Recipients') }}
-                        </x-nav-link>
-
                         <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                             {{ __('Projects') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('recipients.index')" ...>
+                            {{ __('Recipients') }}
                         </x-nav-link>
                         
                         <x-nav-link :href="route('superadmin.deliveries.index')" :active="request()->routeIs('superadmin.deliveries.index')">

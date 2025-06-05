@@ -76,7 +76,7 @@ class UnifiedSeeder extends Seeder
         [
             'package_type_id' => 2, // STV
             'item_name' => 'External Hard Drive',
-            'quantity' => 50,
+            'quantity' => 5,
             'created_at' => now(),
             'updated_at' => now()
         ],
