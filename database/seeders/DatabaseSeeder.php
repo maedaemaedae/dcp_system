@@ -47,7 +47,24 @@ class DatabaseSeeder extends Seeder
             'role_id' => 6,
             'is_activated' => true,
         ]);
-        
+
+        // ✅ Step 3: Create School/Division Office Representative
+        User::create([
+            'name' => 'Division Office Representative',
+            'email' => 'divisionrepresentative@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => 4,
+            'is_activated' => true,
+        ]);
+
+        User::create([
+            'name' => 'School Representative',
+            'email' => 'schoolrepresentative@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => 5,
+            'is_activated' => true,
+        ]);
+
         // ✅ Step 4: Other seeders
         $this->call([
             UnifiedSeeder::class,
