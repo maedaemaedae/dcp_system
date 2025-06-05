@@ -49,6 +49,40 @@ class DeliveryController extends Controller
         return back()->with('success', 'Delivery assignment recorded.');
     }
 
+    public function bulkAssignSupplier(Request $request)
+    {
+        $request->validate([
+            'supplier_id' => 'required|exists:users,id',
+            'recipient_ids' => 'required|array',
+            'recipient_ids.*' => 'exists:recipients,id',
+            'target_delivery' => 'nullable|date',
+        ]);
+
+        $supplierId = $request->supplier_id;
+        $targetDate = $request->target_delivery;
+
+        $recipients = \App\Models\Recipient::whereIn('id', $request->recipient_ids)->get();
+
+        foreach ($recipients as $recipient) {
+            // Skip if already has a delivery
+            if ($recipient->deliveries()->exists()) {
+                continue;
+            }
+
+            \App\Models\Delivery::create([
+                'recipient_id'    => $recipient->id,
+                'supplier_id'     => $supplierId,
+                'quantity'        => $recipient->quantity,
+                'status'          => 'pending',
+                'target_delivery' => $targetDate,
+                'created_by'      => auth()->id(),
+            ]);
+        }
+
+        return back()->with('success', 'Selected recipients have been assigned to the supplier.');
+    }
+
+
     public function list()
     {
         $deliveries = Delivery::with(['recipient.school', 'recipient.division', 'recipient.package.packageType', 'supplier', 'creator'])

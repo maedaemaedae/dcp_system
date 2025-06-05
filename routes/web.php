@@ -71,6 +71,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::post('/superadmin/deliveries/assign', [DeliveryController::class, 'assign'])->name('superadmin.deliveries.assign');
     Route::get('/superadmin/deliveries/list', [DeliveryController::class, 'list'])->name('superadmin.deliveries.list');
     Route::put('/superadmin/deliveries/{id}/status', [DeliveryController::class, 'updateStatus'])->name('superadmin.deliveries.updateStatus');
+    Route::post('/deliveries/bulk-assign', [DeliveryController::class, 'bulkAssignSupplier'])->name('deliveries.bulkAssign');
 
     //Regional Office
     Route::post('/regional-offices/import-csv', [RegionalOfficeController::class, 'importRegionalOffices'])
