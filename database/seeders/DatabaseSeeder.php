@@ -25,13 +25,29 @@ class DatabaseSeeder extends Seeder
 
         // ✅ Step 3: Create Supplier
         User::create([
-            'name' => 'Supplier Test',
-            'email' => 'supplier@example.com',
+            'name' => 'Supplier 1',
+            'email' => 'supplier1@example.com',
             'password' => Hash::make('password'),
             'role_id' => 6,
             'is_activated' => true,
         ]);
 
+        User::create([
+            'name' => 'Supplier 2',
+            'email' => 'supplier2@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => 6,
+            'is_activated' => true,
+        ]);
+
+        User::create([
+            'name' => 'Supplier 3',
+            'email' => 'supplier3@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => 6,
+            'is_activated' => true,
+        ]);
+        
         // ✅ Step 4: Other seeders
         $this->call([
             UnifiedSeeder::class,
