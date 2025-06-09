@@ -40,7 +40,7 @@ class DeliveryController extends Controller
         Delivery::create([
             'recipient_id'    => $recipient->id,
             'supplier_id'     => $request->supplier_id,
-            'quantity'        => 5,// <- this must be used
+            'quantity' => $recipient->quantity,
             'status'          => 'pending',
             'target_delivery' => $request->target_delivery,
             'created_by'      => auth()->id(),
@@ -149,11 +149,15 @@ class DeliveryController extends Controller
 
         // Create inventory records based on package contents
         foreach ($contents as $content) {
-            $existing = Inventory::where([
-                'school_id'   => $schoolId,
-                'division_id' => $divisionId,
-                'item_name'   => $content->item_name,
-            ])->first();
+            $query = Inventory::where('item_name', $content->item_name);
+
+            if ($schoolId) {
+                $query->where('school_id', $schoolId)->whereNull('division_id');
+            } elseif ($divisionId) {
+                $query->where('division_id', $divisionId)->whereNull('school_id');
+            }
+
+            $existing = $query->first();
 
             if ($existing) {
                 $existing->increment('quantity', $content->quantity * $delivery->quantity);
