@@ -16,7 +16,6 @@
                     <th class="px-4 py-2">Quantity</th>
                     <th class="px-4 py-2">Target Date</th>
                     <th class="px-4 py-2">Status</th>
-                    <th class="px-4 py-2">Action</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
