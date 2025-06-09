@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('deliveries', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('recipient_id');
-            $table->unsignedBigInteger('supplier_id');
+            $table->unsignedBigInteger('supplier_id')->nullable();
             $table->integer('quantity')->default(1);
             $table->enum('status', ['pending', 'partial', 'delivered', 'cancelled'])->default('pending');
             $table->date('target_delivery')->nullable();

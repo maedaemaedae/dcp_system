@@ -17,6 +17,7 @@
                     <th class="px-4 py-2">Status</th>
                     <th class="px-4 py-2">Created By</th>
                     <th class="px-4 py-2">Proof of Delivery</th>
+                    <th class="px-4 py-2 text-left">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -51,6 +52,13 @@
                             @else
                                 <span class="text-gray-400">—</span>
                             @endif
+                        </td>
+                        <td class="px-4 py-2">
+                            <form action="{{ route('deliveries.unassign', $delivery->id) }}" method="POST" onsubmit="return confirm('Unassign this delivery?')">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="text-red-600 hover:underline">Unassign</button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach

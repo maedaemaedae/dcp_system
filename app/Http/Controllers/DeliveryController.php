@@ -83,6 +83,14 @@ class DeliveryController extends Controller
     }
 
 
+    public function unassign($id)
+    {
+        $delivery = \App\Models\Delivery::findOrFail($id);
+        $delivery->delete(); // ✅ delete the delivery instead of nulling supplier_id
+
+        return back()->with('success', 'Delivery unassigned and returned to unassigned list.');
+    }
+
     public function list()
     {
         $deliveries = Delivery::with(['recipient.school', 'recipient.division', 'recipient.package.packageType', 'supplier', 'creator'])
