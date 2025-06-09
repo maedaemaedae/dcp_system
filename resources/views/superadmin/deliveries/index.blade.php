@@ -18,7 +18,9 @@
     <div class="p-6">
         <form action="{{ route('deliveries.bulkAssign') }}" method="POST">
             @csrf
-
+            <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Assign Selected
+            </button>
             <div class="mb-4">
                 <label for="supplier_id" class="block mb-1 font-semibold">Select Supplier</label>
                 <select name="supplier_id" required class="w-full border-gray-300 rounded">
@@ -62,10 +64,6 @@
                     @endforeach
                 </tbody>
             </table>
-
-            <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                Assign Selected
-            </button>
         </form>
 
         @push('scripts')
