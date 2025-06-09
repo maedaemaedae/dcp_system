@@ -66,12 +66,18 @@
             </table>
         </form>
 
-        @push('scripts')
-        <script>
-            document.getElementById('select-all')?.addEventListener('change', function () {
-                document.querySelectorAll('input[name="recipient_ids[]"]').forEach(cb => cb.checked = this.checked);
-            });
-        </script>
-        @endpush
     </div>
 </x-app-layout>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAllCheckbox = document.getElementById('select-all');
+        const checkboxes = document.querySelectorAll('input[name="recipient_ids[]"]');
+
+        if (selectAllCheckbox && checkboxes.length) {
+            selectAllCheckbox.addEventListener('change', function () {
+                checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+            });
+        }
+    });
+</script>
