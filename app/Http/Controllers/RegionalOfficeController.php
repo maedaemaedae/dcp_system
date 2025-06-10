@@ -13,6 +13,8 @@ class RegionalOfficeController extends Controller
         return view('regionaloffices.index', compact('regionalOffices'));
     }
 
+    
+
     public function create()
     {
         return view('regionaloffices.create');

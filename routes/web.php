@@ -27,6 +27,21 @@ use App\Models\Delivery;
 
 use App\Http\Controllers\HomeController;
 
+//Under Experimentation pa*
+// Pagination
+//Route::get('/recipients/paginate', [RecipientController::class, 'paginateRecipients'])->name('recipients.paginate');
+//Route::get('/schools/paginate', [RecipientController::class, 'paginateSchools'])->name('schools.paginate');
+//Route::get('/divisions/paginate', [RecipientController::class, 'paginateDivisions'])->name('divisions.paginate');
+
+
+// For Pagination
+Route::get('/recipients/paginate/regional-offices', [RecipientController::class, 'paginateRegionalOffices'])->name('recipients.paginate.regional-offices');
+Route::get('/recipients/paginate/divisions', [RecipientController::class, 'paginateDivisions'])->name('recipients.paginate.divisions');
+Route::get('/recipients/paginate/schools', [RecipientController::class, 'paginateSchools'])->name('recipients.paginate.schools');
+Route::get('/recipients/paginate/recipients', [RecipientController::class, 'paginateRecipients'])->name('recipients.paginate.recipients');
+
+
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
@@ -105,5 +120,13 @@ Route::middleware(['auth', 'supplier'])->group(function () {
     Route::get('/supplier/deliveries', [DeliveryController::class, 'supplierView'])->name('supplier.deliveries');
     Route::put('/supplier/deliveries/{id}/confirm', [DeliveryController::class, 'confirmDelivery'])->name('supplier.deliveries.confirm');
 });
+
+// For Email Validation
+Route::post('/check-email-register', function (Illuminate\Http\Request $request) {
+    $exists = \App\Models\User::where('email', $request->email)->exists();
+    return response()->json(['exists' => $exists]);
+})->name('check.email-register');
+
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
 
 require __DIR__.'/auth.php';
