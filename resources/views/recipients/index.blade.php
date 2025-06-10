@@ -80,7 +80,18 @@
                             <label class="block font-semibold mb-2">Upload Divisions CSV</label>
                             <input type="file" name="csv_file" accept=".csv" required class="mb-2 border rounded">
                             <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded">Import Divisions</button>
+                        
                         </form>
+                            @if ($errors->any() && session('upload_source') === 'divisions')
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                                <strong class="font-semibold">Division Upload Errors:</strong>
+                                <ul class="list-disc list-inside mt-2 text-sm">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <div class="overflow-x-auto rounded-lg">
                             <table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg overflow-hidden">
                                 <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
@@ -124,6 +135,16 @@
                             <input type="file" name="csv_file" accept=".csv" required class="mb-2 border rounded">
                             <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Import Schools</button>
                         </form>
+                        @if ($errors->any() && session('upload_source') === 'schools')
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                                <strong class="font-semibold">School Upload Errors:</strong>
+                                <ul class="list-disc list-inside mt-2 text-sm">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <div class="overflow-x-auto rounded-lg"><table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg overflow-hidden" class="min-w-full text-sm text-left border border-gray-200">
                             <th class="px-4 py-2 border"ead class="bg-gray-100 text-gray-700 uppercase text-xs" class="bg-gray-100">
                                 <tr>
@@ -171,6 +192,17 @@
                             <input type="file" name="csv_file" accept=".csv" required class="mb-2 border rounded">
                             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Import Recipients</button>
                         </form>
+                        @if ($errors->any() && session('upload_source') === 'recipients')
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                                <strong class="font-semibold">Recipient Upload Errors:</strong>
+                                <ul class="list-disc list-inside mt-2 text-sm">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="overflow-x-auto rounded-lg">
                             <table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg overflow-hidden">
                                 <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
@@ -221,10 +253,9 @@
                                             <td class="px-4 py-2 border">{{ $r->contact_person ?? '—' }}</td>
                                             <td class="px-4 py-2 border">{{ $r->position ?? '—' }}</td>
                                             <td class="px-4 py-2 border">{{ $r->contact_number ?? '—' }}</td>
-                                            <td class="px-4 py-2 border">{{ $r->creator->name ?? '—' }}</td>
-                                            <td class="px-4 py-2 border">{{ $r->created_at->format('Y-m-d') }}</td>
+                                            <td class="px-4 py-2 border">{{ $r->creator->name ?? '—' }}</td> 
                                             <td class="px-4 py-2 border">{{ $r->modifier->name ?? '—' }}</td>
-                                            <td class="px-4 py-2 border">{{ $r->updated_at->format('Y-m-d') }}</td>
+                                          
                                             <td class="px-4 py-2 border">
                                                 <button 
                                                     onclick="openEditRecipientModal({{ $r->id }}, '{{ $r->contact_person }}', '{{ $r->position }}', '{{ $r->contact_number }}', {{ $r->quantity }})"
@@ -260,6 +291,7 @@
     @endforeach
     @include('recipients.partials.create-recipient-modal')
     @include('recipients.partials.edit-recipient-modal')
+
 
 
 
