@@ -19,5 +19,10 @@ class DeliveredItem extends Model
     {
         return $this->belongsTo(PackageContent::class);
     }
+    
+    public function delivery()
+    {
+        return $this->belongsTo(\App\Models\Delivery::class);
+    }
 
 }

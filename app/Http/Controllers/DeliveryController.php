@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Delivery;
 use App\Models\PackageContent;
 use App\Models\Inventory;
+use App\Models\DeliveredItem;
 use Illuminate\Http\Request;
 
 class DeliveryController extends Controller
@@ -150,36 +151,34 @@ class DeliveryController extends Controller
         $schoolId = $recipient->recipient_type === 'school' ? optional($recipient->school)->school_id : null;
         $divisionId = $recipient->recipient_type === 'division' ? optional($recipient->division)->division_id : null;
 
-        // Fetch contents of the package
+        // Fetch package contents by type
         $packageTypeId = $recipient->package->package_type_id;
         $contents = PackageContent::where('package_type_id', $packageTypeId)->get();
 
-        // Create inventory records based on package contents
+        // Create or update inventory entries
         foreach ($contents as $content) {
-            $query = Inventory::where('item_name', $content->item_name);
+            // Create or find the inventory entry for this item + recipient
+            $inventory = Inventory::firstOrCreate([
+                'item_name'    => $content->item_name,
+                'school_id'    => $schoolId,
+                'division_id'  => $divisionId,
+                'recipient_id' => $delivery->recipient_id,
+            ], [
+                'status'  => 'in use',
+                'remarks' => $content->description,
+            ]);
 
-            if ($schoolId) {
-                $query->where('school_id', $schoolId)->whereNull('division_id');
-            } elseif ($divisionId) {
-                $query->where('division_id', $divisionId)->whereNull('school_id');
-            }
+            // Compute total quantity from all DeliveredItems for this recipient + item
+            $total = \App\Models\DeliveredItem::whereHas('delivery', function ($q) use ($delivery) {
+                $q->where('recipient_id', $delivery->recipient_id);
+            })->whereHas('packageContent', function ($q) use ($content) {
+                $q->where('item_name', $content->item_name);
+            })->sum('quantity_delivered');
 
-            $existing = $query->first();
+            $inventory->update(['quantity' => $total]);
 
-            if ($existing) {
-                $existing->increment('quantity', $content->quantity * $delivery->quantity);
-            } else {
-                Inventory::create([
-                    'school_id'     => $schoolId,
-                    'division_id'   => $divisionId,
-                    'item_name'     => $content->item_name,
-                    'quantity'      => 0, // computed_quantity is shown on frontend
-                    'status'        => 'in use',
-                    'remarks'       => $content->description,
-                    'recipient_id'  => $delivery->recipient_id,
-                ]);
-            }
         }
+
         // Finalize the delivery
         $delivery->proof_file = $path;
         $delivery->status = 'delivered';
@@ -187,5 +186,6 @@ class DeliveryController extends Controller
 
         return redirect()->route('supplier.deliveries')->with('success', 'Delivery confirmed and inventory recorded.');
     }
+
 
 }
