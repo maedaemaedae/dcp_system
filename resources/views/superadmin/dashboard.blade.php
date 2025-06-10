@@ -28,9 +28,10 @@
         <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 pt-24 p-8 relative flex-1 overflow-y-auto h-screen"
 >
     <div class="max-w-6xl mx-auto">
-        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide">
-            👥 Dashboard
-        </h2>
+            <h2 class="text-[45px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
+                <i class="fa-solid fa-chart-column text-blue-500 text-4xl w-10 h-10"></i>
+                Dashboard
+            </h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-20 h-52 flex items-center justify-center">

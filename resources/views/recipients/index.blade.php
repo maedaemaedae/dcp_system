@@ -2,7 +2,7 @@
 <html lang="en" x-data="{ open: true }">
 <head>
     <meta charset="UTF-8">
-    <title>Regional Offices</title>
+    <title>Recipients</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -25,9 +25,13 @@
         <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 pt-24 p-8 relative flex-1 overflow-y-auto h-screen"
 >
     <div class="max-w-6xl mx-auto">
-        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide">
-            👥 Recipients
+        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
+            <i class="fa-solid fa-id-badge text-blue-500 text-4xl w-10 h-10"></i>
+            Recipients
         </h2>
+
+
+
             
 
         <div class="p-6 space-y-12">

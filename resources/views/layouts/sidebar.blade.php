@@ -83,7 +83,7 @@
            hover:bg-white hover:text-[#033372] hover:rounded-xl
            {{ request()->routeIs('recipients.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
 
-        <i class="fa-solid fa-sitemap text-xl w-7 h-7"></i>
+       <i class="fa-solid fa-id-badge text-xl w-7 h-7"></i>
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">Recipients</span>
             <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Recipients</span>

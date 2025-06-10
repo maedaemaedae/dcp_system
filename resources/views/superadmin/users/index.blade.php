@@ -73,9 +73,11 @@
         <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 pt-24 p-8 relative flex-1 overflow-y-auto h-screen"
 >
     <div class="max-w-6xl mx-auto">
-        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide">
-            👥 Manage Users
+       <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
+            <i class="fa-solid fa-users text-blue-500 text-4xl w-10 h-10"></i>
+            Manage Users
         </h2>
+
 
 <!-- Toast Alert -->
 @if (session('success'))
