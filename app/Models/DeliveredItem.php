@@ -15,4 +15,9 @@ class DeliveredItem extends Model
     'quantity_delivered',
     ];
     
+    public function packageContent()
+    {
+        return $this->belongsTo(PackageContent::class);
+    }
+
 }

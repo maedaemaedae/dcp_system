@@ -13,9 +13,11 @@ class InventoryController extends Controller
     {
         $inventories = Inventory::with(['school', 'division'])->get();
 
-        foreach ($inventories as $inventory) {
-            $inventory->computed_quantity = $inventory->deliveredItems->sum('quantity_delivered');
-        }
+            foreach ($inventories as $inventory) {
+                $inventory->computed_quantity = $inventory->deliveredItems
+                    ->filter(fn($item) => $item->packageContent->item_name === $inventory->item_name)
+                    ->sum('quantity_delivered');
+            }
 
         return view('superadmin.inventory.index', compact('inventories'));
     }
