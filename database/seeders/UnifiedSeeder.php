@@ -56,39 +56,7 @@ class UnifiedSeeder extends Seeder
                 'updated_at' => now(),
             ]
         ]);
-
-        // Package Content
-        PackageContent::insert([
-        [
-            'package_type_id' => 1, // L4T
-            'item_name' => 'Laptop',
-            'quantity' => 5,
-            'created_at' => now(),
-            'updated_at' => now()
-        ],
-        [
-            'package_type_id' => 2, // STV
-            'item_name' => 'Smart TV',
-            'quantity' => 5,
-            'created_at' => now(),
-            'updated_at' => now()
-        ],
-        [
-            'package_type_id' => 2, // STV
-            'item_name' => 'External Hard Drive',
-            'quantity' => 5,
-            'created_at' => now(),
-            'updated_at' => now()
-        ],
-             [
-            'package_type_id' => 3, // L4NT
-            'item_name' => 'Laptop',
-            'quantity' => 1,
-            'created_at' => now(),
-            'updated_at' => now()
-        ],
-    ]);
-
+        
         // Packages
         Package::insert([
             [
@@ -119,5 +87,43 @@ class UnifiedSeeder extends Seeder
                 'updated_at' => now()
             ]
         ]);
+
+        // Package Content
+        PackageContent::insert([
+        [
+            'package_type_id' => 1, // L4T
+            'item_name' => 'Laptop',
+            'quantity' => 5,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'package_id' => 1,
+        ],
+        [
+            'package_type_id' => 2, // STV
+            'item_name' => 'Smart TV',
+            'quantity' => 5,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'package_id' => 2,
+        ],
+        [
+            'package_type_id' => 2, // STV
+            'item_name' => 'External Hard Drive',
+            'quantity' => 5,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'package_id' => 2,
+        ],
+             [
+            'package_type_id' => 3, // L4NT
+            'item_name' => 'Laptop',
+            'quantity' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'package_id' => 3,
+        ],
+    ]);
+
+
     }
 }

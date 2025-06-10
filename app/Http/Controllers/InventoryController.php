@@ -11,9 +11,15 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $inventories = Inventory::with(['school', 'division'])->latest()->get();
+        $inventories = Inventory::with(['school', 'division'])->get();
+
+        foreach ($inventories as $inventory) {
+            $inventory->computed_quantity = $inventory->deliveredItems->sum('quantity_delivered');
+        }
+
         return view('superadmin.inventory.index', compact('inventories'));
     }
+
 
     public function create()
     {
@@ -24,16 +30,26 @@ class InventoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'item_name' => 'required|string|max:255',
-            'quantity' => 'required|integer|min:1',
-            'status' => 'required|string',
-            'remarks' => 'nullable|string',
-            'school_id' => 'nullable|exists:schools,school_id',
-            'division_id' => 'nullable|exists:division_offices,division_id',
-        ]);
+    $request->validate([
+        'item_name' => 'required|string|max:255',
+        'quantity' => 'required|integer|min:1',
+        'status' => 'required|string',
+        'remarks' => 'nullable|string',
+        'school_id' => 'nullable|exists:schools,school_id',
+        'division_id' => 'nullable|exists:division_offices,division_id',
+        'recipient_id' => 'required|exists:recipients,id', 
+    ]);
 
-        Inventory::create($request->all());
+        Inventory::create($request->only([
+            'item_name',
+            'quantity',
+            'status',
+            'remarks',
+            'school_id',
+            'division_id',
+            'recipient_id' // ✅ include recipient_id
+        ]));
+
 
         return redirect()->route('inventory.index')->with('success', 'Inventory item added.');
     }
@@ -54,9 +70,18 @@ class InventoryController extends Controller
             'remarks' => 'nullable|string',
             'school_id' => 'nullable|exists:schools,school_id',
             'division_id' => 'nullable|exists:division_offices,division_id',
+            'recipient_id' => 'required|exists:recipients,id',
         ]);
 
-        $inventory->update($request->all());
+        $inventory->update($request->only([
+            'item_name',
+            'quantity',
+            'status',
+            'remarks',
+            'school_id',
+            'division_id',
+            'recipient_id' // ✅
+        ]));
 
         return redirect()->route('inventory.index')->with('success', 'Inventory updated.');
     }

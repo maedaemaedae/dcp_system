@@ -30,57 +30,64 @@ class DeliveryController extends Controller
             'target_delivery'  => 'nullable|date',
         ]);
 
-        // 🔍 Fetch fresh recipient from DB
-        $recipient = \App\Models\Recipient::findOrFail($request->recipient_id);
+        $recipient = \App\Models\Recipient::with('package.contents')->findOrFail($request->recipient_id);
 
-        // 🧪 DEBUG: Confirm we have the correct quantity
-        \Log::info("ASSIGN DEBUG: recipient_id=" . (int) $recipient->id . ", quantity=" . (int) $recipient->quantity);
-
-        // ✅ Create the delivery using the actual quantity
-        Delivery::create([
+        $delivery = Delivery::create([
             'recipient_id'    => $recipient->id,
             'supplier_id'     => $request->supplier_id,
-            'quantity' => $recipient->quantity,
+            'quantity'        => $recipient->quantity,
             'status'          => 'pending',
             'target_delivery' => $request->target_delivery,
             'created_by'      => auth()->id(),
         ]);
 
+        // ✅ Create DeliveredItem entries
+        foreach ($recipient->package->contents as $content) {
+            \App\Models\DeliveredItem::create([
+                'delivery_id'         => $delivery->id,
+                'package_content_id'  => $content->id,
+                'quantity_delivered' => $content->quantity * $recipient->quantity,
+            ]);
+        }
+
         return back()->with('success', 'Delivery assignment recorded.');
     }
+
 
     public function bulkAssignSupplier(Request $request)
     {
         $request->validate([
-            'supplier_id' => 'required|exists:users,id',
-            'recipient_ids' => 'required|array',
-            'recipient_ids.*' => 'exists:recipients,id',
-            'target_delivery' => 'nullable|date',
+            'supplier_id'      => 'required|exists:users,id',
+            'recipient_ids'    => 'required|array',
+            'recipient_ids.*'  => 'exists:recipients,id',
+            'target_delivery'  => 'nullable|date',
         ]);
 
-        $supplierId = $request->supplier_id;
-        $targetDate = $request->target_delivery;
+        foreach ($request->recipient_ids as $recipient_id) {
+            $recipient = \App\Models\Recipient::with('package.contents')->findOrFail($recipient_id);
 
-        $recipients = \App\Models\Recipient::whereIn('id', $request->recipient_ids)->get();
-
-        foreach ($recipients as $recipient) {
-            // Skip if already has a delivery
-            if ($recipient->deliveries()->exists()) {
-                continue;
-            }
-
-            \App\Models\Delivery::create([
+            $delivery = Delivery::create([
                 'recipient_id'    => $recipient->id,
-                'supplier_id'     => $supplierId,
+                'supplier_id'     => $request->supplier_id,
                 'quantity'        => $recipient->quantity,
                 'status'          => 'pending',
-                'target_delivery' => $targetDate,
+                'target_delivery' => $request->target_delivery,
                 'created_by'      => auth()->id(),
             ]);
+
+            // ✅ Create DeliveredItem entries
+            foreach ($recipient->package->contents as $content) {
+                \App\Models\DeliveredItem::create([
+                    'delivery_id'         => $delivery->id,
+                    'package_content_id'  => $content->id,
+                    'quantity_delivered' => $content->quantity * $recipient->quantity,
+                ]);
+            }
         }
 
-        return back()->with('success', 'Selected recipients have been assigned to the supplier.');
+        return back()->with('success', 'Deliveries assigned to selected recipients.');
     }
+
 
 
     public function unassign($id)
@@ -163,12 +170,13 @@ class DeliveryController extends Controller
                 $existing->increment('quantity', $content->quantity * $delivery->quantity);
             } else {
                 Inventory::create([
-                    'school_id'    => $schoolId,
-                    'division_id'  => $divisionId,
-                    'item_name'    => $content->item_name,
-                    'quantity'     => $content->quantity * $delivery->quantity,
-                    'status'       => 'in use',
-                    'remarks'      => $content->description,
+                    'school_id'     => $schoolId,
+                    'division_id'   => $divisionId,
+                    'item_name'     => $content->item_name,
+                    'quantity'      => 0, // computed_quantity is shown on frontend
+                    'status'        => 'in use',
+                    'remarks'       => $content->description,
+                    'recipient_id'  => $delivery->recipient_id,
                 ]);
             }
         }

@@ -15,6 +15,7 @@ class Inventory extends Model
         'quantity',
         'status',
         'remarks',
+        'recipient_id', // ✅ add this
     ];
 
     public function school()
@@ -26,4 +27,17 @@ class Inventory extends Model
     {
         return $this->belongsTo(DivisionOffice::class, 'division_id', 'division_id');
     }
+
+    public function deliveredItems()
+    {
+        return $this->hasManyThrough(
+            \App\Models\DeliveredItem::class,
+            \App\Models\Delivery::class,
+            'recipient_id', // Foreign key on Delivery
+            'delivery_id',  // Foreign key on DeliveredItem
+            'recipient_id', // Local key on Inventory
+            'id'            // Local key on Delivery
+        );
+    }
+
 }

@@ -33,4 +33,10 @@ class Delivery extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function deliveredItems()
+    {
+        return $this->hasMany(DeliveredItem::class);
+    }
+
 }

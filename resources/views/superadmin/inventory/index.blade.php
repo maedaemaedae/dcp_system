@@ -34,7 +34,7 @@
                             @endif
                         </td>
                         <td class="px-4 py-2">{{ $item->item_name }}</td>
-                        <td class="px-4 py-2">{{ $item->quantity }}</td>
+                        <td class="px-4 py-2">{{ $item->computed_quantity ?? 0 }}</td>
                         <td class="px-4 py-2 capitalize">{{ $item->status }}</td>
                         <td class="px-4 py-2">{{ $item->remarks ?? '—' }}</td>
                         <td class="px-4 py-2">
