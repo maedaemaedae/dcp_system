@@ -134,155 +134,224 @@ class RecipientController extends Controller
     }
 
     //CSV Upload
-    public function importDivisions(Request $request)
-    {
-        $request->validate(['csv_file' => 'required|mimes:csv,txt']);
+   public function importDivisions(Request $request)
+{
+    $request->validate(['csv_file' => 'required|mimes:csv,txt']);
 
-        $file = fopen($request->file('csv_file'), 'r');
-        $header = fgetcsv($file);
-        $rows = [];
+    $file = fopen($request->file('csv_file'), 'r');
+    $rawHeader = fgetcsv($file);
+$header = array_map('trim', $rawHeader);
+$requiredHeaders = ['Region', 'Division ID', 'Division Name'];
 
-        while (($line = fgetcsv($file)) !== false) {
-            $rows[] = array_combine($header, $line);
-        }
+$missingHeaders = array_diff($requiredHeaders, $header);
 
-        fclose($file);
+if (!empty($missingHeaders)) {
+    $missingList = implode(', ', $missingHeaders);
+    return back()->withErrors(["Missing required column(s): {$missingList}"])->with('upload_source', 'divisions');
+}
+    $rows = [];
+    $errors = [];
+    $inserted = [];
 
-        foreach ($rows as $row) {
-            $region          = trim($row['Region']);
-            $divisionId      = trim($row['Division ID']);
-            $divisionName    = trim($row['Division Name']);
-            $office          = trim($row['Office']);
-            $sdoAddress      = trim($row['SDO Address']);
-
-            $regional_office_id = \App\Models\RegionalOffice::where('ro_office', $region)->value('ro_id');
-
-            if (!$regional_office_id || !$divisionId || !$divisionName) {
-                continue;
-            }
-
-            if (\App\Models\DivisionOffice::where('division_id', $divisionId)->exists()) {
-                continue;
-            }
-
-            \App\Models\DivisionOffice::create([
-                'division_id'        => $divisionId,
-                'division_name'      => $divisionName,
-                'office'             => $office,
-                'sdo_address'        => $sdoAddress,
-                'regional_office_id' => $regional_office_id,
-            ]);
-        }
-
-        return back()->with('success', 'Divisions imported successfully.');
+    while (($line = fgetcsv($file)) !== false) {
+        $rows[] = array_combine($header, $line);
     }
+
+    fclose($file);
+
+    foreach ($rows as $index => $row) {
+        $region          = trim($row['Region']);
+        $divisionId      = trim($row['Division ID']);
+        $divisionName    = trim($row['Division Name']);
+        $office          = trim($row['Office']);
+        $sdoAddress      = trim($row['SDO Address']);
+
+        $rowNum = $index + 2; // +2 accounts for 0-based index + header
+
+        if (!$divisionId || !$divisionName || !$region) {
+            $errors[] = "Row {$rowNum}: Missing required fields.";
+            continue;
+        }
+
+        $regional_office_id = RegionalOffice::where('ro_office', $region)->value('ro_id');
+
+        if (!$regional_office_id) {
+            $errors[] = "Row {$rowNum}: Region '{$region}' not found in regional offices.";
+            continue;
+        }
+
+        if (DivisionOffice::where('division_id', $divisionId)->exists()) {
+            $errors[] = "Row {$rowNum}: Division ID '{$divisionId}' already exists.";
+            continue;
+        }
+
+        $inserted[] = [
+            'division_id'        => $divisionId,
+            'division_name'      => $divisionName,
+            'office'             => $office,
+            'sdo_address'        => $sdoAddress,
+            'regional_office_id' => $regional_office_id,
+        ];
+    }
+
+    if (!empty($errors)) {
+        return back()->withErrors($errors)->withInput();
+    }
+
+    DivisionOffice::insert($inserted);
+
+    return back()->with('success', 'Divisions imported successfully.');
+}
+
 
     public function importSchools(Request $request)
-    {
-        $request->validate(['csv_file' => 'required|mimes:csv,txt']);
+{
+    $request->validate(['csv_file' => 'required|mimes:csv,txt']);
 
-        $file = fopen($request->file('csv_file'), 'r');
-        $header = fgetcsv($file);
-        $rows = [];
+    $file = fopen($request->file('csv_file'), 'r');
+    $rawHeader = fgetcsv($file);
+    $header = array_map('trim', $rawHeader);
+    $requiredHeaders = ['Division', 'School ID', 'School Name', 'School Address'];
 
-        while (($line = fgetcsv($file)) !== false) {
-            $rows[] = array_combine($header, $line);
-        }
-
-        fclose($file);
-
-        foreach ($rows as $row) {
-            $division_name = trim($row['Division']);
-            $school_id     = trim($row['School ID']);
-            $school_name   = trim($row['School Name']);
-            $address       = trim($row['School Address']);
-            $internet      = strtolower(trim($row['Connected to Internet?'] ?? 'no')) === 'yes' ? 1 : 0;
-            $isp           = trim($row['ISP'] ?? '');
-            $electricity   = trim($row['Electricity'] ?? '');
-
-            $division_id = DivisionOffice::where('division_name', $division_name)->value('division_id');
-
-            if (!$division_id || !$school_id || !$school_name) {
-                continue;
-            }
-
-            if (School::where('school_id', $school_id)->exists()) {
-                continue;
-            }
-
-            School::create([
-                'school_id'           => $school_id,
-                'division_id'         => $division_id,
-                'school_name'         => $school_name,
-                'school_address'      => $address,
-                'has_internet'        => $internet,
-                'internet_provider'   => $isp,
-                'electricity_provider'=> $electricity,
-            ]);
-        }
-
-        return back()->with('success', 'Schools imported successfully.');
+    $missingHeaders = array_diff($requiredHeaders, $header);
+    if (!empty($missingHeaders)) {
+        $missingList = implode(', ', $missingHeaders);
+        return back()->withErrors(["Missing required column(s): {$missingList}"])->with('upload_source', 'schools');
     }
 
+    $rows = [];
+    $errors = [];
+    $inserted = [];
 
-    public function importRecipients(Request $request)
-    {
-        $request->validate(['csv_file' => 'required|mimes:csv,txt']);
-
-        $file = fopen($request->file('csv_file'), 'r');
-        $header = fgetcsv($file);
-        $rows = [];
-
-        while (($line = fgetcsv($file)) !== false) {
-            $rows[] = array_combine($header, $line);
-        }
-
-        fclose($file);
-
-        foreach ($rows as $row) {
-            $recipientType   = strtolower(trim($row['Recipient Type'] ?? ''));
-            $recipientId     = trim($row['Recipient ID'] ?? '');
-            $packageId       = trim($row['Package ID'] ?? '');
-            $contactPerson   = trim($row['Contact Person'] ?? '');
-            $position        = trim($row['Position'] ?? '');
-            $contactNumber   = trim($row['Contact Number'] ?? '');
-            $quantity        = trim($row['Quantity'] ?? '');
-
-            // Basic validation
-            if (!$recipientType || !$recipientId || !$packageId || !$contactPerson || !$position || !$contactNumber || !$quantity) {
-                continue;
-            }
-
-            // Check if package exists
-            if (!\App\Models\Package::find($packageId)) {
-                continue;
-            }
-
-            // Check if recipient ID is valid depending on type
-            $isValidRecipient = match ($recipientType) {
-                'school' => \App\Models\School::where('school_id', $recipientId)->exists(),
-                'division' => \App\Models\DivisionOffice::where('division_id', $recipientId)->exists(),
-                default => false,
-            };
-
-            if (!$isValidRecipient) {
-                continue;
-            }
-
-            \App\Models\Recipient::create([
-                'recipient_type'  => $recipientType,
-                'recipient_id'    => $recipientId,
-                'package_id'      => $packageId,
-                'contact_person'  => $contactPerson,
-                'position'        => $position,
-                'contact_number'  => $contactNumber,
-                'quantity'        => $quantity,
-                'created_by'      => auth()->id(),
-            ]);
-        }
-
-        return back()->with('success', 'Recipients imported successfully.');
+    while (($line = fgetcsv($file)) !== false) {
+        $rows[] = array_combine($header, $line);
     }
+
+    fclose($file);
+
+    foreach ($rows as $index => $row) {
+        $rowNum = $index + 2;
+        $division_name = trim($row['Division'] ?? '');
+        $school_id     = trim($row['School ID'] ?? '');
+        $school_name   = trim($row['School Name'] ?? '');
+        $address       = trim($row['School Address'] ?? '');
+        $internet      = strtolower(trim($row['Connected to Internet?'] ?? 'no')) === 'yes' ? 1 : 0;
+        $isp           = trim($row['ISP'] ?? '');
+        $electricity   = trim($row['Electricity'] ?? '');
+
+        if (!$division_name || !$school_id || !$school_name) {
+            $errors[] = "Row {$rowNum}: Missing required values.";
+            continue;
+        }
+
+        $division_id = DivisionOffice::where('division_name', $division_name)->value('division_id');
+        if (!$division_id) {
+            $errors[] = "Row {$rowNum}: Division '{$division_name}' not found.";
+            continue;
+        }
+
+        if (School::where('school_id', $school_id)->exists()) {
+            $errors[] = "Row {$rowNum}: School ID '{$school_id}' already exists.";
+            continue;
+        }
+
+        $inserted[] = [
+            'school_id' => $school_id,
+            'division_id' => $division_id,
+            'school_name' => $school_name,
+            'school_address' => $address,
+            'has_internet' => $internet,
+            'internet_provider' => $isp,
+            'electricity_provider' => $electricity,
+        ];
+    }
+
+    if (!empty($errors)) {
+        return back()->withErrors($errors)->with('upload_source', 'schools');
+    }
+
+    School::insert($inserted);
+
+    return back()->with('success', 'Schools imported successfully.');
+}
+
+
+   public function importRecipients(Request $request)
+{
+    $request->validate(['csv_file' => 'required|mimes:csv,txt']);
+
+    $file = fopen($request->file('csv_file'), 'r');
+    $rawHeader = fgetcsv($file);
+    $header = array_map('trim', $rawHeader);
+    $requiredHeaders = ['Recipient Type', 'Recipient ID', 'Package ID', 'Contact Person', 'Position', 'Contact Number', 'Quantity'];
+
+    $missingHeaders = array_diff($requiredHeaders, $header);
+    if (!empty($missingHeaders)) {
+        $missingList = implode(', ', $missingHeaders);
+        return back()->withErrors(["Missing required column(s): {$missingList}"])->with('upload_source', 'recipients');
+    }
+
+    $rows = [];
+    $errors = [];
+    $inserted = [];
+
+    while (($line = fgetcsv($file)) !== false) {
+        $rows[] = array_combine($header, $line);
+    }
+
+    fclose($file);
+
+    foreach ($rows as $index => $row) {
+        $rowNum = $index + 2;
+        $recipientType   = strtolower(trim($row['Recipient Type'] ?? ''));
+        $recipientId     = trim($row['Recipient ID'] ?? '');
+        $packageId       = trim($row['Package ID'] ?? '');
+        $contactPerson   = trim($row['Contact Person'] ?? '');
+        $position        = trim($row['Position'] ?? '');
+        $contactNumber   = trim($row['Contact Number'] ?? '');
+        $quantity        = trim($row['Quantity'] ?? '');
+
+        if (!$recipientType || !$recipientId || !$packageId || !$contactPerson || !$position || !$contactNumber || !$quantity) {
+            $errors[] = "Row {$rowNum}: Missing required values.";
+            continue;
+        }
+
+        if (!Package::find($packageId)) {
+            $errors[] = "Row {$rowNum}: Package ID '{$packageId}' does not exist.";
+            continue;
+        }
+
+        $isValidRecipient = match ($recipientType) {
+            'school' => School::where('school_id', $recipientId)->exists(),
+            'division' => DivisionOffice::where('division_id', $recipientId)->exists(),
+            default => false,
+        };
+
+        if (!$isValidRecipient) {
+            $errors[] = "Row {$rowNum}: Invalid recipient ID '{$recipientId}' for type '{$recipientType}'.";
+            continue;
+        }
+
+        $inserted[] = [
+            'recipient_type'  => $recipientType,
+            'recipient_id'    => $recipientId,
+            'package_id'      => $packageId,
+            'contact_person'  => $contactPerson,
+            'position'        => $position,
+            'contact_number'  => $contactNumber,
+            'quantity'        => $quantity,
+            'created_by'      => auth()->id(),
+        ];
+    }
+
+    if (!empty($errors)) {
+        return back()->withErrors($errors)->with('upload_source', 'recipients');
+    }
+
+    Recipient::insert($inserted);
+
+    return back()->with('success', 'Recipients imported successfully.');
+}
 
 
     // Recipient Table CRUD
