@@ -34,12 +34,17 @@
                 <div class="flex items-center space-x-12">
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Dashboard</a>
+                            <a href="{{ url('/dashboard') }}" class="bg-[#2D9CDB] text-white text-sm px-4 py-2 rounded-full hover:bg-[#238ACB] transition">Dashboard</a>
                         @else
-                            <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+                            <a href="{{ route('login') }}" class="relative text-[#2D9CDB] text-sm mr-10 group px-2 py-1">
+                                Log in
+                                <span class="absolute left-0 bottom-0 w-full h-0.5 bg-[#2D9CDB] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+                            </a>
 
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
+                            <a href="{{ route('register') }}" class="bg-[#2D9CDB] text-white text-sm px-4 py-2 rounded-full hover:bg-[#238ACB] transition">
+                                Register
+                            </a>
                             @endif
                         @endauth
                     @endif
