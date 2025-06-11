@@ -9,6 +9,8 @@ class Recipient extends Model
 {
     use HasFactory;
 
+    public $timestamps = true;
+    
     protected $fillable = [
         'package_id',
         'recipient_type',

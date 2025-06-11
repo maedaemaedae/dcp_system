@@ -254,8 +254,10 @@
                                             <td class="px-4 py-2 border">{{ $r->position ?? '—' }}</td>
                                             <td class="px-4 py-2 border">{{ $r->contact_number ?? '—' }}</td>
                                             <td class="px-4 py-2 border">{{ $r->creator->name ?? '—' }}</td> 
-                                            <td class="px-4 py-2 border">{{ $r->modifier->name ?? '—' }}</td>
-                                          
+                                            <td class="px-4 py-2 border">{{ $ro->created_at ? $ro->created_at->format('Y-m-d H:i') : '—' }}</td>
+                                            <td class="px-4 py-2 border">{{ $ro->updated_by ?? '—' }}</td>
+                                            <td class="px-4 py-2 border">{{ $ro->updated_at ? $ro->updated_at->format('Y-m-d H:i') : '—' }}</td>
+
                                             <td class="px-4 py-2 border">
                                                 <button 
                                                     onclick="openEditRecipientModal({{ $r->id }}, '{{ $r->contact_person }}', '{{ $r->position }}', '{{ $r->contact_number }}', {{ $r->quantity }})"
