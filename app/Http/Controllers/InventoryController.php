@@ -9,18 +9,24 @@ use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
-    public function index()
+    
+   public function index(Request $request)
     {
-        // Load all school and division inventories
-        $schoolInventories = \App\Models\School::with(['inventories' => function ($query) {
-            $query->with('deliveredItems.packageContent');
-        }])->get();
+        $search = $request->input('search');
 
-        $divisionInventories = \App\Models\DivisionOffice::with(['inventories' => function ($query) {
-            $query->with('deliveredItems.packageContent');
-        }])->get();
+        $schoolInventories = \App\Models\School::with(['inventories.deliveredItems.packageContent'])
+            ->when($search, function ($query, $search) {
+                $query->where('school_name', 'like', "%{$search}%");
+            })
+            ->get();
 
-        // Compute quantity for each inventory item
+        $divisionInventories = \App\Models\DivisionOffice::with(['inventories.deliveredItems.packageContent'])
+            ->when($search, function ($query, $search) {
+                $query->where('division_name', 'like', "%{$search}%");
+            })
+            ->get();
+
+        // Compute quantities
         foreach ($schoolInventories as $school) {
             foreach ($school->inventories as $inventory) {
                 $inventory->computed_quantity = $inventory->deliveredItems

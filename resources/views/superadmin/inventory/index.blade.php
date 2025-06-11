@@ -6,6 +6,13 @@
     </x-slot>
 
     <div class="p-6 space-y-10">
+        <form method="GET" action="{{ route('inventory.index') }}" class="mb-6">
+            <label for="search" class="block font-semibold mb-1">Search School or Office</label>
+            <input type="text" name="search" id="search"
+                value="{{ request('search') }}"
+                placeholder="e.g. Hinapulan ES or Division Office Name"
+                class="w-full px-4 py-2 border rounded shadow-sm">
+        </form>
 
         {{-- SCHOOL INVENTORY --}}
         <div>
