@@ -26,3 +26,33 @@ Route::get('/municipalities/{divisionId}', function ($divisionId) {
 Route::get('/schools/{municipalityId}', function ($municipalityId) {
     return School::where('municipality_id', $municipalityId)->get();
 });
+
+Route::post('/custom-login', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
+
+    $user = \App\Models\User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'error' => 'email_not_found'
+        ], 404);
+    }
+
+    if (!Hash::check($request->password, $user->password)) {
+        return response()->json([
+            'success' => false,
+            'error' => 'incorrect_password'
+        ], 401);
+    }
+
+    Auth::login($user);
+
+    return response()->json([
+        'success' => true,
+        'redirect' => route('dashboard')
+    ]);
+});

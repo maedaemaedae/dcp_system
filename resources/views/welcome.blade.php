@@ -16,9 +16,70 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
 
-    <style>
-        /* Add custom styles here or keep default Tailwind CSS */
-    </style>
+   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Swiper setup
+        new Swiper(".mySwiper", {
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            effect: "fade",
+            fadeEffect: { crossFade: true },
+        });
+
+        // Accordion setup
+        document.querySelectorAll('.accordion-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('span');
+
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+
+        // Smooth scrolling for "Explore Features"
+        document.querySelector('a[href="#features"]').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const offset = 80; // adjust for fixed navbar
+            const target = document.querySelector('#features');
+            const top = target.getBoundingClientRect().top + window.scrollY - offset;
+
+            smoothScrollTo(top, 900); // duration in ms
+        });
+    });
+
+    // Easing function
+    function easeInOutQuad(t) {
+        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
+
+    // Smooth scroll logic
+    function smoothScrollTo(targetY, duration = 800) {
+        const startY = window.scrollY;
+        const diffY = targetY - startY;
+        let startTime;
+
+        function animateScroll(currentTime) {
+            if (!startTime) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+            const progress = Math.min(timeElapsed / duration, 1);
+            const ease = easeInOutQuad(progress);
+
+            window.scrollTo(0, startY + diffY * ease);
+
+            if (timeElapsed < duration) {
+                requestAnimationFrame(animateScroll);
+            }
+        }
+
+        requestAnimationFrame(animateScroll);
+    }
+</script>
+
 </head>
 
 <body class="bg-gray-50 text-gray-800">
@@ -34,12 +95,17 @@
                 <div class="flex items-center space-x-12">
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Dashboard</a>
+                            <a href="{{ url('/dashboard') }}" class="bg-[#2D9CDB] text-white text-sm px-4 py-2 rounded-full hover:bg-[#238ACB] transition">Dashboard</a>
                         @else
-                            <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+                            <a href="{{ route('login') }}" class="relative text-[#2D9CDB] text-sm mr-10 group px-2 py-1">
+                                Log in
+                                <span class="absolute left-0 bottom-0 w-full h-0.5 bg-[#2D9CDB] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+                            </a>
 
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
+                            <a href="{{ route('register') }}" class="bg-[#2D9CDB] text-white text-sm px-4 py-2 rounded-full hover:bg-[#238ACB] transition">
+                                Register
+                            </a>
                             @endif
                         @endauth
                     @endif
@@ -190,37 +256,8 @@
                     </div>
                 </div>
             </div>
-
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    document.querySelectorAll('.accordion-toggle').forEach(button => {
-                        button.addEventListener('click', () => {
-                            const content = button.nextElementSibling;
-                            const icon = button.querySelector('span');
-
-                            content.classList.toggle('hidden');
-                            icon.classList.toggle('rotate-180');
-                        });
-                    });
-                });
-            </script>
     </section>
-    <footer class="bg-white border-t mt-20">
-    <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
-        <div class="mb-4 md:mb-0">
-            © {{ date('Y') }} DCP Tracking System. All rights reserved.
-        </div>
-        <div class="flex space-x-4">
-            <a href="#" class="hover:underline">Privacy Policy</a>
-            <a href="#" class="hover:underline">Terms of Service</a>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ict.mimaroparegion@deped.gov.ph" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="hover:underline">
-                Contact
-                </a>
-        </div>
-    </div>
-</footer>
+
+    @include('layouts.footer')
 </body>
 </html>
