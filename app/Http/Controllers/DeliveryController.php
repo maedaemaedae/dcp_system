@@ -12,24 +12,33 @@ use Illuminate\Http\Request;
 
 class DeliveryController extends Controller
 {
+
     public function index(Request $request)
     {
         $search = $request->input('search');
 
         $recipients = Recipient::with(['school', 'division', 'package.packageType'])
-            ->whereDoesntHave('deliveries')
+            ->whereDoesntHave('deliveries') // <-- this was missing!
             ->when($search, function ($query, $search) {
-                $query->whereHas('school', fn($q) =>
-                    $q->where('school_name', 'like', "%{$search}%"))
-                    ->orWhereHas('division', fn($q) =>
-                        $q->where('division_name', 'like', "%{$search}%"));
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('school', fn($sq) =>
+                        $sq->where('school_name', 'like', "%{$search}%"))
+                    ->orWhereHas('division', fn($dq) =>
+                        $dq->where('division_name', 'like', "%{$search}%"))
+                    ->orWhereHas('package', function ($pq) use ($search) {
+                        $pq->whereHas('packageType', function ($ptq) use ($search) {
+                            $ptq->where('package_code', 'like', "%{$search}%");
+                        });
+                    });
+                });
             })
             ->get();
 
-        $suppliers = User::where('role_id', '6')->get(); // ✅ using users table
+        $suppliers = User::where('role_id', '6')->get();
 
         return view('superadmin.deliveries.index', compact('recipients', 'suppliers'));
     }
+
 
     public function assign(Request $request)
     {
