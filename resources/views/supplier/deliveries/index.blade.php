@@ -56,10 +56,10 @@
 
                                         <input type="file"
                                                name="proof_file"
-                                               accept="image/*"
+                                               accept="application/pdf"
                                                required
                                                class="mb-2 block text-sm text-gray-600"
-                                               onchange="if(this.files[0].size > 2 * 1024 * 1024) { alert('Image must be less than 2MB'); this.value = ''; }" />
+                                               onchange="if(this.files[0].size > 5 * 1024 * 1024) { alert('File must be less than 2MB'); this.value = ''; }" />
 
                                         <button type="submit"
                                                 class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">

@@ -151,8 +151,9 @@ class DeliveryController extends Controller
     public function confirmDelivery(Request $request, $id)
     {
         $request->validate([
-            'proof_file' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'proof_file' => 'required|file|mimes:pdf|max:5120', // 5MB max
         ]);
+
 
         $delivery = Delivery::with('recipient.package.packageType', 'recipient.school', 'recipient.division')
             ->where('id', $id)
