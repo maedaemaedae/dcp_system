@@ -4,23 +4,42 @@ namespace App\Http\Controllers;
 
 use App\Models\Inventory;
 use App\Models\School;
-use App\Models\Division;
+use App\Models\DivisionOffice;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
     public function index()
     {
-        $inventories = Inventory::with(['school', 'division'])->get();
+        // Load all school and division inventories
+        $schoolInventories = \App\Models\School::with(['inventories' => function ($query) {
+            $query->with('deliveredItems.packageContent');
+        }])->get();
 
-            foreach ($inventories as $inventory) {
+        $divisionInventories = \App\Models\DivisionOffice::with(['inventories' => function ($query) {
+            $query->with('deliveredItems.packageContent');
+        }])->get();
+
+        // Compute quantity for each inventory item
+        foreach ($schoolInventories as $school) {
+            foreach ($school->inventories as $inventory) {
                 $inventory->computed_quantity = $inventory->deliveredItems
                     ->filter(fn($item) => $item->packageContent->item_name === $inventory->item_name)
                     ->sum('quantity_delivered');
             }
+        }
 
-        return view('superadmin.inventory.index', compact('inventories'));
+        foreach ($divisionInventories as $division) {
+            foreach ($division->inventories as $inventory) {
+                $inventory->computed_quantity = $inventory->deliveredItems
+                    ->filter(fn($item) => $item->packageContent->item_name === $inventory->item_name)
+                    ->sum('quantity_delivered');
+            }
+        }
+
+        return view('superadmin.inventory.index', compact('schoolInventories', 'divisionInventories'));
     }
+
 
 
     public function create()

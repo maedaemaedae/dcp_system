@@ -39,4 +39,10 @@ class DivisionOffice extends Model
     {
         return $this->hasMany(School::class, 'division_id');
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(\App\Models\Inventory::class, 'division_id', 'division_id');
+    }
+
 }

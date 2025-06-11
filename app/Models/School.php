@@ -49,4 +49,10 @@ class School extends Model
     {
         return $this->hasOne(Electricity::class, 'school_id', 'school_id');
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(\App\Models\Inventory::class, 'school_id', 'school_id');
+    }
+
 }
