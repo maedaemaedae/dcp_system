@@ -12,13 +12,21 @@ use Illuminate\Http\Request;
 
 class DeliveryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $recipients = Recipient::with(['package.packageType', 'school', 'division'])
-            ->doesntHave('deliveries') // ✅ uses hasMany relationship
+        $search = $request->input('search');
+
+        $recipients = Recipient::with(['school', 'division', 'package.packageType'])
+            ->whereDoesntHave('deliveries')
+            ->when($search, function ($query, $search) {
+                $query->whereHas('school', fn($q) =>
+                    $q->where('school_name', 'like', "%{$search}%"))
+                    ->orWhereHas('division', fn($q) =>
+                        $q->where('division_name', 'like', "%{$search}%"));
+            })
             ->get();
 
-        $suppliers = User::whereHas('role', fn($q) => $q->where('role_name', 'supplier'))->get();
+        $suppliers = User::where('role_id', '6')->get(); // ✅ using users table
 
         return view('superadmin.deliveries.index', compact('recipients', 'suppliers'));
     }

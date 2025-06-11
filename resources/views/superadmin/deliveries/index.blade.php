@@ -17,6 +17,13 @@
     </x-slot>
 
     <div class="p-6">
+        <form method="GET" action="{{ route('superadmin.deliveries.index') }}" class="mb-6">
+            <label for="search" class="block mb-1 font-semibold">Search Recipient</label>
+            <input type="text" name="search" id="search"
+                value="{{ request('search') }}"
+                placeholder="Enter school or division name"
+                class="w-full border-gray-300 rounded shadow-sm px-4 py-2">
+        </form>
         <form action="{{ route('deliveries.bulkAssign') }}" method="POST">
             @csrf
 
