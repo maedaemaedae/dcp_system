@@ -32,14 +32,16 @@ class RecipientController extends Controller
                 $recipient->address = $recipient->recipient_type === 'school'
                     ? optional($recipient->school)->school_address
                     : optional($recipient->division)->sdo_address;
-
-                $recipient->region = $recipient->recipient_type === 'school'
-                    ? optional($recipient->school->division)->regionalOffice->ro_office ?? null
+                
+                    // Edited 
+               $recipient->region = $recipient->recipient_type === 'school'
+                    ? optional(optional($recipient->school)->division)->regionalOffice->ro_office ?? null
                     : optional($recipient->division)->regionalOffice->ro_office ?? null;
 
                 $recipient->division_name = $recipient->recipient_type === 'school'
-                    ? optional($recipient->school->division)->division_name
+                    ? optional(optional($recipient->school)->division)->division_name
                     : optional($recipient->division)->division_name;
+                // End
 
                 return $recipient;
             });
@@ -107,7 +109,7 @@ public function paginateRecipients(Request $request)
         ]);
 
         School::create($validated);
-        return back()->with('success', 'School added successfully.');
+        return back()->with('toast', 'School added successfully.');
     }
 
     public function updateSchool(Request $request, $id)
@@ -124,13 +126,13 @@ public function paginateRecipients(Request $request)
         ]);
 
         $school->update($validated);
-        return back()->with('success', 'School updated successfully.');
+        return back()->with('toast', 'School updated successfully.');
     }
 
     public function destroySchool($id)
     {
         School::destroy($id);
-        return back()->with('success', 'School deleted successfully.');
+        return back()->with('toast', 'School deleted successfully.');
     }
 
     public function storeDivision(Request $request)
@@ -148,7 +150,7 @@ public function paginateRecipients(Request $request)
             'created_at' => now(),
         ]));
 
-        return back()->with('success', 'Division added successfully.');
+        return back()->with('toast', 'Division added successfully.');
     }
 
     public function updateDivision(Request $request, $id)
@@ -164,13 +166,13 @@ public function paginateRecipients(Request $request)
 
         $division->update($validated);
 
-        return back()->with('success', 'Division updated successfully.');
+        return back()->with('toast', 'Division updated successfully.');
     }
 
     public function destroyDivision($id)
     {
         DivisionOffice::destroy($id);
-        return back()->with('success', 'Division deleted successfully.');
+        return back()->with('toast', 'Division deleted successfully.');
     }
 
     //CSV Upload
@@ -214,7 +216,7 @@ public function paginateRecipients(Request $request)
             ]);
         }
 
-        return back()->with('success', 'Divisions imported successfully.');
+        return back()->with('toast', 'Divisions imported successfully.');
     }
 
     public function importSchools(Request $request)
@@ -261,7 +263,7 @@ public function paginateRecipients(Request $request)
             ]);
         }
 
-        return back()->with('success', 'Schools imported successfully.');
+        return back()->with('toast', 'Schools imported successfully.');
     }
 
 
@@ -321,7 +323,7 @@ public function paginateRecipients(Request $request)
             ]);
         }
 
-        return back()->with('success', 'Recipients imported successfully.');
+        return back()->with('toast', 'Recipients imported successfully.');
     }
 
 
@@ -342,7 +344,7 @@ public function paginateRecipients(Request $request)
 
         Recipient::create($validated);
 
-        return back()->with('success', 'Recipient added successfully.');
+        return back()->with('toast', 'Recipient added successfully.');
     }
 
 
@@ -364,15 +366,16 @@ public function paginateRecipients(Request $request)
             'quantity' => $validated['quantity'],
         ]);
         \Log::info('Recipient updated', $validated);
-        return redirect()->route('recipients.index')->with('success', 'Recipient updated successfully.');
+        return redirect()->route('recipients.index')->with('toast', 'Recipient updated successfully.');
     }
-
 
     public function destroy($id)
-    {
-        Recipient::destroy($id);
-        return back()->with('success', 'Recipient deleted successfully.');
-    }
+{
+    $recipient = Recipient::findOrFail($id);
+    $recipient->delete();
+
+    return back()->with('toast', 'Recipient deleted successfully.');
+}
 
 
 }

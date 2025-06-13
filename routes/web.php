@@ -129,4 +129,24 @@ Route::post('/check-email-register', function (Illuminate\Http\Request $request)
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
 
+
+//For Toast
+// Recipient
+Route::delete('/recipients/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
+
+// School
+Route::delete('/schools/{id}', [RecipientController::class, 'destroySchool'])->name('schools.destroy');
+
+// Division
+Route::delete('/divisions/{id}', [RecipientController::class, 'destroyDivision'])->name('divisions.destroy');
+
+// Regional Office (assuming method exists or you’ll add it)
+Route::delete('/regional-offices/{id}', [RecipientController::class, 'destroyRegional'])->name('regional.destroy');
+
+
+
+Route::get('/recipients/partial/table', [RecipientController::class, 'tablePartial'])->name('recipients.table.partial');
+
+
+
 require __DIR__.'/auth.php';

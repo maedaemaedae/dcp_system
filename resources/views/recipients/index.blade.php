@@ -7,7 +7,27 @@
     <script src="https://unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 </head>
+
+<style>
+    @keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.4s ease-out both;
+}
+
+</style>
+
 
 <body class="bg-white font-['Poppins']" x-data="{ open: true }">
     <div class="flex min-h-screen">
@@ -85,7 +105,7 @@
             <div>
 
 <label 
-    for="csv_file"
+    for="regional_csv"
     class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#4A90E2] border border-[#4A90E2] rounded hover:bg-[#4A90E2] hover:text-white transition cursor-pointer">
 
     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,7 +115,7 @@
 </label>
 
 <input 
-    id="csv_file"
+    id="regional_csv"
     type="file" 
     name="csv_file" 
     accept=".csv" 
@@ -104,7 +124,7 @@
 />
 
 <!-- Optional: Display file name after selection -->
-<p id="file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
+<p id="regional-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
     No file selected
 </p>
 
@@ -138,28 +158,28 @@
             @csrf
             <div>
                 <label 
-                    for="divisions_csv"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-white text-purple-600 border border-purple-600 rounded hover:bg-purple-600 hover:text-white transition cursor-pointer"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
-                    </svg>
-                    Choose CSV File
-                </label>
+                        for="divisions_csv"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-white text-purple-600 border border-purple-600 rounded hover:bg-purple-600 hover:text-white transition cursor-pointer"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
+                        </svg>
+                        Choose CSV File
+                    </label>
 
-                <input 
-                    id="divisions_csv"
-                    type="file" 
-                    name="csv_file" 
-                    accept=".csv" 
-                    required 
-                    class="hidden"
-                />
+                    <input 
+                        id="divisions_csv"
+                        type="file" 
+                        name="csv_file" 
+                        accept=".csv" 
+                        required 
+                        class="hidden"
+                    />
 
-                <!-- File name display -->
-                <p id="divisions-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
-                    No file selected
-                </p>
+                    <p id="divisions-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
+                        No file selected
+                    </p>
+
 
                 <button 
                     type="submit" 
@@ -191,15 +211,22 @@
         <form method="POST" action="{{ route('schools.import') }}" enctype="multipart/form-data" class="mb-6 space-y-4">
             @csrf
             <div>
-                <label for="csv_file" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#10B981] border border-[#10B981] rounded hover:bg-[#10B981] hover:text-white transition cursor-pointer">
+                <label for="schools_csv" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#10B981] border border-[#10B981] rounded hover:bg-[#10B981] hover:text-white transition cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
                     </svg>
                     Choose CSV File
                 </label>
-                <input id="csv_file" type="file" name="csv_file" accept=".csv" required class="hidden" />
+                <input 
+                id="schools_csv"
+                type="file" 
+                name="csv_file" 
+                accept=".csv" 
+                required 
+                class="hidden" 
+                />
 
-                <p id="file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
+                <p id="schools-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
                     No file selected
                 </p>
 
@@ -229,15 +256,15 @@
         <form method="POST" action="{{ route('recipients.import.csv') }}" enctype="multipart/form-data" class="mb-6 space-y-4">
             @csrf
             <div>
-                <label for="csv_file" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#F59E0B] border border-[#F59E0B] rounded hover:bg-[#F59E0B] hover:text-white transition cursor-pointer">
+                <label for="recipients_csv" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#F59E0B] border border-[#F59E0B] rounded hover:bg-[#F59E0B] hover:text-white transition cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
                     </svg>
                     Choose CSV File
                 </label>
-                <input id="csv_file" type="file" name="csv_file" accept=".csv" required class="hidden" />
+                <input id="recipients_csv" type="file" name="csv_file" accept=".csv" required class="hidden" />
 
-                <p id="file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
+                <p id="recipients-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
                     No file selected
                 </p>
 
@@ -259,7 +286,6 @@
         </div>
     </div>
 </div>
-
 
 
        <script>
@@ -323,23 +349,37 @@ document.addEventListener('DOMContentLoaded', function () {
         @include('recipients.partials.edit-recipient-modal')
 
         <!-- Delete Confirmation Modal -->
-        <div id="deleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden justify-center items-center">
-            <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6 relative">
-                <h2 class="text-lg font-bold mb-4 text-center">Confirm Deletion</h2>
-                <p class="mb-4 text-center text-gray-700">Are you sure you want to delete this record?</p>
+<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-fadeInUp font-['Poppins']">
+        <!-- Close Button -->
+        <button onclick="closeModal('deleteModal')"
+                class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl leading-none">
+            &times;
+        </button>
 
-                <form id="deleteForm" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <div class="flex justify-end gap-2">
-                        <button type="button" onclick="closeModal('deleteModal')" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
-                    </div>
-                </form>
+        <!-- Header -->
+        <h2 class="text-xl font-bold text-gray-800 mb-3 text-center">🗑️ Confirm Deletion</h2>
+        <p class="text-sm text-gray-600 mb-6 text-center">Are you sure you want to delete this record? This action cannot be undone.</p>
 
-                <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onclick="closeModal('deleteModal')">&times;</button>
+        <!-- Form -->
+        <form id="deleteForm" method="POST">
+            @csrf
+            @method('DELETE')
+
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeModal('deleteModal')"
+                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                    Delete
+                </button>
             </div>
-        </div>
+        </form>
+    </div>
+</div>
+
 
 
 
@@ -348,14 +388,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
         //For Modals
         function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-            document.getElementById(id).classList.add('flex');
-        }
+        const modal = document.getElementById(id);
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.add('flex');
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+        }, 10); // Allow DOM to register the visibility change
+    }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('flex');
-            document.getElementById(id).classList.add('hidden');
-        }
+        const modal = document.getElementById(id);
+        modal.classList.add('opacity-0');
+        modal.classList.remove('opacity-100');
+        setTimeout(() => {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }, 300); // Match your transition-duration
+    }
+
 
         function toggleAddDropdown() {
             document.getElementById('addDropdown').classList.toggle('hidden');
@@ -364,6 +415,15 @@ document.addEventListener('DOMContentLoaded', function () {
         function closeAddDropdown() {
             document.getElementById('addDropdown').classList.add('hidden');
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+    const closeAddModalBtn = document.getElementById('closeAddModalBtn');
+    if (closeAddModalBtn) {
+        closeAddModalBtn.addEventListener('click', function () {
+            closeModal('createRegionalModal');
+        });
+    }
+});
 
         function openEditSchoolModal(school) {
             document.getElementById('editSchoolId').value = school.school_id;
@@ -430,19 +490,32 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
 
-    // For File Uploading
-    const input = document.getElementById('csv_file');
-    const fileNameDisplay = document.getElementById('file-name');
-
-    input.addEventListener('change', function () {
-        fileNameDisplay.textContent = input.files[0]?.name || '';
+    // For CSV Uploading
+   
+    // Regional Office
+    document.getElementById('regional_csv')?.addEventListener('change', function (e) {
+        const fileName = e.target.files[0]?.name || 'No file selected';
+        document.getElementById('regional-file-name').textContent = fileName;
     });
 
-     document.getElementById('csv_file').addEventListener('change', function () {
-        const fileNameDisplay = document.getElementById('file-name');
-        const file = this.files[0];
-        fileNameDisplay.textContent = file ? file.name : 'No file selected';
+    // Division Office
+    document.getElementById('divisions_csv')?.addEventListener('change', function (e) {
+        const fileName = e.target.files[0]?.name || 'No file selected';
+        document.getElementById('divisions-file-name').textContent = fileName;
     });
-    </script>
+
+    // School
+    document.getElementById('schools_csv')?.addEventListener('change', function (e) {
+        const fileName = e.target.files[0]?.name || 'No file selected';
+        document.getElementById('schools-file-name').textContent = fileName;
+    });
+
+    // Recipients
+    document.getElementById('recipients_csv')?.addEventListener('change', function (e) {
+        const fileName = e.target.files[0]?.name || 'No file selected';
+        document.getElementById('recipients-file-name').textContent = fileName;
+    });
+</script>
+
 </body>
 </html>

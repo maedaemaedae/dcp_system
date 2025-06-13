@@ -24,15 +24,11 @@
                             class="px-4 py-1.5 rounded-full bg-[#4A90E2] text-white hover:bg-[#357ABD] transition shadow-sm text-sm font-medium">
                             Edit
                         </button>
-                        <form method="POST" action="{{ route('regional-offices.destroy', $ro->ro_id) }}" onsubmit="return confirm('Are you sure?')" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button 
-                                type="submit" 
-                                class="px-4 py-1.5 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition shadow-sm text-sm font-medium">
-                                Delete
-                            </button>
-                        </form>
+                        <button onclick='openDeleteModal("regional", {{ $ro->ro_id }})'
+                            class="px-4 py-1.5 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition shadow-sm text-sm font-medium">
+                            Delete
+                        </button>
+
                     </div>
                 </td>
             </tr>
