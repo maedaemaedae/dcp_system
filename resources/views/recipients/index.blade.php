@@ -30,7 +30,7 @@
 
 
 <body class="bg-white font-['Poppins']" x-data="{ open: true }">
-    <div class="flex min-h-screen">
+    <div class="flex">
 
          
             @include('layouts.sidebar') 
@@ -42,7 +42,7 @@
                 
         </div>
 
-        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 pt-24 p-8 pb-40 relative flex-1 overflow-y-auto h-screen">
+        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen">
 
     <div class="max-w-6xl mx-auto">
         <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
@@ -99,7 +99,7 @@
         📍 <span class="text-[#1F2937]">Regional Office Info</span>
     </h3>
 
-    <div class="overflow-x-auto">
+    <div class="relative overflow-visible">
         <form method="POST" action="{{ route('regional-offices.import.csv') }}" enctype="multipart/form-data" class="mb-6 space-y-4">
             @csrf
             <div>
@@ -138,7 +138,7 @@
             </button>
         </form>
 
-        <div class="overflow-x-auto rounded-lg mb-30">
+        <div class="relative overflow-visible rounded-lg">
             @include('recipients.partials.regional-offices-table', ['regionalOffices' => $regionalOffices])
         </div>
     </div>
@@ -153,7 +153,7 @@
         🏢 <span class="text-[#1F2937]">Division Office Info</span>
     </h3>
 
-    <div class="overflow-x-auto">
+    <div class="relative overflow-visible">
         <form method="POST" action="{{ route('divisions.import') }}" enctype="multipart/form-data" class="mb-6 space-y-4">
             @csrf
             <div>
@@ -193,7 +193,7 @@
             </div>
         </form>
 
-        <div class="overflow-x-auto rounded-lg">
+        <div class="relative overflow-visible rounded-lg">
             @include('recipients.partials.divisions-table', ['divisions' => $divisions])
         </div>
     </div>
@@ -207,7 +207,7 @@
         🏫 <span>School Info</span>
     </h3>
 
-    <div class="overflow-x-auto">
+    <div class="relative overflow-visible">
         <form method="POST" action="{{ route('schools.import') }}" enctype="multipart/form-data" class="mb-6 space-y-4">
             @csrf
             <div>
@@ -239,7 +239,7 @@
             </div>
         </form>
 
-        <div class="overflow-x-auto rounded-lg">
+        <div class="relative overflow-visible rounded-lg">
             @include('recipients.partials.schools-table', ['schools' => $schools])
         </div>      
     </div>
@@ -252,7 +252,7 @@
         📨 <span>Recipients</span>
     </h3>
 
-    <div class="overflow-x-auto">
+    <div class="overflow-y-hidden">
         <form method="POST" action="{{ route('recipients.import.csv') }}" enctype="multipart/form-data" class="mb-6 space-y-4">
             @csrf
             <div>
@@ -277,7 +277,7 @@
             </div>
         </form>
 
-        <div class="overflow-x-auto rounded-lg">
+        <div class="relative overflow-visible rounded-lg">
             @include('recipients.partials.recipients-table', ['recipients' => $recipients])
         </div>
 
@@ -379,6 +379,35 @@ document.addEventListener('DOMContentLoaded', function () {
         </form>
     </div>
 </div>
+
+
+
+<script>
+    function toggleDropdown(id) {
+        // Close all other dropdowns
+        document.querySelectorAll('[id^="dropdown-"]').forEach(el => {
+            if (el.id !== id) el.classList.add('hidden');
+        });
+
+        // Toggle the selected dropdown
+        const dropdown = document.getElementById(id);
+        if (dropdown) dropdown.classList.toggle('hidden');
+    }
+
+    function closeAllDropdowns() {
+        document.querySelectorAll('[id^="dropdown-"]').forEach(el => {
+            el.classList.add('hidden');
+        });
+    }
+
+    // Optional: Close dropdowns on outside click
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.inline-block')) {
+            closeAllDropdowns();
+        }
+    });
+</script>
+
 
 
 
