@@ -10,15 +10,50 @@ use App\Models\Project;
 use App\Models\Package;
 use App\Models\PackageType;
 use App\Models\DivisionOffice;
+use App\Models\School;
+use App\Models\Recipient;
+use App\Models\Delivery;
+use App\Models\DeliveredItem;
+use Illuminate\Support\Facades\DB;
 
 class SuperAdminController extends Controller
 {
-    public function dashboard()
-    {
-        return view('superadmin.dashboard', [
-            'user' => Auth::user()
-        ]);
-    }
+   public function dashboard()
+{
+    $user = Auth::user();
+
+    $schoolCount = DB::table('schools')->count();
+    $recipientCount = DB::table('recipients')->count();
+    $deliveredItemCount = DB::table('delivered_items')->sum('quantity_delivered');
+    $pendingDeliveries = DB::table('deliveries')->where('status', '!=', 'delivered')->count();
+    $deliveredPackages = DB::table('deliveries')->where('status', 'delivered')->count();
+
+    // Package Type Distribution
+    $packageTypeData = DB::table('package_types')
+        ->leftJoin('packages', 'package_types.id', '=', 'packages.package_type_id')
+        ->select('package_types.package_code', DB::raw('COUNT(packages.id) as packages_count'))
+        ->groupBy('package_types.package_code')
+        ->get();
+
+    // Schools per Division
+    $divisionSchoolCounts = DB::table('division_offices as d')
+        ->join('schools as s', 's.division_id', '=', 'd.division_id')
+        ->select('d.division_name as division', DB::raw('COUNT(s.school_id) as total'))
+        ->groupBy('d.division_name')
+        ->get();
+
+
+    return view('superadmin.dashboard', compact(
+        'user',
+        'schoolCount',
+        'recipientCount',
+        'deliveredItemCount',
+        'pendingDeliveries',
+        'deliveredPackages',
+        'packageTypeData',
+        'divisionSchoolCounts'
+    ));
+}
 
     public function manageUsers(Request $request)
     {
@@ -36,7 +71,7 @@ class SuperAdminController extends Controller
         }
 
         $users = $query->get();
-        $roles = Role::all(); // ✅ This is what your view needs
+        $roles = Role::all();
 
         return view('superadmin.users.index', compact('users', 'roles'));
     }
@@ -48,22 +83,21 @@ class SuperAdminController extends Controller
         }
 
         $request->validate([
-            'role_id' => 'required|exists:roles,role_id', // ✅ Validate the new role_id
+            'role_id' => 'required|exists:roles,role_id',
         ]);
 
         $user = User::findOrFail($userId);
-        $user->role_id = $request->role_id; // ✅ Directly assign role_id
+        $user->role_id = $request->role_id;
         $user->save();
 
         return redirect()->back()->with('success', 'Role updated successfully!');
     }
 
-
     public function indexProjects()
     {
         $projects = Project::with('packages')->orderByDesc('id')->get();
-        $packageTypes = PackageType::all(); // ✅ Add this
-        $divisions = DivisionOffice::all(); // ✅ Needed for dropdown
+        $packageTypes = PackageType::all();
+        $divisions = DivisionOffice::all();
         $packages = Package::whereNull('project_id')->get();
     
         return view('projects.index', compact('projects', 'packages', 'packageTypes', 'divisions'));
