@@ -27,6 +27,40 @@
             document.getElementById(id)?.classList.add('hidden');
         }
     </script>
+
+
+<script>
+    function handleAjaxPagination(containerId, type, pageParam) {
+    document.getElementById(containerId)?.addEventListener('click', function (e) {
+        const target = e.target.closest('a');
+        if (target && target.href.includes(`${pageParam}=`)) {
+            e.preventDefault();
+            const url = new URL(target.href);
+            url.searchParams.set('type', type); // Ensure ?type=projects is added
+
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById(containerId).innerHTML = html;
+                window.history.pushState(null, '', url);
+            })
+            .catch(err => console.error('Pagination failed:', err));
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    handleAjaxPagination('projectsSection', 'projects', 'projects_page');
+    handleAjaxPagination('packagesSection', 'packages', 'packages_page');
+    handleAjaxPagination('packageTypesSection', 'package_types', 'package_types_page');
+});
+
+</script>
+
+
    
 </head>
 
@@ -60,131 +94,39 @@
 
     <!-- + Add Dropdown Button -->
 <section class="relative mb-6">
-    <button onclick="toggleAddDropdown()" class="bg-[#4A90E2] hover:bg-[#3B78C2] text-white px-4 py-2 rounded shadow text-sm">
-        + Add
+    <button onclick="toggleAddDropdown()" class="bg-[#4A90E2] hover:bg-[#357ABD] text-white font-medium px-6 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 ease-in-out mb-4 flex items-center space-x-2">
+                   <i class="fas fa-plus"></i>
+                <span>Add</span>
     </button>
     <div id="addDropdown" class="absolute z-10 mt-2 bg-white shadow-lg rounded w-48 border text-sm hidden">
-        <button onclick="openModal('createProjectModal'); closeAddDropdown();" class="block w-full px-4 py-2 text-left hover:bg-gray-100">
-            ➕ Add Project
+        <button onclick="openModal('createProjectModal'); closeAddDropdown();" class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-150">
+        <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Project
         </button>
-        <button onclick="openModal('createPackageTypeModal'); closeAddDropdown();" class="block w-full px-4 py-2 text-left hover:bg-gray-100">
-            ➕ Add Package Type
-        </button>
+        <button onclick="openModal('createPackageTypeModal'); closeAddDropdown();" class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-150">
+        <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Package Type
     </div>
 </section>
 
 <!-- 📦 Package Types Section -->
-<section class="bg-white rounded-lg shadow p-6 mb-8">
-    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
-        📦 <span>Package Types</span>
-    </h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        @foreach($packageTypes as $type)
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition">
-                <div class="text-lg font-bold text-[#1F2937]">{{ $type->package_code }}</div>
-                <div class="text-sm text-gray-500 mb-2">{{ $type->description }}</div>
-                <ul class="text-sm list-disc list-inside text-gray-700">
-                    @foreach($type->contents as $item)
-                        <li>{{ $item->quantity }} × {{ $item->item_name }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endforeach
-    </div>
+<section id="packageTypesSection" class="bg-white rounded-lg shadow p-6 mb-8">
+     @include('projects.partials.package-types-card', ['packageTypes' => $packageTypes])
+     
 </section>
 
 <!-- 📦 Packages Section -->
-<section class="bg-white rounded-lg shadow p-6 mb-8">
-    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
-        📦 <span>Packages</span>
-    </h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        @foreach($packages as $package)
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition">
-                <div class="text-sm text-gray-500 mb-1">Project: {{ $package->project->name }}</div>
-                <div class="text-lg font-bold text-[#1F2937]">{{ $package->packageType->package_code }}</div>
-                <div class="text-sm">Batch: {{ $package->batch }}</div>
-                <div class="text-sm">Lot: {{ $package->lot }}</div>
-                <div class="text-sm mb-3">Desc: {{ $package->description }}</div>
-
-                <div class="flex gap-2 mt-2">
-                    <button
-                        onclick="openEditPackageModal(
-                            {{ $package->id }},
-                            {{ $package->project_id }},
-                            {{ $package->package_type_id }},
-                            '{{ $package->batch }}',
-                            '{{ $package->lot }}',
-                            '{{ $package->description }}'
-                        )"
-                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
-                    >
-                        ✏️ Edit
-                    </button>
-                    <form action="{{ route('packages.destroy', $package->id) }}" method="POST" onsubmit="return confirm('Delete this package?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">🗑️ Delete</button>
-                    </form>
-                </div>
-            </div>
-        @endforeach
-    </div>
+<section id="packagesSection" class="bg-white rounded-lg shadow p-6 mb-8">
+     @include('projects.partials.packages-card', ['packages' => $packages])
 </section>
 
 <!-- 📁 Projects Table Section -->
-<section class="bg-white rounded-lg shadow p-6 mb-20">
-    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
-        🗂 <span>Projects</span>
-    </h3>
-    <div class="overflow-x-auto">
-        <table class="min-w-full text-sm text-left border border-gray-200">
-            <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
-                <tr>
-                    <th class="px-4 py-2 border">Project Name</th>
-                    <th class="px-4 py-2 border">Target Delivery</th>
-                    <th class="px-4 py-2 border">Target Arrival</th>
-                    <th class="px-4 py-2 border">Packages</th>
-                    <th class="px-4 py-2 border">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-100">
-                @foreach($projects as $project)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-2 border">{{ $project->name }}</td>
-                        <td class="px-4 py-2 border">{{ $project->target_delivery_date ?? '—' }}</td>
-                        <td class="px-4 py-2 border">{{ $project->target_arrival_date ?? '—' }}</td>
-                        <td class="px-4 py-2 border">
-                            @foreach ($project->packages as $package)
-                                <div class="mb-2 p-2 bg-gray-100 rounded">
-                                    <div class="font-semibold text-sm">{{ $package->packageType->package_code ?? 'N/A' }}</div>
-                                    <div class="text-xs text-gray-600">{{ $package->description ?? 'No description' }}</div>
-                                </div>
-                            @endforeach
-                            <button onclick="openModal('createPackageModal_{{ $project->id }}')" class="mt-2 text-blue-500 hover:underline text-xs">
-                                + Add Package
-                            </button>
-                            @include('projects.partials.create-package-modal', ['project' => $project, 'packageTypes' => $packageTypes])
-                        </td>
-                        <td class="px-4 py-2 border">
-                            <button
-                                onclick="openEditProjectModal({{ $project->id }}, '{{ $project->name }}', '{{ $project->target_delivery_date }}', '{{ $project->target_arrival_date }}')"
-                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">
-                                ✏️ Edit
-                            </button>
-                            <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="inline-block mt-2" onsubmit="return confirm('Are you sure you want to delete this project?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
-                                    🗑️ Delete
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+<section id="projectsSection" class="bg-white rounded-lg shadow p-6 mb-20">
+     @include('projects.partials.projects-table', ['projects' => $projects])
 </section>
 
 </main>

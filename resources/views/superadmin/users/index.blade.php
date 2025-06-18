@@ -123,7 +123,7 @@
             <!-- User Management Table -->
             <div class="overflow-x-auto bg-white rounded-2xl shadow border mb-40">
                 <table class="min-w-full text-sm divide-y divide-gray-200">
-                    <thead class="bg-[#4A90E2] text-white">
+                    <thead class="bg-[#4A90E2] text-white uppercase">
             <tr>
                 <th class="px-6 py-3 text-left font-semibold">Name</th>
                 <th class="px-6 py-3 text-left font-semibold">Email</th>

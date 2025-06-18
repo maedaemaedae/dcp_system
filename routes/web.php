@@ -27,18 +27,21 @@ use App\Models\Delivery;
 
 use App\Http\Controllers\HomeController;
 
-//Under Experimentation pa*
-// Pagination
-//Route::get('/recipients/paginate', [RecipientController::class, 'paginateRecipients'])->name('recipients.paginate');
-//Route::get('/schools/paginate', [RecipientController::class, 'paginateSchools'])->name('schools.paginate');
-//Route::get('/divisions/paginate', [RecipientController::class, 'paginateDivisions'])->name('divisions.paginate');
 
 
-// For Pagination
+
+// For Pagination (Recipients Page)
 Route::get('/recipients/paginate/regional-offices', [RecipientController::class, 'paginateRegionalOffices'])->name('recipients.paginate.regional-offices');
 Route::get('/recipients/paginate/divisions', [RecipientController::class, 'paginateDivisions'])->name('recipients.paginate.divisions');
 Route::get('/recipients/paginate/schools', [RecipientController::class, 'paginateSchools'])->name('recipients.paginate.schools');
 Route::get('/recipients/paginate/recipients', [RecipientController::class, 'paginateRecipients'])->name('recipients.paginate.recipients');
+
+//For Pagination (Projects Page)
+Route::get('/paginate-projects', [ProjectController::class, 'paginateProjects']);
+Route::get('/paginate-packages', [PackageController::class, 'paginatePackages']);
+Route::get('/paginate-packagetypes', [PackageTypeController::class, 'paginatePackageTypes']);
+
+
 
 
 

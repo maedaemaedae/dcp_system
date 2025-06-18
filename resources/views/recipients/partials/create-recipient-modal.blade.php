@@ -36,6 +36,7 @@
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="school">School</option>
                         <option value="division">Division</option>
+
                     </select>
                 </div>
 
@@ -89,6 +90,31 @@
                     Save
                 </button>
             </div>
+<script>
+    function toggleRecipientOptions(type) {
+        const schoolSection = document.getElementById('schoolRecipient');
+        const divisionSection = document.getElementById('divisionRecipient');
+        const schoolSelect = document.getElementById('school_id');
+        const divisionSelect = document.getElementById('division_id');
+
+        if (type === 'school') {
+            schoolSection.classList.remove('hidden');
+            divisionSection.classList.add('hidden');
+            schoolSelect.disabled = false;
+            divisionSelect.disabled = true;
+        } else {
+            schoolSection.classList.add('hidden');
+            divisionSection.classList.remove('hidden');
+            schoolSelect.disabled = true;
+            divisionSelect.disabled = false;
+        }
+    }
+
+    // run once on page load to ensure correct state
+    window.addEventListener('DOMContentLoaded', () => {
+        toggleRecipientOptions(document.getElementById('recipient_type').value);
+    });
+</script>
         </form>
     </div>
 </div>

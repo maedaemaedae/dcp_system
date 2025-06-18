@@ -1,4 +1,5 @@
-<table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg overflow-visible">
+<div class="overflow-x-auto">
+<table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-lg">
                             <thead class="bg-[#F59E0B] text-[#FFF] uppercase text-xs tracking-wider">
                                 <tr>
                                     <th class="px-4 py-2 border">Region</th>
@@ -109,5 +110,6 @@
                                 @endforeach
                             </tbody>
                         </table>
+                   </div>
 
                
