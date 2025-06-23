@@ -18,47 +18,53 @@ use Illuminate\Support\Facades\DB;
 
 class SuperAdminController extends Controller
 {
-   public function dashboard()
-{
-    $user = Auth::user();
+    public function dashboard()
+    {
+        $user = Auth::user();
 
-    $schoolCount = DB::table('schools')->count();
-    $recipientCount = DB::table('recipients')->count();
-    $deliveredItemCount = DB::table('delivered_items')->sum('quantity_delivered');
-    $pendingDeliveries = DB::table('deliveries')->where('status', '!=', 'delivered')->count();
-    $deliveredPackages = DB::table('deliveries')->where('status', 'delivered')->count();
+        $schoolCount = DB::table('schools')->count();
+        $recipientCount = DB::table('recipients')->count();
+        $deliveredItemCount = DB::table('delivered_items')->sum('quantity_delivered');
+        $pendingDeliveries = DB::table('deliveries')->where('status', '!=', 'delivered')->count();
+        $deliveredPackages = DB::table('deliveries')->where('status', 'delivered')->count();
 
-    // Package Type Distribution
-    $packageTypeData = DB::table('package_types')
-        ->leftJoin('packages', 'package_types.id', '=', 'packages.package_type_id')
-        ->select('package_types.package_code', DB::raw('COUNT(packages.id) as packages_count'))
-        ->groupBy('package_types.package_code')
-        ->get();
+        // Package Type Distribution
+        $packageTypeData = DB::table('package_types')
+            ->leftJoin('packages', 'package_types.id', '=', 'packages.package_type_id')
+            ->select('package_types.package_code', DB::raw('COUNT(packages.id) as packages_count'))
+            ->groupBy('package_types.package_code')
+            ->get();
 
-    // Schools per Division
-    $divisionSchoolCounts = DB::table('division_offices as d')
-        ->join('schools as s', 's.division_id', '=', 'd.division_id')
-        ->select('d.division_name as division', DB::raw('COUNT(s.school_id) as total'))
-        ->groupBy('d.division_name')
-        ->get();
+        // Schools per Division
+        $divisionSchoolCounts = DB::table('division_offices as d')
+            ->join('schools as s', 's.division_id', '=', 'd.division_id')
+            ->select('d.division_name as division', DB::raw('COUNT(s.school_id) as total'))
+            ->groupBy('d.division_name')
+            ->get();
+
+        $pending = DB::table('deliveries')->where('status', 'pending')->count();
+$partial = DB::table('deliveries')->where('status', 'partial')->count(); // if you plan to add later
+$delivered = DB::table('deliveries')->where('status', 'delivered')->count();
+$cancelled = DB::table('deliveries')->where('status', 'cancelled')->count(); // optional
 
 
-    return view('superadmin.dashboard', compact(
-        'user',
-        'schoolCount',
-        'recipientCount',
-        'deliveredItemCount',
-        'pendingDeliveries',
-        'deliveredPackages',
-        'packageTypeData',
-        'divisionSchoolCounts'
-    ));
-}
+        return view('superadmin.dashboard', compact(
+            'user',
+            'schoolCount',
+            'recipientCount',
+            'deliveredItemCount',
+            'pendingDeliveries',
+            'deliveredPackages',
+            'packageTypeData',
+            'divisionSchoolCounts',
+            'pending', 'partial', 'delivered', 'cancelled'
+        ));
+    }
 
     public function manageUsers(Request $request)
     {
         $query = User::with('role');
-    
+
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
@@ -99,7 +105,7 @@ class SuperAdminController extends Controller
         $packageTypes = PackageType::all();
         $divisions = DivisionOffice::all();
         $packages = Package::whereNull('project_id')->get();
-    
+
         return view('projects.index', compact('projects', 'packages', 'packageTypes', 'divisions'));
     }
 }
