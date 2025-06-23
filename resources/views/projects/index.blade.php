@@ -7,6 +7,8 @@
     <script src="https://unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
 
     <script>
         function toggleAddDropdown() {
@@ -26,10 +28,33 @@
         function closeModal(id) {
             document.getElementById(id)?.classList.add('hidden');
         }
-    </script>
 
+        function openDeleteModal(type, id) {
+            const form = document.getElementById('deleteForm');
+            form.action = `/projects/${type}/${id}`;
+            openModal('deleteModal');
+        }
+    
+    function openModal(id) {
+        const modal = document.getElementById(id);
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.add('flex');
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+        }, 10); // short delay ensures CSS transition works
+    }
 
-<script>
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0');
+        setTimeout(() => {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }, 300); // Match the duration in your Tailwind transition
+    }
+
     function handleAjaxPagination(containerId, type, pageParam) {
     document.getElementById(containerId)?.addEventListener('click', function (e) {
         const target = e.target.closest('a');
@@ -59,6 +84,25 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
+
+
+<style>
+    @keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.4s ease-out both;
+}
+
+</style>
 
 
    
@@ -131,12 +175,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </main>
 
-
-    <!-- Modals -->
+ {{-- ✅ Modal Includes --}}
     @include('projects.partials.create-project-modal')
     @include('projects.partials.create-package-type-modal')
     @include('projects.partials.edit-project-modal')
     @include('projects.partials.edit-package-modal')
+   
+    <!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-fadeInUp font-['Poppins']">
+        <!-- Close Button -->
+        <button onclick="closeModal('deleteModal')"
+                class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl leading-none">
+            &times;
+        </button>
+
+        <!-- Header -->
+        <h2 class="text-xl font-bold text-gray-800 mb-3 text-center">🗑️ Confirm Deletion</h2>
+        <p class="text-sm text-gray-600 mb-6 text-center">Are you sure you want to delete this record? This action cannot be undone.</p>
+
+        <!-- Deletion Form -->
+        <form id="deleteForm" method="POST" class="flex justify-center gap-4">
+            @csrf
+            @method('DELETE')
+            <button type="button" onclick="closeModal('deleteModal')" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition">
+                Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition">
+                Delete
+            </button>
+        </form>
+    </div>
+</div>
+
+
+
+
+    
 
 </body>
 </html>
