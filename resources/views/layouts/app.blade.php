@@ -33,5 +33,7 @@
                 {{ $slot }}
             </main>
         </div>
+        @vite(['resources/css/app.css', 'resources/js/app.js']) {{-- or include your own --}}
+    @stack('scripts')
     </body>
 </html>
