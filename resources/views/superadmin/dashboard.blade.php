@@ -7,12 +7,13 @@
         </div>
 
         <!-- Metric Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2">
             <x-dashboard.card title="Total Schools" :value="$schoolCount ?? 0" icon="school" />
             <x-dashboard.card title="Total Recipients" :value="$recipientCount ?? 0" icon="users" />
             <x-dashboard.card title="Delivered Items" :value="$deliveredItemCount ?? 0" icon="box" />
-            <x-dashboard.card title="Pending Deliveries" :value="$pendingDeliveries ?? 0" icon="clock" />
-            <x-dashboard.card title="Delivered Packages" :value="$deliveredPackages ?? 0" icon="check-circle" />
+            <x-dashboard.card title="Pending Deliveries" :value="$pending ?? 0" icon="clock" />
+            <x-dashboard.card title="Delivered Packages" :value="$delivered ?? 0" icon="check-circle" />
+            <x-dashboard.card title="Cancelled Deliveries" :value="$cancelled ?? 0" icon="check-circle" />
         </div>
 
         <!-- Charts Section -->
