@@ -12,8 +12,10 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\Auth\OtpVerificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\DeliveryController;
-use App\Http\Controllers\Supplier\DeliveryController as SupplierDeliveryController;
 use App\Models\Delivery;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Supplier\DeliveryController as SupplierDeliveryController;
+
 
 
 /*
@@ -40,10 +42,6 @@ Route::get('/recipients/paginate/recipients', [RecipientController::class, 'pagi
 Route::get('/paginate-projects', [ProjectController::class, 'paginateProjects']);
 Route::get('/paginate-packages', [PackageController::class, 'paginatePackages']);
 Route::get('/paginate-packagetypes', [PackageTypeController::class, 'paginatePackageTypes']);
-
-
-
-
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -86,9 +84,11 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 
     // ✅ Deliveries (limited to index/edit/update)
     Route::get('/superadmin/deliveries', [DeliveryController::class, 'index'])->name('superadmin.deliveries.index');
-    Route::post('/superadmin/deliveries/assign', [DeliveryController::class, 'assign'])->name('superadmin.deliveries.assign');
     Route::get('/superadmin/deliveries/list', [DeliveryController::class, 'list'])->name('superadmin.deliveries.list');
     Route::put('/superadmin/deliveries/{id}/status', [DeliveryController::class, 'updateStatus'])->name('superadmin.deliveries.updateStatus');
+    Route::post('/superadmin/deliveries/assign', [DeliveryController::class, 'assign'])->name('superadmin.deliveries.assign');
+    Route::post('/deliveries/bulk-assign', [DeliveryController::class, 'bulkAssignSupplier'])->name('deliveries.bulkAssign');
+    Route::put('/deliveries/{id}/unassign', [DeliveryController::class, 'unassign'])->name('deliveries.unassign');
 
     //Regional Office
     Route::post('/regional-offices/import-csv', [RegionalOfficeController::class, 'importRegionalOffices'])
@@ -149,6 +149,32 @@ Route::delete('/regional-offices/{id}', [RecipientController::class, 'destroyReg
 
 
 Route::get('/recipients/partial/table', [RecipientController::class, 'tablePartial'])->name('recipients.table.partial');
+
+
+
+//For Login Auth
+Route::get('/redirect-by-role', function () {
+    $user = Auth::user();
+
+    if ($user->role_id === 6) {
+        return redirect()->route('supplier.deliveries.index');
+    }
+
+    if ($user->role_id === 1) {
+        return redirect()->route('superadmin.dashboard');
+    }
+
+    return redirect('/'); // default
+});
+
+
+Route::middleware(['auth', 'role:supplier'])->group(function () {
+    Route::get('/supplier/deliveries', [SupplierDeliveryController::class, 'index'])->name('supplier.deliveries.index');
+});
+
+
+
+
 
 
 

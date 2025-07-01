@@ -54,7 +54,7 @@
 
         <div class="overflow-x-auto bg-white shadow rounded-lg">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-100 dark:bg-gray-800">
+                <thead class="bg-[#4A90E2] text-white uppercase text-xs tracking-wider">
                     <tr>
                         <th class="px-4 py-2 text-left">Location</th>
                         <th class="px-4 py-2 text-left">Item Name</th>

@@ -63,4 +63,18 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    protected function authenticated(Request $request, $user)
+{
+    if ($user->role === 'supplier') {
+        return redirect()->route('supplier.deliveries.index');
+    }
+
+    if ($user->role === 'superadmin') {
+        return redirect()->route('dashboard');
+    }
+
+    return redirect('/'); // fallback
+}
+
 }

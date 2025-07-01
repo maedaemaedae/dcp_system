@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Recipient;
 use App\Models\User;
 use App\Models\Delivery;
@@ -9,6 +10,9 @@ use App\Models\PackageContent;
 use App\Models\Inventory;
 use App\Models\DeliveredItem;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+
 
 class DeliveryController extends Controller
 {
@@ -184,8 +188,13 @@ class DeliveryController extends Controller
         $delivery->status = 'delivered';
         $delivery->save();
 
-        return redirect()->route('supplier.deliveries')->with('success', 'Delivery confirmed and inventory recorded.');
+       return redirect()->route('supplier.deliveries.index')->with('success', 'Deliveries assigned.');
+
+        // Your logic to show deliveries
+        return view('supplier.deliveries.index'); // make sure this Blade view exists
     }
+    
+    
 
 
 }
