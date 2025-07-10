@@ -9,6 +9,7 @@ use App\Models\PackageContent;
 use App\Models\Inventory;
 use App\Models\DeliveredItem;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class DeliveryController extends Controller
 {
@@ -69,6 +70,7 @@ class DeliveryController extends Controller
         }
 
         return back()->with('success', 'Delivery assignment recorded.');
+
     }
 
 
@@ -103,7 +105,8 @@ class DeliveryController extends Controller
             }
         }
 
-        return back()->with('success', 'Deliveries assigned to selected recipients.');
+       return redirect()->back()->with('success', 'Deliveries successfully assigned!');
+
     }
 
 
@@ -203,7 +206,8 @@ class DeliveryController extends Controller
         $delivery->save();
 
         return redirect()->route('supplier.deliveries')->with('success', 'Delivery confirmed and inventory recorded.');
+        
+    // Your logic to show deliveries
+        return view('supplier.deliveries.index'); // make sure this Blade view exists
     }
-
-
 }

@@ -9,13 +9,25 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function index()
+     public function index(Request $request)
     {
-        $projects = Project::with('packages.packageType')->get();
-        $packageTypes = PackageType::all();
-        $packages = Package::with(['packageType', 'project'])->get(); // 🔹 this is missing
+    $projects = Project::with('packages.packageType')->orderBy('created_at', 'desc')->paginate(3, ['*'], 'projects_page');
+    $packages = Package::with(['project', 'packageType'])->orderBy('created_at', 'desc')->paginate(3, ['*'], 'packages_page');
+    $packageTypes = PackageType::with('contents')->orderBy('created_at', 'desc')->paginate(3, ['*'], 'package_types_page');
 
-        return view('projects.index', compact('projects', 'packageTypes', 'packages'));
+    if ($request->ajax()) {
+        if ($request->type === 'projects') {
+            return view('projects.partials.projects-table', compact('projects', 'packageTypes'))->render();
+        }
+        if ($request->type === 'packages') {
+            return view('projects.partials.packages-card', compact('packages'))->render();
+        }
+        if ($request->type === 'package_types') {
+            return view('projects.partials.package-types-card', compact('packageTypes'))->render();
+        }
+    }
+
+    return view('projects.index', compact('projects', 'packages', 'packageTypes'));
     }
 
     public function store(Request $request)
@@ -52,5 +64,6 @@ class ProjectController extends Controller
 
         return back()->with('success', 'Project deleted successfully.');
     }
+    
 
 }

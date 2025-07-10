@@ -1,85 +1,125 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            My Assigned Deliveries
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assigned Deliveries</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-white font-['Poppins']" x-data="{ open: true }">
+    <div class="flex">
 
-    <div class="p-6">
+         
+            @include('layouts.sidebar') 
+            
+       
+
+        <div class="fixed top-0 left-[300px] right-0 bg-white shadow-md h-20 z-10 transition-all duration-300" :class="open ? 'left-[300px]' : 'left-20'">
+            @include('layouts.top-navbar') 
+            <div class="flex items-center justify-between h-full px-8">
+                
+        </div>
+
+    <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen">
+
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
+            <i class="fa-solid fa-truck-ramp-box text-blue-500 text-4xl w-10 h-10"></i>
+            My Deliveries
+        </h2>
         @if (session('success'))
-            <div class="mb-4 text-green-600 font-medium">
-                {{ session('success') }}
-            </div>
+            <div class="mb-4 text-green-600 font-medium">{{ session('success') }}</div>
         @endif
 
-        <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-            <table class="min-w-full text-sm text-left border border-gray-300">
-                <thead class="bg-gray-100 text-xs font-semibold uppercase text-gray-700">
-                    <tr>
-                        <th class="px-4 py-3 border-b">Recipient</th>
-                        <th class="px-4 py-3 border-b">Package</th>
-                        <th class="px-4 py-3 border-b">Quantity</th>
-                        <th class="px-4 py-3 border-b">Target Date</th>
-                        <th class="px-4 py-3 border-b">Status</th>
-                        <th class="px-4 py-3 border-b">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    @forelse ($deliveries as $delivery)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2">
-                                {{ $delivery->recipient->recipient_type === 'school'
-                                    ? $delivery->recipient->school->school_name
-                                    : $delivery->recipient->division->division_name }}
-                            </td>
-                            <td class="px-4 py-2">
-                                {{ $delivery->recipient->package->packageType->package_code }}
-                            </td>
-                            <td class="px-4 py-2">{{ $delivery->recipient->quantity }}</td>
-                            <td class="px-4 py-2">{{ $delivery->target_delivery ?? '—' }}</td>
-                            <td class="px-4 py-2 capitalize">
-                                {{ $delivery->status }}
-                            </td>
-                            <td class="px-4 py-2">
-                                @if ($delivery->status === 'pending')
-                                    <form method="POST"
-                                          action="{{ route('supplier.deliveries.confirm', $delivery->id) }}"
-                                          enctype="multipart/form-data">
-                                        @csrf
-                                        @method('PUT')
+        <div class="overflow-x-auto bg-white shadow-lg rounded-xl border border-gray-200">
+    <table class="min-w-full text-sm text-left">
+        <thead class="bg-[#4A90E2] text-white uppercase text-xs tracking-wider">
+            <tr>
+                <th class="px-6 py-4">Recipient</th>
+                <th class="px-6 py-4">Package</th>
+                <th class="px-6 py-4 text-center">Quantity</th>
+                <th class="px-6 py-4 text-center">Target Date</th>
+                <th class="px-6 py-4 text-center">Status</th>
+                <th class="px-6 py-4 text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            @forelse ($deliveries as $delivery)
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 font-medium text-gray-800">
+                        {{ $delivery->recipient->recipient_type === 'school'
+                            ? $delivery->recipient->school->school_name
+                            : $delivery->recipient->division->division_name }}
+                    </td>
+                    <td class="px-6 py-4 text-gray-700">
+                        {{ $delivery->recipient->package->packageType->package_code }}
+                    </td>
+                    <td class="px-6 py-4 text-center text-gray-700">
+                        {{ $delivery->recipient->quantity }}
+                    </td>
+                    <td class="px-6 py-4 text-center text-gray-700">
+                        {{ $delivery->target_delivery ?? '—' }}
+                    </td>
+                    <td class="px-6 py-4 text-center capitalize">
+                        <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold
+                            {{ $delivery->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700' }}">
+                            {{ $delivery->status }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        @if ($delivery->status === 'pending')
+                            <form method="POST"
+                                action="{{ route('supplier.deliveries.confirm', $delivery->id) }}"
+                                enctype="multipart/form-data"
+                                class="flex justify-center items-center gap-2">
+                                @csrf
+                                @method('PUT')
 
-                                        @if ($errors->any())
-                                            <div class="mb-2 text-red-600 text-sm">
-                                                {{ $errors->first('proof_file') }}
-                                            </div>
-                                        @endif
-
-                                        <input type="file"
-                                               name="proof_file"
-                                               accept="application/pdf"
-                                               required
-                                               class="mb-2 block text-sm text-gray-600"
-                                               onchange="if(this.files[0].size > 5 * 1024 * 1024) { alert('File must be less than 2MB'); this.value = ''; }" />
-
-                                        <button type="submit"
-                                                class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">
-                                            Mark as Delivered
-                                        </button>
-                                    </form>
-                                @else
-                                    <span class="text-green-700 font-semibold">Delivered</span>
+                                @if ($errors->any())
+                                    <div class="text-red-600 text-xs mb-1">
+                                        {{ $errors->first('proof_file') }}
+                                    </div>
                                 @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-4 py-4 text-center text-gray-500">
-                                No deliveries assigned yet.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</x-app-layout>
+
+                                <label for="file-upload-{{ $delivery->id }}"
+                                    class="inline-flex items-center justify-center w-10 h-10 bg-[#4A90E2] hover:bg-[#357ABD] text-white rounded-full cursor-pointer transition duration-150 ease-in-out"
+                                    title="Upload proof & mark as delivered">
+                                    <i class="fas fa-paperclip"></i>
+                                    <input id="file-upload-{{ $delivery->id }}"
+                                        type="file"
+                                        name="proof_file"
+                                        accept="application/pdf"
+                                        required
+                                        class="hidden"
+                                        onchange="if(this.files[0].size > 2 * 1024 * 1024) {
+                                                        alert('File must be less than 2MB');
+                                                        this.value = '';
+                                                    } else {
+                                                        this.form.submit();
+                                                    }" />
+                                </label>
+                            </form>
+
+                        @else
+                            <span class="text-green-700 font-semibold">Delivered</span>
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="px-6 py-6 text-center text-gray-400">
+                        No deliveries assigned yet.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+    </main>
+
+</body>
+</html>

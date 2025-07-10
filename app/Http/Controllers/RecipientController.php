@@ -23,8 +23,8 @@ class RecipientController extends Controller
             'school.division.regionalOffice',
             'division.regionalOffice'
         ])
-            ->get()
-            ->map(function ($recipient) {
+            ->paginate(10)
+            ->through(function ($recipient) {
                 $recipient->school_office_name = $recipient->recipient_type === 'school'
                     ? optional($recipient->school)->school_name
                     : optional($recipient->division)->division_name;
@@ -44,13 +44,40 @@ class RecipientController extends Controller
                 return $recipient;
             });
 
-        $schools = \App\Models\School::with('division.regionalOffice')->get();
-        $divisions = \App\Models\DivisionOffice::with('regionalOffice')->get();
-        $regionalOffices = \App\Models\RegionalOffice::all(); // ✅ ADD THIS
-        $packages = \App\Models\Package::with('packageType')->get();
+        $schools = \App\Models\School::with('division.regionalOffice')->paginate(10);
+        $divisions = \App\Models\DivisionOffice::with('regionalOffice')->paginate(10);
+        $regionalOffices = \App\Models\RegionalOffice::paginate(10); 
+        $packages = \App\Models\Package::with('packageType')->paginate(10);
 
         return view('recipients.index', compact('recipients', 'schools', 'divisions', 'regionalOffices', 'packages'));
     }
+
+
+
+  public function paginateSchools(Request $request)
+{
+    $schools = School::with('division.regionalOffice')->paginate(10);
+    return view('recipients.partials.schools-table', compact('schools'))->render();
+
+}
+
+public function paginateRegionalOffices(Request $request)
+{
+    $regionalOffices = RegionalOffice::paginate(10);
+    return view('recipients.partials.regional_offices_table', compact('regionalOffices'))->render();
+}
+
+public function paginateDivisions(Request $request)
+{
+    $divisions = Division::with('regionalOffice')->paginate(10);
+    return view('recipients.partials.divisions_table', compact('divisions'))->render();
+}
+
+public function paginateRecipients(Request $request)
+{
+    $recipients = Recipient::with(['school.division.regionalOffice'])->paginate(10);
+    return view('recipients.partials.recipients_table', compact('recipients'))->render();
+}
 
     // SCHOOL CRUD
     public function storeSchool(Request $request)

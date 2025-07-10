@@ -1,30 +1,40 @@
+<div id="createProjectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-xl p-6 relative animate-fadeInUp">
+        
+        <!-- Close Button -->
+        <button onclick="closeModal('createProjectModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl transition-colors duration-200">&times;</button>
 
-<div id="createProjectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-xl p-6">
-        <h2 class="text-xl font-semibold mb-4">Add Project</h2>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">📁 Add Project</h2>
+
         <form action="{{ route('projects.store') }}" method="POST">
             @csrf
 
             <div class="space-y-4">
                 <div>
-                    <label for="name" class="block font-medium text-sm text-gray-700">Project Name</label>
-                    <input type="text" name="name" id="name" class="w-full border-gray-300 rounded" required>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
+                    <input type="text" name="name" id="name" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
 
                 <div>
-                    <label for="target_delivery_date" class="block font-medium text-sm text-gray-700">Target Delivery Date</label>
-                    <input type="date" name="target_delivery_date" id="target_delivery_date" class="w-full border-gray-300 rounded">
+                    <label for="target_delivery_date" class="block text-sm font-medium text-gray-700 mb-1">Target Delivery Date</label>
+                    <input type="date" name="target_delivery_date" id="target_delivery_date" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <div>
-                    <label for="target_arrival_date" class="block font-medium text-sm text-gray-700">Target Arrival Date</label>
-                    <input type="date" name="target_arrival_date" id="target_arrival_date" class="w-full border-gray-300 rounded">
+                    <label for="target_arrival_date" class="block text-sm font-medium text-gray-700 mb-1">Target Arrival Date</label>
+                    <input type="date" name="target_arrival_date" id="target_arrival_date" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
 
-            <div class="mt-6 flex justify-end space-x-2">
-                <button type="button" onclick="closeModal('createProjectModal')" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel</button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Create</button>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" onclick="closeModal('createProjectModal')"
+                        class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold shadow hover:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Create
+                </button>
             </div>
         </form>
     </div>

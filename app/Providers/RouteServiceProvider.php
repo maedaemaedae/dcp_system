@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -17,8 +18,8 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/dashboard';
-
+    public const HOME = '/redirect-by-role';
+    
     /**
      * The controller namespace for the application.
      *
@@ -60,4 +61,19 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
     }
+
+    public static function redirectTo()
+{
+    $user = Auth::user();
+
+    if ($user->role === 'supplier') {
+        return route('supplier.deliveries.index');
+    }
+
+    if ($user->role === 'superadmin') {
+        return route('dashboard'); // Now points to the Blade view
+    }
+
+    return '/'; // fallback
+}
 }

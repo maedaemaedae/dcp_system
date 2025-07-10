@@ -43,9 +43,9 @@ class SuperAdminController extends Controller
             ->get();
 
         $pending = DB::table('deliveries')->where('status', 'pending')->count();
-$partial = DB::table('deliveries')->where('status', 'partial')->count(); // if you plan to add later
-$delivered = DB::table('deliveries')->where('status', 'delivered')->count();
-$cancelled = DB::table('deliveries')->where('status', 'cancelled')->count(); // optional
+        $partial = DB::table('deliveries')->where('status', 'partial')->count(); // if you plan to add later
+        $delivered = DB::table('deliveries')->where('status', 'delivered')->count();
+        $cancelled = DB::table('deliveries')->where('status', 'cancelled')->count(); // optional
 
 
         return view('superadmin.dashboard', compact(

@@ -12,7 +12,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\Auth\OtpVerificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\DeliveryController;
-use App\Http\Controllers\Supplier\DeliveryController as SupplierDeliveryController;
+use App\Http\Controllers\Supplier\SupplierDeliveryController;
 use App\Models\Delivery;
 
 
@@ -26,6 +26,18 @@ use App\Models\Delivery;
 */
 
 use App\Http\Controllers\HomeController;
+
+
+// For Pagination (Recipients Page)
+Route::get('/recipients/paginate/regional-offices', [RecipientController::class, 'paginateRegionalOffices'])->name('recipients.paginate.regional-offices');
+Route::get('/recipients/paginate/divisions', [RecipientController::class, 'paginateDivisions'])->name('recipients.paginate.divisions');
+Route::get('/recipients/paginate/schools', [RecipientController::class, 'paginateSchools'])->name('recipients.paginate.schools');
+Route::get('/recipients/paginate/recipients', [RecipientController::class, 'paginateRecipients'])->name('recipients.paginate.recipients');
+
+//For Pagination (Projects Page)
+Route::get('/paginate-projects', [ProjectController::class, 'paginateProjects']);
+Route::get('/paginate-packages', [PackageController::class, 'paginatePackages']);
+Route::get('/paginate-packagetypes', [PackageTypeController::class, 'paginatePackageTypes']);
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -45,7 +57,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    return Redirect::to('/')->with('status', 'account-deleted');
 });
+
+
+//Profile image upload
+Route::post('/profile/photo', [ProfileController::class, 'uploadPhoto'])->name('profile.photo.upload');
+Route::post('/profile/photo/upload', [ProfileController::class, 'uploadPhoto'])->name('profile.photo.upload');
+
+
 
 // ✅ Super Admin routes
 Route::middleware(['auth', 'superadmin'])->group(function () {
@@ -106,5 +126,57 @@ Route::middleware(['auth', 'supplier'])->group(function () {
     Route::get('/supplier/deliveries', [DeliveryController::class, 'supplierView'])->name('supplier.deliveries');
     Route::put('/supplier/deliveries/{id}/confirm', [DeliveryController::class, 'confirmDelivery'])->name('supplier.deliveries.confirm');
 });
+
+
+// For Email Validation
+Route::post('/check-email-register', function (Illuminate\Http\Request $request) {
+    $exists = \App\Models\User::where('email', $request->email)->exists();
+    return response()->json(['exists' => $exists]);
+})->name('check.email-register');
+
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
+
+
+//For Toast
+// Recipient
+Route::delete('/recipients/{id}', [RecipientController::class, 'destroy'])->name('recipients.destroy');
+
+// School
+Route::delete('/schools/{id}', [RecipientController::class, 'destroySchool'])->name('schools.destroy');
+
+// Division
+Route::delete('/divisions/{id}', [RecipientController::class, 'destroyDivision'])->name('divisions.destroy');
+
+// Regional Office (assuming method exists or you’ll add it)
+Route::delete('/regional-offices/{id}', [RecipientController::class, 'destroyRegional'])->name('regional.destroy');
+
+
+
+Route::get('/recipients/partial/table', [RecipientController::class, 'tablePartial'])->name('recipients.table.partial');
+
+
+
+//For Role Based Login Auth
+Route::get('/redirect-by-role', function () {
+    $user = Auth::user();
+
+    if ($user->role_id === 6) {
+        return redirect()->route('supplier.deliveries.index');
+    }
+
+    if ($user->role_id === 1) {
+        return redirect()->route('superadmin.dashboard');
+    }
+
+    return redirect('/'); // default
+});
+
+
+Route::middleware(['auth', 'role:supplier'])->group(function () {
+    // Example route for supplier deliveries index
+    Route::get('/supplier/deliveries', [SupplierDeliveryController::class, 'index'])->name('supplier.deliveries.index');
+    Route::put('/supplier/deliveries/{id}/confirm', [SupplierDeliveryController::class, 'confirm'])->name('supplier.deliveries.confirm');
+});
+
 
 require __DIR__.'/auth.php';
