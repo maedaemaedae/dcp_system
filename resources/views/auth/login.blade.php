@@ -71,6 +71,20 @@
                     `;
                 }
             }
+
+            // Prevent zoom with Ctrl + Mouse Wheel and Ctrl + +/- on desktop
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('keydown', function(e) {
+                // Prevent Ctrl + '+', Ctrl + '-', Ctrl + '0'
+                if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                    e.preventDefault();
+                }
+            });
         </script>    
 </head>
 
@@ -106,7 +120,7 @@
                         <div class="swiper-wrapper h-full">
                             <!-- Slide 1 -->
                             <div class="swiper-slide">
-                                <img src="{{ asset('images/login-mockups2.png') }}" class="w-full h-full object-cover" />
+                                <img src="{{ asset('images/login-mockups1.png') }}" class="w-full h-full object-cover" />
                             </div>
                             <!-- Slide 2 -->
                             <div class="swiper-slide">
@@ -121,9 +135,9 @@
                 </div>
 
 
-            <!-- Form Side — NOW on the LEFT -->
+            <!-- Form Side — Left Side -->
             <!-- LOGO -->
-            <img class="w-28 h-28 absolute top-6 left-6 z-10" src="{{ asset('images/portrait-logo.png') }}" alt="DCP Logo" />
+            <img class="w-28 h-28 absolute top-6 left-6 z-10" src="{{ asset('images/final-portrait-logo.png') }}" alt="DCP Logo" />
 
             <!-- Header -->
             <div class="w-96 left-[33px] top-[129px] absolute inline-flex flex-col justify-start items-start">

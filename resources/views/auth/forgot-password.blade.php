@@ -5,6 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forgot Password | DCP Tracking Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
+
+  <script>
+    // Prevent zoom with Ctrl + Mouse Wheel and Ctrl + +/- on desktop
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('keydown', function(e) {
+                // Prevent Ctrl + '+', Ctrl + '-', Ctrl + '0'
+                if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                    e.preventDefault();
+                }
+            });
+  </script>
+  <style>
+    /* Prevent zoom on mobile devices */
+    @media (max-width: 768px) {
+      body {
+        touch-action: manipulation;
+      }
+    }
+    </style>
 </head>
 
 
@@ -18,7 +43,7 @@
                 <div class="flex-shrink-0">
                     <a href=<a href="/">
                    
-                        <img src="{{ asset('images/landscape-logo.png') }}" alt="YourLogo" class="h-14 w-auto">
+                        <img src="{{ asset('images/final-landscape-logo.png') }}" alt="YourLogo" class="h-14 w-auto">
                     </a>
                 </div>      
             </div>

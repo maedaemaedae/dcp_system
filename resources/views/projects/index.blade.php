@@ -75,6 +75,20 @@
             .catch(err => console.error('Pagination failed:', err));
         }
     });
+
+    // Prevent zoom with Ctrl + Mouse Wheel and Ctrl + +/- on desktop
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('keydown', function(e) {
+                // Prevent Ctrl + '+', Ctrl + '-', Ctrl + '0'
+                if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                    e.preventDefault();
+                }
+            });
 }
 
 document.addEventListener('DOMContentLoaded', function () {

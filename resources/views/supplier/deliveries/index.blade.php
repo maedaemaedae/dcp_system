@@ -8,9 +8,46 @@
     <script src="https://unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        // Prevent zoom with Ctrl + Mouse Wheel and Ctrl + +/- on desktop
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('keydown', function(e) {
+                // Prevent Ctrl + '+', Ctrl + '-', Ctrl + '0'
+                if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                    e.preventDefault();
+                }
+            });
+    </script>
+    
 </head>
 <body class="bg-white font-['Poppins']" x-data="{ open: true }">
     <div class="flex">
+
+    @if (session('success'))
+    <div 
+        x-data="{ show: true }" 
+        x-init="setTimeout(() => show = false, 5000)" 
+        x-show="show" 
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="opacity-0 -translate-y-4 scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+        x-transition:leave="transition ease-in duration-200 transform"
+        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+        x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
+        class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 
+               bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg 
+               text-sm flex items-center gap-2"
+    >
+        <i class="fa-solid fa-circle-check"></i>
+        {{ session('success') }}
+    </div>
+@endif
 
          
             @include('layouts.sidebar') 
@@ -30,9 +67,6 @@
             <i class="fa-solid fa-truck-ramp-box text-blue-500 text-4xl w-10 h-10"></i>
             My Deliveries
         </h2>
-        @if (session('success'))
-            <div class="mb-4 text-green-600 font-medium">{{ session('success') }}</div>
-        @endif
 
         <div class="overflow-x-auto bg-white shadow-lg rounded-xl border border-gray-200">
     <table class="min-w-full text-sm text-left">

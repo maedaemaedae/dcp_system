@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Recipients</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="icon" href="{{ asset('images/portrait-logo.png') }}" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -634,6 +635,20 @@ document.addEventListener('alpine:init', () => {
             }
         },
     }));
+
+    // Prevent zoom with Ctrl + Mouse Wheel and Ctrl + +/- on desktop
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('keydown', function(e) {
+                // Prevent Ctrl + '+', Ctrl + '-', Ctrl + '0'
+                if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                    e.preventDefault();
+                }
+            });
 });
 </script>
 

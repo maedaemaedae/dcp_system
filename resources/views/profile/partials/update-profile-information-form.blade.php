@@ -21,26 +21,28 @@
         @method('patch')
 
        <!-- Name Field -->
-            <div>
+            <div class="relative">
                 <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                     {{ __('Name') }}
                 </label>
                 <input id="name" name="name" type="text"
-                    class="w-full px-4 py-2 bg-white/80 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2] text-sm text-gray-900 dark:text-white placeholder:text-gray-400"
+                    class="w-full px-4 py-2 bg-white/80 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2] text-sm text-gray-900 dark:text-white placeholder:text-gray-400 pr-10"
                     value="{{ old('name', $user->name) }}" required autofocus autocomplete="name">
+                <span class="absolute right-3 top-9 text-[#2D9CDB] pointer-events-none"><i class="fa-solid fa-pencil"></i></span>
                 @error('name')
                     <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                 @enderror
             </div>
 
             <!-- Email Field -->
-            <div>
+            <div class="relative">
                 <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                     {{ __('Email') }}
                 </label>
                 <input id="email" name="email" type="email"
-                    class="w-full px-4 py-2 bg-white/80 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2] text-sm text-gray-900 dark:text-white placeholder:text-gray-400"
+                    class="w-full px-4 py-2 bg-white/80 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2] text-sm text-gray-900 dark:text-white placeholder:text-gray-400 pr-10"
                     value="{{ old('email', $user->email) }}" required autocomplete="username">
+                <span class="absolute right-3 top-9 text-[#2D9CDB] pointer-events-none"><i class="fa-solid fa-pencil"></i></span>
                 @error('email')
                     <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                 @enderror

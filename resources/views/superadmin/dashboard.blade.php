@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Superadmin Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -47,50 +47,47 @@
 <!-- 📈 Charts Section -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
 
-            <!-- 🏫 Schools per Division Chart -->
-        <div class="bg-white rounded-xl border border-gray-200 shadow p-6 hover:shadow-md transition-all duration-300">
-            <h2 class="text-xl font-semibold mb-6 text-center text-gray-800">Schools per Division</h2>
-            
-            <!-- Chart container with horizontal scroll if needed -->
-            <div class="overflow-x-auto">
-                <div class="min-w-[400px]">
-                    <canvas id="regionChart" class="w-full h-[360px]"></canvas>
-                </div>
+    <!-- 🏫 Schools per Division Chart -->
+    <div class="bg-white rounded-xl border border-gray-200 shadow p-6 hover:shadow-md transition-all duration-300">
+        <h2 class="text-xl font-semibold mb-6 text-center text-gray-800">Schools per Division</h2>
+        <!-- Responsive chart container -->
+        <div class="w-full" style="aspect-ratio: 2/1; min-width: 0;">
+            <canvas id="regionChart" class="w-full h-full"></canvas>
+        </div>
+    </div>
+
+    <!-- 🚚 Delivery Status Overview Donut Chart -->
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl border border-gray-200 shadow-md p-6 transition hover:shadow-lg">
+        <h2 class="text-xl font-semibold mb-6 text-center text-gray-800 tracking-wide">Delivery Status Overview</h2>
+        <div class="flex justify-center mb-4">
+            <div class="w-full max-w-[300px]" style="aspect-ratio: 1/1;">
+                <canvas id="statusChart" class="w-full h-full"></canvas>
             </div>
         </div>
 
-
-   <!-- 🚚 Delivery Status Overview Donut Chart -->
-<div class="bg-white/80 backdrop-blur-md rounded-2xl border border-gray-200 shadow-md p-6 transition hover:shadow-lg">
-    <h2 class="text-xl font-semibold mb-6 text-center text-gray-800 tracking-wide">📦 Delivery Status Overview</h2>
-
-    <div class="flex justify-center mb-4">
-        <canvas id="statusChart" class="w-full max-w-[300px] h-[300px]"></canvas>
-    </div>
-
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-y-3 text-sm text-gray-700 text-center mt-6">
-        <div class="flex flex-col items-center">
-            <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #FACC15;"></span>
-            <span class="font-medium">Pending</span>
-            <span class="text-xs text-gray-500">{{ $pending }}</span>
-        </div>
-        <div class="flex flex-col items-center">
-            <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #FB923C;"></span>
-            <span class="font-medium">Partial</span>
-            <span class="text-xs text-gray-500">{{ $partial }}</span>
-        </div>
-        <div class="flex flex-col items-center">
-            <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #22C55E;"></span>
-            <span class="font-medium">Delivered</span>
-            <span class="text-xs text-gray-500">{{ $delivered }}</span>
-        </div>
-        <div class="flex flex-col items-center">
-            <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #EF4444;"></span>
-            <span class="font-medium">Cancelled</span>
-            <span class="text-xs text-gray-500">{{ $cancelled }}</span>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-y-3 text-sm text-gray-700 text-center mt-6">
+            <div class="flex flex-col items-center">
+                <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #FACC15;"></span>
+                <span class="font-medium">Pending</span>
+                <span class="text-xs text-gray-500">{{ $pending }}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #FB923C;"></span>
+                <span class="font-medium">Partial</span>
+                <span class="text-xs text-gray-500">{{ $partial }}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #22C55E;"></span>
+                <span class="font-medium">Delivered</span>
+                <span class="text-xs text-gray-500">{{ $delivered }}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #EF4444;"></span>
+                <span class="font-medium">Cancelled</span>
+                <span class="text-xs text-gray-500">{{ $cancelled }}</span>
+            </div>
         </div>
     </div>
-</div>
 
 </div>
 
@@ -105,27 +102,31 @@
                 @endforeach
             ];
 
-            new Chart(document.getElementById('packageTypeChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: packageTypeData.map(p => p.name),
-                    datasets: [{
-                        label: 'Package Count',
-                        data: packageTypeData.map(p => p.count),
-                        backgroundColor: ['#4F46E5', '#16A34A', '#F59E0B', '#EF4444', '#3B82F6', '#A855F7'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: false,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
+            // Make this chart responsive as well if you use it
+            if (document.getElementById('packageTypeChart')) {
+                new Chart(document.getElementById('packageTypeChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: packageTypeData.map(p => p.name),
+                        datasets: [{
+                            label: 'Package Count',
+                            data: packageTypeData.map(p => p.count),
+                            backgroundColor: ['#4F46E5', '#16A34A', '#F59E0B', '#EF4444', '#3B82F6', '#A855F7'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 1.5,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
 
             const regionData = [
     @foreach ($divisionSchoolCounts as $r)
@@ -156,7 +157,8 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
                 layout: {
                     padding: 10
                 },
@@ -216,18 +218,18 @@
                 datasets: [{
                     data: [{{ $pending }}, {{ $partial }}, {{ $delivered }}, {{ $cancelled }}],
                     backgroundColor: ['#FACC15', '#FB923C', '#22C55E', '#EF4444'],
-                    borderWidth: 8,
-                    borderColor: '#ffffff',
-                    hoverOffset: 12
+                    borderWidth: 0,
+                    borderColor: '#ffffff'
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
-                cutout: '65%', // size of the inner radius
+                maintainAspectRatio: true,
+                aspectRatio: 1,
+                cutout: '65%',
                 plugins: {
                     legend: {
-                        display: false // hide legend (you're showing below)
+                        display: false
                     },
                     tooltip: {
                         callbacks: {
@@ -243,6 +245,7 @@
                             size: 14
                         },
                         formatter: (value, ctx) => {
+                            if (value === 0) return '';
                             const sum = ctx.chart._metasets[0].total;
                             const percent = ((value / sum) * 100).toFixed(0) + '%';
                             return percent;
@@ -252,8 +255,23 @@
             },
             plugins: [ChartDataLabels]
         });
+
+        // Prevent zoom with Ctrl + Mouse Wheel and Ctrl + +/- on desktop
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('keydown', function(e) {
+                // Prevent Ctrl + '+', Ctrl + '-', Ctrl + '0'
+                if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                    e.preventDefault();
+                }
+            });
     });
 </script>
+
 
 </body>
 </html>

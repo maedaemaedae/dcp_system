@@ -21,7 +21,7 @@
             
             <!-- Left Image Section -->
             <div class="w-[386px] h-full overflow-hidden rounded-xl">
-                <img src="{{ asset('images/palaro.png') }}" alt="hehe" class="w-full h-full object-cover" />
+                <img src="https://placehold.co/400x932?text=400x932" alt="hehe" class="w-full h-full object-cover" />
             </div>
 
             <!-- Right Form Section -->
@@ -487,6 +487,20 @@ document.addEventListener('DOMContentLoaded', function () {
         numberCheck.checked = /\d/.test(value);
         symbolCheck.checked = /[!@#$%^&*]/.test(value);
     });
+
+    // Prevent zoom with Ctrl + Mouse Wheel and Ctrl + +/- on desktop
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('keydown', function(e) {
+                // Prevent Ctrl + '+', Ctrl + '-', Ctrl + '0'
+                if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                    e.preventDefault();
+                }
+            });
 });
 </script>
 
