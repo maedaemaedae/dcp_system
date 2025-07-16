@@ -176,6 +176,7 @@ Route::middleware(['auth', 'role:supplier'])->group(function () {
     // Example route for supplier deliveries index
     Route::get('/supplier/deliveries', [SupplierDeliveryController::class, 'index'])->name('supplier.deliveries.index');
     Route::put('/supplier/deliveries/{id}/confirm', [SupplierDeliveryController::class, 'confirm'])->name('supplier.deliveries.confirm');
+    Route::put('/supplier/deliveries/{id}/confirm', [DeliveryController::class, 'confirmDelivery'])->name('supplier.deliveries.confirm');
 });
 
 

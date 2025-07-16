@@ -10,6 +10,9 @@ use App\Models\Inventory;
 use App\Models\DeliveredItem;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\DeliveryProofSubmitted;
 
 class DeliveryController extends Controller
 {
@@ -151,18 +154,18 @@ class DeliveryController extends Controller
         return view('supplier.deliveries.index', compact('deliveries'));
     }
 
-    public function confirmDelivery(Request $request, $id)
-    {
+    public function confirmDelivery(Request $request, $id){
+        Log::info('confirmDelivery called', ['id' => $id, 'user_id' => auth()->id()]);
         $request->validate([
             'proof_file' => 'required|file|mimes:pdf|max:5120', // 5MB max
         ]);
-
 
         $delivery = Delivery::with('recipient.package.packageType', 'recipient.school', 'recipient.division')
             ->where('id', $id)
             ->where('supplier_id', auth()->id())
             ->where('status', 'pending')
             ->firstOrFail();
+        Log::info('Loaded delivery', ['delivery' => $delivery->toArray()]);
 
         // Store proof file
         $path = $request->file('proof_file')->store('proofs', 'public');
@@ -205,9 +208,23 @@ class DeliveryController extends Controller
         $delivery->status = 'delivered';
         $delivery->save();
 
-        return redirect()->route('supplier.deliveries')->with('success', 'Delivery confirmed and inventory recorded.');
-        
-    // Your logic to show deliveries
-        return view('supplier.deliveries.index'); // make sure this Blade view exists
+        // Send email to all superadmins using BCC
+        $superadmins = User::whereHas('role', function ($q) {
+            $q->where('role_name', 'Super Admin');
+        })->pluck('email')->toArray();
+        Log::info('About to send delivery email', ['superadmins' => $superadmins, 'delivery_id' => $delivery->id]);
+
+        if (empty($superadmins)) {
+            Log::warning('No Super Admins found for delivery email.');
+        } else {
+            try {
+                Mail::to($superadmins)->bcc($superadmins)->send(new DeliveryProofSubmitted($delivery));
+                Log::info('Delivery email sent to superadmins (bcc)');
+            } catch (\Exception $e) {
+                Log::error('Delivery email to superadmins failed: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('supplier.deliveries.index')->with('success', 'Delivery confirmed and inventory recorded.');
     }
 }
