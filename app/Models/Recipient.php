@@ -52,4 +52,4 @@ class Recipient extends Model
             return $this->hasMany(\App\Models\Delivery::class);
         }
 }
-
+    

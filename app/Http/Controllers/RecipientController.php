@@ -15,69 +15,67 @@ use Maatwebsite\Excel\Facades\Excel;
 class RecipientController extends Controller
 {
     public function index()
-    {
-        $recipients = Recipient::with([
-            'package.packageType',
-            'creator',
-            'modifier',
-            'school.division.regionalOffice',
-            'division.regionalOffice'
-        ])
-            ->paginate(10)
-            ->through(function ($recipient) {
-                $recipient->school_office_name = $recipient->recipient_type === 'school'
-                    ? optional($recipient->school)->school_name
-                    : optional($recipient->division)->division_name;
-
-                $recipient->address = $recipient->recipient_type === 'school'
-                    ? optional($recipient->school)->school_address
-                    : optional($recipient->division)->sdo_address;
-
-                $recipient->region = $recipient->recipient_type === 'school'
-                    ? optional($recipient->school->division)->regionalOffice->ro_office ?? null
-                    : optional($recipient->division)->regionalOffice->ro_office ?? null;
-
-                $recipient->division_name = $recipient->recipient_type === 'school'
-                    ? optional($recipient->school->division)->division_name
-                    : optional($recipient->division)->division_name;
-
-                return $recipient;
-            });
-
-        $schools = \App\Models\School::with('division.regionalOffice')->paginate(10);
-        $divisions = \App\Models\DivisionOffice::with('regionalOffice')->paginate(10);
-        $regionalOffices = \App\Models\RegionalOffice::paginate(10); 
-        $packages = \App\Models\Package::with('packageType')->paginate(10);
-
-        return view('recipients.index', compact('recipients', 'schools', 'divisions', 'regionalOffices', 'packages'));
-    }
-
-
-
-  public function paginateSchools(Request $request)
 {
-    $schools = School::with('division.regionalOffice')->paginate(10);
-    return view('recipients.partials.schools-table', compact('schools'))->render();
+    // Paginated Recipients
+    $recipients = Recipient::with([
+        'package.packageType',
+        'creator',
+        'modifier',
+        'school.division.regionalOffice',
+        'division.regionalOffice'
+    ])
+    ->orderBy('created_at', 'desc')
+    ->paginate(10)
+    ->through(function ($recipient) {
+        $recipient->school_office_name = $recipient->recipient_type === 'school'
+            ? optional($recipient->school)->school_name
+            : optional($recipient->division)->division_name;
 
+        $recipient->address = $recipient->recipient_type === 'school'
+            ? optional($recipient->school)->school_address
+            : optional($recipient->division)->sdo_address;
+
+        $recipient->region = $recipient->recipient_type === 'school'
+            ? optional(optional($recipient->school)->division)->regionalOffice->ro_office ?? null
+            : optional($recipient->division)->regionalOffice->ro_office ?? null;
+
+        $recipient->division_name = $recipient->recipient_type === 'school'
+            ? optional(optional($recipient->school)->division)->division_name
+            : optional($recipient->division)->division_name;
+
+        return $recipient;
+    });
+
+    // Paginated Schools
+    $schools = School::with('division.regionalOffice')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+
+    // Paginated Divisions
+    $divisions = DivisionOffice::with('regionalOffice')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+
+    // Paginated Regional Offices
+    $regionalOffices = RegionalOffice::orderBy('created_at', 'desc')
+        ->paginate(10);
+
+    // Paginated Packages
+    $packages = Package::with('packageType')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+
+    return view('recipients.index', compact(
+        'recipients',
+        'schools',
+        'divisions',
+        'regionalOffices',
+        'packages'
+    ));  
 }
 
-public function paginateRegionalOffices(Request $request)
-{
-    $regionalOffices = RegionalOffice::paginate(10);
-    return view('recipients.partials.regional_offices_table', compact('regionalOffices'))->render();
-}
 
-public function paginateDivisions(Request $request)
-{
-    $divisions = Division::with('regionalOffice')->paginate(10);
-    return view('recipients.partials.divisions_table', compact('divisions'))->render();
-}
 
-public function paginateRecipients(Request $request)
-{
-    $recipients = Recipient::with(['school.division.regionalOffice'])->paginate(10);
-    return view('recipients.partials.recipients_table', compact('recipients'))->render();
-}
 
     // SCHOOL CRUD
     public function storeSchool(Request $request)

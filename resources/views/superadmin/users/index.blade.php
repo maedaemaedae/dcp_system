@@ -2,7 +2,7 @@
 <html lang="en" x-data="{ open: true }">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Users</title>
+    <title>Manage Users | DCP Tracking Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://unpkg.com/alpinejs" defer></script>

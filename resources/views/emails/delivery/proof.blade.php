@@ -19,7 +19,7 @@ A supplier has confirmed the following delivery:
 View Proof File
 @endcomponent
 
-Please verify the details and update the system if necessary.
+Please verify the details and update the system if necessary. 
 
 Thanks,  
 {{ config('app.name') }}

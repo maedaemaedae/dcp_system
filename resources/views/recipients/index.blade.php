@@ -2,7 +2,7 @@
 <html lang="en" x-data="{ open: true }">
 <head>
     <meta charset="UTF-8">
-    <title>Recipients</title>
+    <title>Recipients | DCP Tracking Hub</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link rel="icon" href="{{ asset('images/portrait-logo.png') }}" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 </head>
 
@@ -35,7 +37,25 @@
 <body class="bg-white font-['Poppins']" x-data="{ open: true }">
     <div class="flex">
 
-    
+    @if (session('success'))
+    <div 
+        x-data="{ show: true }" 
+        x-init="setTimeout(() => show = false, 5000)" 
+        x-show="show" 
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="opacity-0 -translate-y-4 scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+        x-transition:leave="transition ease-in duration-200 transform"
+        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+        x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
+        class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 
+               bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg 
+               text-sm flex items-center gap-2"
+    >
+        <i class="fa-solid fa-circle-check"></i>
+        {{ session('success') }}
+    </div>
+@endif
 
          
             @include('layouts.sidebar') 
@@ -54,13 +74,6 @@
             <i class="fa-solid fa-id-badge text-blue-500 text-4xl w-10 h-10"></i>
             Recipients
         </h2>
-
-        <div class="p-6 space-y-12">
-            @if(session('success'))
-                <div class="bg-green-100 text-green-800 border border-green-300 rounded p-3 mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
 
             <!-- ✅ Add Dropdown -->
             <div class="relative mb-4">
@@ -257,6 +270,8 @@
         📨 <span>Recipients</span>
     </h3>
 
+    
+
     <div class="overflow-y-hidden">
         <form method="POST" action="{{ route('recipients.import.csv') }}" enctype="multipart/form-data" class="mb-6 space-y-4">
             @csrf
@@ -282,7 +297,7 @@
             </div>
         </form>
 
-        <div class="relative overflow-visible rounded-lg">
+        <div id="recipients-table" class="relative overflow-visible rounded-lg">
             @include('recipients.partials.recipients-table', ['recipients' => $recipients])
         </div>
         <div class="mt-4">
@@ -439,6 +454,14 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.classList.remove('flex');
             modal.classList.add('hidden');
         }, 300); // Match your transition-duration
+
+        function openDeleteModal(type, id) {
+        console.log('Opening modal for', type, id);
+        const form = document.getElementById('deleteForm');
+        form.action = `/recipients/${type}/${id}`;
+        openModal('deleteModal');
+    }
+
     }
 
 
@@ -651,6 +674,28 @@ document.addEventListener('alpine:init', () => {
             });
 });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input');
+
+        searchInput.addEventListener('input', function () {
+            const query = searchInput.value;
+
+            fetch(`{{ route('recipients.index') }}?search=${encodeURIComponent(query)}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('recipients-table').innerHTML = html;
+            })
+            .catch(error => console.error('Search error:', error));
+        });
+    });
+</script>
+
 
 
 <!-- Global dropdown portal -->

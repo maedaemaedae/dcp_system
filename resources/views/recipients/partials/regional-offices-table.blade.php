@@ -1,5 +1,4 @@
-
-    <table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-2xl">
+<table class="min-w-full text-sm text-left border border-gray-300 shadow-md rounded-2xl overflow-visible">
         <thead class="bg-[#4A90E2] text-white uppercase text-xs tracking-wider">
             <tr>
                 <th class="px-4 py-3 border">RO ID</th>
@@ -19,29 +18,24 @@
                     <td class="px-4 py-3">{{ $ro->person_in_charge ?? '—' }}</td>
                     <td class="px-4 py-3">{{ $ro->contact_no ?? '—' }}</td>
 
-                    <!-- ✅ Allow overflow here -->
-                    <td class="px-4 py-3 text-center relative z-20" style="overflow: visible;">
+                    <td class="px-4 py-3 text-center">
                         <div 
-                            x-data="{
-                                open: false,
-                                flip: false,
-                                toggle() {
-                                    this.open = !this.open;
-                                    if (this.open) {
-                                        this.$nextTick(() => {
-                                            setTimeout(() => {
-                                                const dropdown = $el.querySelector('[data-dropdown]');
-                                                if (dropdown) {
-                                                    const rect = dropdown.getBoundingClientRect();
-                                                    this.flip = (window.innerHeight - rect.bottom) < 20;
-                                                }
-                                            }, 10);
-                                        });
-                                    }
-                                }
-                            }"
-                            class="relative inline-block text-left"
-                        >
+                                                x-data="{
+                                                    open: false,
+                                                    flip: false,
+                                                    toggle() {
+                                                        this.open = !this.open;
+
+                                                        if (this.open) {
+                                                            this.$nextTick(() => {
+                                                                const rect = this.$el.getBoundingClientRect();
+                                                                this.flip = (window.innerHeight - rect.bottom) < 120;
+                                                            });
+                                                        }
+                                                    }
+                                                }"
+                                                class="relative inline-block text-left"
+                                            >
                             <button @click="toggle" @click.outside="open = false"
                                 class="p-2 hover:bg-gray-200 rounded-full transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -49,16 +43,15 @@
                                 </svg>
                             </button>
 
-                            <!-- ✅ Dropdown content -->
+                            <!-- Dropdown -->
                             <div 
-                                x-show="open"
-                                x-transition
-                                :class="flip ? 'bottom-full mb-2' : 'mt-2'"
-                                class="absolute right-0 z-50 w-32 bg-white rounded-xl shadow-xl border border-gray-200 py-1"
-                                @click.outside="open = false"
-                                data-dropdown
-                                style="display: none;"
-                            >
+                                                x-show="open"
+                                                x-transition
+                                                :class="flip ? 'bottom-full mb-2' : 'mt-2'"
+                                                class="absolute right-0 z-30 w-36 bg-white rounded-xl shadow-xl border border-gray-200 py-1"
+                                                @click.outside="open = false"
+                                                style="display: none;"
+                                            >
                                 <button 
                                     @click="openEditModal({{ $ro->ro_id }}); open = false;" 
                                     class="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-blue-600"

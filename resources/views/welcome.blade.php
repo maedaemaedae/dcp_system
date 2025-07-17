@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DCP Tracking System</title>
+    <title>DCP Tracking Hub</title>
     <link rel="icon" href="{{ asset('images/final-portrait-logo.png') }}" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css" />
@@ -168,9 +168,6 @@
             <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <a href="#forms" class="bg-[#2D9CDB] hover:bg-[#238ACB] text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg transition-all duration-300">
                     Download Resources
-                </a>
-                <a href="#features" class="border border-[#2D9CDB] text-[#2D9CDB] px-8 py-3 rounded-full text-lg font-semibold hover:bg-[#2D9CDB] hover:text-white transition-all duration-300">
-                    Explore Features
                 </a>
             </div>
         </div>

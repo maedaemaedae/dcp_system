@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DCP Tracking System</title>
+    <title>Login | DCP Tracking Hub</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('images/new-portrait-logo.png') }}" type="image/png">
@@ -124,7 +124,7 @@
                             </div>
                             <!-- Slide 2 -->
                             <div class="swiper-slide">
-                                <img src="https://placehold.co/400x550?text=420x550" class="w-full h-full object-cover" />
+                                <img src="{{ asset('images/login-mockups2.png') }}" class="w-full h-full object-cover" />
                             </div>
                             <!-- Slide 3 -->
                             <div class="swiper-slide">

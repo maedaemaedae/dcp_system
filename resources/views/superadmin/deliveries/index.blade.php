@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assign Deliveries to Suppliers</title>
+    <title>Deliveries | DCP Tracking Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -57,39 +57,6 @@
 
    <!-- Page Content -->
 <div class="px-4 py-6 sm:px-6 lg:px-8">
-    
-   <!-- Alpine wrapper -->
-<div x-data="{
-    search: '',
-    matches(text) {
-        return this.search === '' || text.toLowerCase().includes(this.search.toLowerCase());
-    }
-}" class="mb-10">
-    
-   <!-- Search bar -->
-<label for="search" class="block font-medium text-sm mb-2 text-gray-700">Search School or Office</label>
-<div class="relative">
-    <!-- Search icon using Font Awesome -->
-    <i class="fa fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-
-    <!-- Input -->
-    <input type="text" id="search" x-model="search"
-           placeholder="e.g. Hinapulan ES or Division Office Name"
-           class="w-full px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 pl-10">
-
-    <!-- Clear icon (right side) -->
-    <button type="button" x-show="search" @click="search = ''"
-            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            title="Clear search">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-             viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-    </button>
-</div>
-
-
-
 
     <!-- Assign Form -->
     <form action="{{ route('deliveries.bulkAssign') }}" method="POST" class="space-y-6">
@@ -126,9 +93,41 @@
 </div>
 
 
+<!-- Alpine wrapper -->
+<div x-data="{
+    search: '',
+    matches(text) {
+        return this.search === '' || text.toLowerCase().includes(this.search.toLowerCase());
+    }
+}" class="mb-10">
+    
+   <!-- Search bar -->
+<label for="search" class="block font-medium text-sm mb-2 text-gray-700">Search School or Office</label>
+<div class="relative">
+    <!-- Search icon using Font Awesome -->
+    <i class="fa fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+
+    <!-- Input -->
+    <input type="text" id="search" x-model="search"
+           placeholder="e.g. Hinapulan ES or Division Office Name"
+           class="w-full px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 pl-10">
+
+    <!-- Clear icon (right side) -->
+    <button type="button" x-show="search" @click="search = ''"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            title="Clear search">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+             viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
+</div>
+
 <!-- Recipient Tabs: Schools | Divisions -->
 <!-- Alpine Tabs -->
 <div x-data="{ tab: 'schools' }" class="bg-white rounded-xl shadow overflow-hidden mt-6 border border-gray-200">
+
+
 
     <!-- Tab Headers -->
     <div class="flex text-sm font-medium text-gray-600 bg-gray-50 border-b">
@@ -146,7 +145,19 @@
             class="px-6 py-4 flex-1 text-center transition">
             Divisions
         </button>
+       <!-- Scroll to Assign Button -->
+<div class="flex justify-end mt-4">
+    <button 
+        type="button" 
+        onclick="document.getElementById('assign-btn').scrollIntoView({ behavior: 'smooth' })"
+        class="inline-flex items-center gap-2 px-5 py-2 text-sm bg-[#4A90E2] text-white border border-[#4A90E2] rounded-md shadow hover:bg-[#3b75bb] transition duration-200">
+        <i class="fa-solid fa-arrow-down"></i>
+    </button>
+</div>
+
     </div>
+
+    
 
     <!-- Schools Tab -->
     <div x-show="tab === 'schools'" x-cloak class="overflow-x-auto">
@@ -246,13 +257,15 @@
 
 
        <!-- Submit Button -->
-        <div class="flex justify-end mt-6">
-            <button type="submit"
-                    class="inline-flex items-center gap-2 px-6 py-2 bg-[#4A90E2] text-white font-medium text-sm rounded-md shadow hover:bg-[#3b75bb] transition duration-200 focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-1">
-                <i class="fa-solid fa-paper-plane text-sm"></i>
-                Assign Selected
-            </button>
-        </div>
+        <!-- Submit Button -->
+<div class="flex justify-end mt-6" id="assign-btn">
+    <button type="submit"
+            class="inline-flex items-center gap-2 px-6 py-2 bg-[#4A90E2] text-white font-medium text-sm rounded-md shadow hover:bg-[#3b75bb] transition duration-200 focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-1">
+        <i class="fa-solid fa-paper-plane text-sm"></i>
+        Assign Selected
+    </button>
+</div>
+
 
 
     </form>
