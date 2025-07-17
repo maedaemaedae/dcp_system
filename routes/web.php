@@ -179,5 +179,13 @@ Route::middleware(['auth', 'role:supplier'])->group(function () {
     Route::put('/supplier/deliveries/{id}/confirm', [DeliveryController::class, 'confirmDelivery'])->name('supplier.deliveries.confirm');
 });
 
+// For notifications mark as read
+Route::post('/notifications/mark-read', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+    return response()->json(['success' => true]);
+})->name('notifications.markRead');
+
+
+
 
 require __DIR__.'/auth.php';

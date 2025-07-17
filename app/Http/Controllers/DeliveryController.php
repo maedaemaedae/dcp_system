@@ -13,6 +13,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\DeliveryProofSubmitted;
+use App\Notifications\DeliveryConfirmed;
+use Illuminate\Support\Facades\Notification;
 
 class DeliveryController extends Controller
 {
@@ -225,6 +227,14 @@ class DeliveryController extends Controller
             }
         }
 
+        $superadmins = User::whereHas('role', function ($q) {
+            $q->where('role_name', 'Super Admin');
+        })->get();
+
+        Notification::send($superadmins, new DeliveryConfirmed($delivery));
+
         return redirect()->route('supplier.deliveries.index')->with('success', 'Delivery confirmed and inventory recorded.');
     }
+
+    
 }
