@@ -227,6 +227,10 @@ class DeliveryController extends Controller
             }
         }
 
+
+        
+
+        // For notification bell
         $superadmins = User::whereHas('role', function ($q) {
             $q->where('role_name', 'Super Admin');
         })->get();
@@ -235,6 +239,20 @@ class DeliveryController extends Controller
 
         return redirect()->route('supplier.deliveries.index')->with('success', 'Delivery confirmed and inventory recorded.');
     }
+
+
+            public function updateTargetDate(Request $request, $id)
+        {
+            $request->validate([
+                'target_delivery' => 'nullable|date|after_or_equal:today',
+            ]);
+
+            $delivery = Delivery::where('supplier_id', auth()->id())->findOrFail($id);
+            $delivery->target_delivery = $request->target_delivery;
+            $delivery->save();
+
+            return back()->with('success', 'Target delivery date updated.');
+        }
 
     
 }

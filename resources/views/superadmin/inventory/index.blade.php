@@ -64,9 +64,15 @@
         @foreach ($schoolInventories as $school)
             <div x-show="matches('{{ $school->school_name }}')" x-data="{ open: false }" class="bg-white rounded-xl shadow-md mb-4 border transition">
                 <button @click="open = !open"
-                        class="w-full text-left px-6 py-4 bg-gray-100 hover:bg-blue-100 text-blue-800 font-semibold text-lg rounded-t-xl transition duration-200">
+                    class="w-full text-left px-6 py-4 bg-gray-100 hover:bg-blue-100 text-blue-800 font-semibold text-lg rounded-t-xl transition duration-200 relative">
                     {{ $school->school_name }}
+                    
+                    @if ($school->has_updates)
+                        <span class="absolute top-3 right-4 h-3 w-3 bg-red-500 rounded-full animate-ping"></span>
+                        <span class="absolute top-3 right-4 h-3 w-3 bg-red-500 rounded-full"></span>
+                    @endif
                 </button>
+
                 <div x-show="open" x-transition class="px-6 py-4">
                     @if ($school->inventories->isEmpty())
                         <p class="text-gray-500 italic">No items found.</p>
@@ -105,9 +111,15 @@
         @foreach ($divisionInventories as $division)
             <div x-show="matches('{{ $division->division_name }}')" x-data="{ open: false }" class="bg-white rounded-xl shadow-md mb-4 border transition">
                 <button @click="open = !open"
-                        class="w-full text-left px-6 py-4 bg-gray-100 hover:bg-green-100 text-green-800 font-semibold text-lg rounded-t-xl transition duration-200">
+                    class="w-full text-left px-6 py-4 bg-gray-100 hover:bg-green-100 text-green-800 font-semibold text-lg rounded-t-xl transition duration-200 relative">
                     {{ $division->division_name }}
+
+                    @if ($division->has_updates)
+                        <span class="absolute top-3 right-4 h-3 w-3 bg-red-500 rounded-full animate-ping"></span>
+                        <span class="absolute top-3 right-4 h-3 w-3 bg-red-500 rounded-full"></span>
+                    @endif
                 </button>
+
                 <div x-show="open" x-transition class="px-6 py-4">
                     @if ($division->inventories->isEmpty())
                         <p class="text-gray-500 italic">No items found.</p>

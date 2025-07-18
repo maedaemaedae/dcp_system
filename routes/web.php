@@ -186,6 +186,10 @@ Route::post('/notifications/mark-read', function () {
 })->name('notifications.markRead');
 
 
+// Editable target delivery date for suppliers
+Route::put('/supplier/deliveries/{id}/update-target-date', [DeliveryController::class, 'updateTargetDate'])
+    ->name('supplier.deliveries.updateTargetDate');
+
 
 
 require __DIR__.'/auth.php';

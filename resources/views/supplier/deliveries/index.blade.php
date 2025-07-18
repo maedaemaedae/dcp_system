@@ -95,7 +95,23 @@
                         {{ $delivery->recipient->quantity }}
                     </td>
                     <td class="px-6 py-4 text-center text-gray-700">
-                        {{ $delivery->target_delivery ?? '—' }}
+                        @if ($delivery->status === 'pending')
+                            <form method="POST" action="{{ route('supplier.deliveries.updateTargetDate', $delivery->id) }}" class="inline-flex items-center justify-center">
+                                @csrf
+                                @method('PUT')
+                                <input type="date"
+                                    name="target_delivery"
+                                    value="{{ $delivery->target_delivery }}"
+                                    min="{{ now()->toDateString() }}"
+                                    onchange="this.form.submit()"
+                                    class="text-sm px-3 py-[6px] border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out cursor-pointer bg-white hover:border-blue-400"
+                                    title="Click to change delivery date" />
+                            </form>
+                        @else
+                            <span class="text-gray-600">
+                                {{ $delivery->target_delivery ?? '—' }}
+                            </span>
+                        @endif
                     </td>
                     <td class="px-6 py-4 text-center capitalize">
                         <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold
@@ -120,7 +136,7 @@
 
                                 <label for="file-upload-{{ $delivery->id }}"
                                     class="inline-flex items-center justify-center w-10 h-10 bg-[#4A90E2] hover:bg-[#357ABD] text-white rounded-full cursor-pointer transition duration-150 ease-in-out"
-                                    title="Upload proof & mark as delivered">
+                                    title="Upload attachment & mark as delivered">
                                     <i class="fas fa-paperclip"></i>
                                     <input id="file-upload-{{ $delivery->id }}"
                                         type="file"

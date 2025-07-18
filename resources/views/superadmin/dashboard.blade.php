@@ -48,24 +48,24 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
 
     <!-- 🏫 Schools per Division Chart -->
-    <div class="bg-white rounded-xl border border-gray-200 shadow p-6 hover:shadow-md transition-all duration-300">
+    <div class="bg-white rounded-xl border border-gray-200 shadow p-6 hover:shadow-md transition-all duration-300 h-[500px]">
         <h2 class="text-xl font-semibold mb-6 text-center text-gray-800">Schools per Division</h2>
-        <!-- Responsive chart container -->
-        <div class="w-full" style="aspect-ratio: 2/1; min-width: 0;">
-            <canvas id="regionChart" class="w-full h-full"></canvas>
+        <div class="w-full h-[420px] relative">
+            <canvas id="regionChart" class="absolute inset-0"></canvas>
         </div>
     </div>
 
     <!-- 🚚 Delivery Status Overview Donut Chart -->
-    <div class="bg-white/80 backdrop-blur-md rounded-2xl border border-gray-200 shadow-md p-6 transition hover:shadow-lg">
-        <h2 class="text-xl font-semibold mb-6 text-center text-gray-800 tracking-wide">Delivery Status Overview</h2>
-        <div class="flex justify-center mb-4">
-            <div class="w-full max-w-[300px]" style="aspect-ratio: 1/1;">
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl border border-gray-200 shadow-md p-6 hover:shadow-lg transition-all duration-300 h-[500px] flex flex-col justify-between">
+        <h2 class="text-xl font-semibold text-center text-gray-800 tracking-wide mb-2">Delivery Status Overview</h2>
+        
+        <div class="flex justify-center">
+            <div class="w-full max-w-[300px]" style="aspect-ratio: 1 / 1;">
                 <canvas id="statusChart" class="w-full h-full"></canvas>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-y-3 text-sm text-gray-700 text-center mt-6">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-y-3 text-sm text-gray-700 text-center mt-4">
             <div class="flex flex-col items-center">
                 <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #FACC15;"></span>
                 <span class="font-medium">Pending</span>
@@ -90,6 +90,7 @@
     </div>
 
 </div>
+
 
     </div>
 </main>
@@ -134,74 +135,96 @@
     @endforeach
 ];
 
+const regionCtx = document.getElementById('regionChart').getContext('2d');
 
-        const regionCtx = document.getElementById('regionChart').getContext('2d');
+// Create vertical gradient
+const regionGradient = regionCtx.createLinearGradient(0, 0, 0, 400);
+regionGradient.addColorStop(0, '#60A5FA'); // blue-400
+regionGradient.addColorStop(1, '#3B82F6'); // blue-500
 
-        // Create vertical gradient
-        const regionGradient = regionCtx.createLinearGradient(0, 0, 0, 400);
-        regionGradient.addColorStop(0, '#60A5FA'); // blue-400
-        regionGradient.addColorStop(1, '#3B82F6'); // blue-500
-
-        new Chart(regionCtx, {
-            type: 'bar',
-            data: {
-                labels: regionData.map(r => r.division),
-                datasets: [{
-                    label: 'Number of Schools',
-                    data: regionData.map(r => r.total),
-                    backgroundColor: regionGradient,
-                    borderRadius: 6,
-                    barThickness: 32,
-                    maxBarThickness: 40
-                }]
+new Chart(regionCtx, {
+    type: 'bar',
+    data: {
+        labels: regionData.map(r => r.division),
+        datasets: [{
+            label: 'Number of Schools',
+            data: regionData.map(r => r.total),
+            backgroundColor: regionGradient,
+            borderRadius: 8,
+            barThickness: 30,
+            maxBarThickness: 40,
+            hoverBackgroundColor: '#2563EB',
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+            padding: {
+                top: 20,
+                left: 10,
+                right: 10,
+                bottom: 10
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    color: '#4B5563',
+                    font: {
+                        size: 13,
+                        weight: '500',
+                        family: 'Inter, sans-serif'
+                    }
+                },
+                grid: {
+                    display: false
+                }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 2,
-                layout: {
-                    padding: 10
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: '#6B7280',
-                            font: {
-                                size: 12,
-                                weight: '500'
-                            }
-                        },
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            color: '#6B7280',
-                            font: {
-                                size: 12
-                            }
-                        },
-                        grid: {
-                            color: '#E5E7EB'
-                        }
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,
+                    color: '#4B5563',
+                    font: {
+                        size: 13,
+                        family: 'Inter, sans-serif'
                     }
                 },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: '#1F2937',
-                        titleFont: { size: 14, weight: '600' },
-                        bodyFont: { size: 13 },
-                        padding: 10
-                    }
+                grid: {
+                    color: '#E5E7EB'
                 }
             }
-        });
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: '#1F2937',
+                titleColor: '#F9FAFB',
+                bodyColor: '#E5E7EB',
+                titleFont: {
+                    size: 14,
+                    weight: '600',
+                    family: 'Inter, sans-serif'
+                },
+                bodyFont: {
+                    size: 13,
+                    family: 'Inter, sans-serif'
+                },
+                padding: 10,
+                borderColor: '#4B5563',
+                borderWidth: 1
+            }
+        },
+        animation: {
+            duration: 1000,
+            easing: 'easeOutQuart'
+        }
+    }
+});
+
 
 
         });

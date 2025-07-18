@@ -7,7 +7,7 @@
     <title>Login | DCP Tracking Hub</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('images/new-portrait-logo.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/final-portrait-logo.png') }}" type="image/png">
 
     <!-- TailwindCSS & Swiper -->
     <script src="https://cdn.tailwindcss.com"></script>
