@@ -73,6 +73,16 @@ class DeliveryController extends Controller
                 'quantity_delivered' => $content->quantity * $recipient->quantity,
             ]);
         }
+        // Send email notification to supplier
+        $supplier = User::find($request->supplier_id);
+        if ($supplier && $supplier->email) {
+            try {
+                Mail::to($supplier->email)->send(new \App\Mail\DeliveryAssigned($delivery));
+                Log::info('Delivery assignment email sent to supplier', ['supplier_id' => $supplier->id, 'email' => $supplier->email, 'delivery_id' => $delivery->id]);
+            } catch (\Exception $e) {
+                Log::error('Failed to send delivery assignment email to supplier: ' . $e->getMessage());
+            }
+        }
 
         return back()->with('success', 'Delivery assignment recorded.');
 
@@ -107,6 +117,16 @@ class DeliveryController extends Controller
                     'package_content_id'  => $content->id,
                     'quantity_delivered' => $content->quantity * $recipient->quantity,
                 ]);
+            }
+            // Send email notification to supplier
+            $supplier = User::find($request->supplier_id);
+            if ($supplier && $supplier->email) {
+                try {
+                    Mail::to($supplier->email)->send(new \App\Mail\DeliveryAssigned($delivery));
+                    Log::info('Delivery assignment email sent to supplier', ['supplier_id' => $supplier->id, 'email' => $supplier->email, 'delivery_id' => $delivery->id]);
+                } catch (\Exception $e) {
+                    Log::error('Failed to send delivery assignment email to supplier: ' . $e->getMessage());
+                }
             }
         }
 
@@ -226,7 +246,6 @@ class DeliveryController extends Controller
                 Log::error('Delivery email to superadmins failed: ' . $e->getMessage());
             }
         }
-
 
         
 

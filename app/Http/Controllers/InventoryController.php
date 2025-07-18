@@ -43,20 +43,6 @@ class InventoryController extends Controller
             }
         }
 
-         $schoolInventories = School::with('inventories')
-        ->get()
-        ->map(function($school) {
-            $school->has_updates = $school->inventories->where('is_new', true)->count() > 0;
-            return $school;
-        });
-
-         $divisionInventories = DivisionOffice::with('inventories')
-        ->get()
-        ->map(function($division) {
-            $division->has_updates = $division->inventories->where('is_new', true)->count() > 0;
-            return $division;
-        });
-
         return view('superadmin.inventory.index', compact('schoolInventories', 'divisionInventories'));
     }
 
@@ -132,11 +118,4 @@ class InventoryController extends Controller
         $inventory->delete();
         return redirect()->route('inventory.index')->with('success', 'Inventory deleted.');
     }
-
-    
 }
-
-
-   
-
-
