@@ -38,6 +38,20 @@ class PackageController extends Controller
             'lot' => $validated['lot'],
             'description' => $validated['description'],
         ]);
+        // Clone contents from package type into real package
+        $templateContents = \App\Models\PackageContent::where('package_type_id', $package->package_type_id)
+                                                    ->whereNull('package_id')
+                                                    ->get();
+
+        foreach ($templateContents as $item) {
+            \App\Models\PackageContent::create([
+                'package_id' => $package->id,
+                'package_type_id' => $package->package_type_id,
+                'item_name' => $item->item_name,
+                'quantity' => $item->quantity,
+                'description' => $item->description,
+            ]);
+        }
 
         Log::info('PACKAGE CREATED', ['id' => $package->id]);
 
