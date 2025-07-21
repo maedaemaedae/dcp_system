@@ -1,10 +1,10 @@
  
  <!-- Sidebar -->
  <div x-data="{ open: true }" >
-       <aside
+        <aside
     :class="open ? 'w-[250px]' : 'w-20'"
-    class="h-[702px] absolute top-[80px] left-0 bg-[#033372] text-white font-['Poppins']
-           transition-all duration-300 overflow-visible z-50 custom-scrollbar-hide">
+    class="fixed top-[80px] left-0 bottom-0 bg-[#033372] text-white font-['Poppins']
+           transition-all duration-300 z-50 overflow-hidden hide-scrollbar">
 
 
     <!-- Sidebar Toggle Button (aligned vertically with menu items) -->

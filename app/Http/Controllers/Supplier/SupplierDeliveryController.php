@@ -15,6 +15,13 @@ class SupplierDeliveryController extends Controller
     {
         $deliveries = Delivery::where('supplier_id', Auth::id())->with(['recipient.school', 'recipient.division', 'recipient.package.packageType'])->get();
 
+
+        $deliveries = Delivery::with([
+            'recipient.school',
+            'recipient.division',
+            'recipient.package.packageType'
+        ])->orderBy('created_at', 'desc')->get();
+
         return view('supplier.deliveries.index', compact('deliveries'));
     }
 

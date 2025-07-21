@@ -55,4 +55,9 @@ class School extends Model
         return $this->hasMany(\App\Models\Inventory::class, 'school_id', 'school_id');
     }
 
+    public function getHasUpdatesAttribute()
+    {
+        return $this->inventories->first()?->created_at?->gt(now()->subDay()); // last 24 hours
+    }
+
 }

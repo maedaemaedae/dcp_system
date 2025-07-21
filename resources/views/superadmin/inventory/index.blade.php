@@ -62,16 +62,23 @@
     <div class="mt-8">
         <h3 class="text-2xl font-semibold mb-4 text-blue-600">Schools</h3>
         @foreach ($schoolInventories as $school)
-            <div x-show="matches('{{ $school->school_name }}')" x-data="{ open: false }" class="bg-white rounded-xl shadow-md mb-4 border transition">
-                <button @click="open = !open"
+            <div x-show="matches('{{ $school->school_name }}')" 
+                x-data="{ open: false, updated: {{ $school->has_updates ? 'true' : 'false' }} }" 
+                class="bg-white rounded-xl shadow-md mb-4 border transition">
+                
+                <button @click="open = !open; if (open) updated = false"
                     class="w-full text-left px-6 py-4 bg-gray-100 hover:bg-blue-100 text-blue-800 font-semibold text-lg rounded-t-xl transition duration-200 relative">
                     {{ $school->school_name }}
-                    
-                    @if ($school->has_updates)
-                        <span class="absolute top-3 right-4 h-3 w-3 bg-red-500 rounded-full animate-ping"></span>
-                        <span class="absolute top-3 right-4 h-3 w-3 bg-red-500 rounded-full"></span>
-                    @endif
+
+                    <template x-if="updated">
+                        <span class="absolute top-3 right-4 flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                        </span>
+                    </template>
                 </button>
+
+
 
                 <div x-show="open" x-transition class="px-6 py-4">
                     @if ($school->inventories->isEmpty())
@@ -109,16 +116,23 @@
     <div class="mt-10">
         <h3 class="text-2xl font-semibold mb-4 text-green-600">Division Offices</h3>
         @foreach ($divisionInventories as $division)
-            <div x-show="matches('{{ $division->division_name }}')" x-data="{ open: false }" class="bg-white rounded-xl shadow-md mb-4 border transition">
-                <button @click="open = !open"
+            <div x-show="matches('{{ $division->division_name }}')" 
+                x-data="{ open: false, updated: {{ $division->has_updates ? 'true' : 'false' }} }" 
+                class="bg-white rounded-xl shadow-md mb-4 border transition">
+                
+                <button @click="open = !open; if (open) updated = false"
                     class="w-full text-left px-6 py-4 bg-gray-100 hover:bg-green-100 text-green-800 font-semibold text-lg rounded-t-xl transition duration-200 relative">
                     {{ $division->division_name }}
 
-                    @if ($division->has_updates)
-                        <span class="absolute top-3 right-4 h-3 w-3 bg-red-500 rounded-full animate-ping"></span>
-                        <span class="absolute top-3 right-4 h-3 w-3 bg-red-500 rounded-full"></span>
-                    @endif
+                    <template x-if="updated">
+                        <span class="absolute top-3 right-4 flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                        </span>
+                    </template>
                 </button>
+
+
 
                 <div x-show="open" x-transition class="px-6 py-4">
                     @if ($division->inventories->isEmpty())

@@ -185,6 +185,12 @@ Route::post('/notifications/mark-read', function () {
     return response()->json(['success' => true]);
 })->name('notifications.markRead');
 
+Route::post('/inventory/mark-as-read', [InventoryController::class, 'markAsRead'])->name('inventory.markAsRead');
+
+
+
+
+
 
 // Editable target delivery date for suppliers
 Route::put('/supplier/deliveries/{id}/update-target-date', [DeliveryController::class, 'updateTargetDate'])

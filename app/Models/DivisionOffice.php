@@ -45,4 +45,9 @@ class DivisionOffice extends Model
         return $this->hasMany(\App\Models\Inventory::class, 'division_id', 'division_id');
     }
 
+    public function getHasUpdatesAttribute()
+    {
+        return $this->inventories->first()?->created_at?->gt(now()->subDay());
+    }
+
 }

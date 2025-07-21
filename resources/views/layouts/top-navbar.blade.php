@@ -1,3 +1,4 @@
+
 <!-- Top Navbar -->
 <header class="w-full h-20 fixed top-0 left-0 bg-white shadow-md flex items-center justify-between px-8 z-10">
     <div class="flex items-center gap-2">
@@ -26,8 +27,17 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
                 @if ($notifications->count())
-                    <span class="absolute top-0 right-0 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-white"></span>
+                    <span class="absolute top-0 right-0 flex h-3 w-3">
+                        <!-- Ping animation -->
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 transition-opacity duration-300"></span>
+                        
+                        <!-- Red dot -->
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500 transition-transform duration-300 scale-100"></span>
+                    </span>
+                @else
+                    <span class="absolute top-0 right-0 flex h-3 w-3 opacity-0 scale-0 transition-all duration-300"></span>
                 @endif
+
             </button>
 
             <div x-show="openBell" @click.away="openBell = false" class="absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-2 z-20 text-sm text-gray-700 max-h-96 overflow-y-auto" x-transition>

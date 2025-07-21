@@ -11,40 +11,62 @@ class InventoryController extends Controller
 {
     
    public function index(Request $request)
-    {
-        $search = $request->input('search');
+{
+    $search = $request->input('search');
 
-        $schoolInventories = \App\Models\School::with(['inventories.deliveredItems.packageContent'])
-            ->when($search, function ($query, $search) {
-                $query->where('school_name', 'like', "%{$search}%");
-            })
-            ->get();
-
-        $divisionInventories = \App\Models\DivisionOffice::with(['inventories.deliveredItems.packageContent'])
-            ->when($search, function ($query, $search) {
-                $query->where('division_name', 'like', "%{$search}%");
-            })
-            ->get();
-
-        // Compute quantities
-        foreach ($schoolInventories as $school) {
-            foreach ($school->inventories as $inventory) {
-                $inventory->computed_quantity = $inventory->deliveredItems
-                    ->filter(fn($item) => $item->packageContent->item_name === $inventory->item_name)
-                    ->sum('quantity_delivered');
-            }
+    // School Inventories - with deliveredItems + ordering
+    $schoolInventories = School::with([
+        'inventories' => function ($query) {
+            $query->orderBy('created_at', 'desc')
+                  ->with(['deliveredItems.packageContent']);
         }
+    ])
+    ->when($search, function ($query, $search) {
+        $query->where('school_name', 'like', "%{$search}%");
+    })
+    ->get();
 
-        foreach ($divisionInventories as $division) {
-            foreach ($division->inventories as $inventory) {
-                $inventory->computed_quantity = $inventory->deliveredItems
-                    ->filter(fn($item) => $item->packageContent->item_name === $inventory->item_name)
-                    ->sum('quantity_delivered');
-            }
+    // Division Inventories - with deliveredItems + ordering
+    $divisionInventories = DivisionOffice::with([
+        'inventories' => function ($query) {
+            $query->orderBy('created_at', 'desc')
+                  ->with(['deliveredItems.packageContent']);
         }
+    ])
+    ->when($search, function ($query, $search) {
+        $query->where('division_name', 'like', "%{$search}%");
+    })
+    ->get();
 
-        return view('superadmin.inventory.index', compact('schoolInventories', 'divisionInventories'));
+    // Compute quantities (still needed)
+    foreach ($schoolInventories as $school) {
+        foreach ($school->inventories as $inventory) {
+            $inventory->computed_quantity = $inventory->deliveredItems
+                ->filter(fn($item) => $item->packageContent->item_name === $inventory->item_name)
+                ->sum('quantity_delivered');
+        }
     }
+
+    foreach ($divisionInventories as $division) {
+        foreach ($division->inventories as $inventory) {
+            $inventory->computed_quantity = $inventory->deliveredItems
+                ->filter(fn($item) => $item->packageContent->item_name === $inventory->item_name)
+                ->sum('quantity_delivered');
+        }
+    }
+
+    // Sort by latest inventory date
+        $schoolInventories = $schoolInventories->sortByDesc(function ($school) {
+            return optional($school->inventories->first())->created_at;
+        })->values();
+
+        $divisionInventories = $divisionInventories->sortByDesc(function ($division) {
+            return optional($division->inventories->first())->created_at;
+        })->values();
+
+    return view('superadmin.inventory.index', compact('schoolInventories', 'divisionInventories'));
+}
+
 
 
 
@@ -118,4 +140,29 @@ class InventoryController extends Controller
         $inventory->delete();
         return redirect()->route('inventory.index')->with('success', 'Inventory deleted.');
     }
+
+    public function markAsRead(Request $request)
+{
+    $id = $request->input('id');
+    $type = $request->input('type');
+
+    if ($type === 'school') {
+        $school = \App\Models\School::find($id);
+        if ($school) {
+            $school->has_updates = false;
+            $school->save();
+        }
+    } elseif ($type === 'division') {
+        $division = \App\Models\DivisionOffice::find($id);
+        if ($division) {
+            $division->has_updates = false;
+            $division->save();
+        }
+    }
+
+    return response()->json(['status' => 'ok']);
 }
+
+}
+
+

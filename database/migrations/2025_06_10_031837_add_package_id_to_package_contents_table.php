@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('package_contents', function (Blueprint $table) {
-            $table->foreignId('package_id')->constrained()->onDelete('cascade');
+            $table->foreignId('package_id')->nullable()->constrained()->onDelete('cascade');
         });
     }
 
@@ -27,6 +27,9 @@ return new class extends Migration
     {
         Schema::table('package_contents', function (Blueprint $table) {
             //
+            $table->dropForeign(['package_id']);
+            $table->dropColumn('package_id');
         });
     }
+
 };
