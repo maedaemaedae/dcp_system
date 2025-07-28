@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- Favicon -->
+    <link rel="icon" href="{{ asset('images/final-portrait-logo.png') }}" type="image/png">
     <title>Create an Account | DCP Tracking Hub</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -21,7 +23,7 @@
             
             <!-- Left Image Section -->
             <div class="w-[386px] h-full overflow-hidden rounded-xl">
-                <img src="https://placehold.co/400x932?text=400x932" alt="hehe" class="w-full h-full object-cover" />
+                <img src="{{ asset('images/sample2.png') }}" alt="hehe" class="w-full h-full object-cover" />
             </div>
 
             <!-- Right Form Section -->
@@ -506,7 +508,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                     <div class="text-center text-xs mt-2">
-                        Already have an account? <a href="{{ route('login') }}" class="text-[#4A90E2] hover:text-[#357ABD] underline font-bold transition">Login</a>
+                        Already have an account? <a href="{{ route('login') }}" class="text-[#4A90E2] hover:text-[#357ABD] font-bold transition">Login</a>
                     </div>
                 </form>
             </div>

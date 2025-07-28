@@ -1,7 +1,4 @@
-<h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
-         <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-        <path d="M2.94 6.34a1 1 0 00-.44.83v5.66a1 1 0 00.44.83l6.56 3.78a1 1 0 001 0l6.56-3.78a1 1 0 00.44-.83V7.17a1 1 0 00-.44-.83l-6.56-3.78a1 1 0 00-1 0L2.94 6.34zM10 3.27l6 3.46-6 3.46-6-3.46L10 3.27zm-6 5.52l5 2.88v3.46l-5-2.88V8.79zm12 0v3.46l-5 2.88v-3.46l5-2.88z"/>
-    </svg>
+<h3 class="text-2xl font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
     <span>Packages</span>
     </h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -37,38 +34,35 @@
                                     );
                                     open = false"
                                 class="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100 text-blue-600"
->
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-blue-600" viewBox="0 0 20 20">
-                                        <path d="M17.414 2.586a2 2 0 010 2.828l-1.828 1.828-2.828-2.828L14.586 2.586a2 2 0 012.828 0zM3 17.25V14.5a1 1 0 01.293-.707l8.5-8.5 2.828 2.828-8.5 8.5A1 1 0 019.5 17.25H3z"/>
-                                    </svg>
-                                    Edit
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-blue-600" viewBox="0 0 20 20">
+                                    <path d="M17.414 2.586a2 2 0 010 2.828l-1.828 1.828-2.828-2.828L14.586 2.586a2 2 0 012.828 0zM3 17.25V14.5a1 1 0 01.293-.707l8.5-8.5 2.828 2.828-8.5 8.5A1 1 0 019.5 17.25H3z"/>
+                                </svg>
+                                Edit
                             </button>
 
-                            <form action="{{ route('packages.destroy', $package->id) }}" method="POST" onsubmit="return confirm('Delete this package?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                     class="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-    >
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-red-600" viewBox="0 0 20 20">
-                                        <path d="M6 7a1 1 0 011 1v6a1 1 0 01-2 0V8a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 01-2 0V8a1 1 0 011-1zm4-3h-2.5l-.71-.71A1 1 0 0010.5 3h-1a1 1 0 00-.71.29L8.09 4H5a1 1 0 000 2h10a1 1 0 100-2zM6 16a2 2 0 002 2h4a2 2 0 002-2V6H6v10z"/>
-                                    </svg>
-                                    Delete
-                                </button>
-                            </form>
+                            <button
+                                type="button"
+                                onclick="openDeleteModal('{{ route('packages.destroy', $package->id) }}')"
+                                class="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-red-600" viewBox="0 0 20 20">
+                                    <path d="M6 7a1 1 0 011 1v6a1 1 0 01-2 0V8a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 01-2 0V8a1 1 0 011-1zm4-3h-2.5l-.71-.71A1 1 0 0010.5 3h-1a1 1 0 00-.71.29L8.09 4H5a1 1 0 000 2h10a1 1 0 100-2zM6 16a2 2 0 002 2h4a2 2 0 002-2V6H6v10z"/>
+                                </svg>
+                                Delete
+                            </button>
                         </div>
                     </div>
 
                     <!-- Package Content -->
-                    <div class="text-sm text-gray-500 mb-1">Project: {{ $package->project->name }}</div>
-                    <div class="text-lg font-bold text-[#1F2937]">{{ $package->packageType->package_code }}</div>
-                    <div class="text-sm">Batch: {{ $package->batch }}</div>
-                    <div class="text-sm">Lot: {{ $package->lot }}</div>
-                    <div class="text-sm mb-1">Desc: {{ $package->description }}</div>
-                </div>
-
-            
-            
+                    <div class="text-sm text-gray-600 mb-1 break-words pr-8">
+                    Project: {{ $package->project->name }}
+                    </div>
+                        <div class="text-lg font-semibold text-gray-800">{{ $package->packageType->package_code }}</div>
+                        <div class="text-sm">Batch: {{ $package->batch }}</div>
+                        <div class="text-sm">Lot: {{ $package->lot }}</div>
+                        <div class="text-sm mb-1">Description: {{ $package->description }}</div>
+                    </div>
         @endforeach
     </div>
  <div class="mt-4">

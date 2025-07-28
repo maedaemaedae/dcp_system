@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <title>Manage Users | DCP Tracking Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('images/final-portrait-logo.png') }}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://unpkg.com/alpinejs" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Alpine Plugins -->
-<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
- 
-<!-- Alpine Core -->
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Alpine Core -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 
 <style>
@@ -32,6 +34,8 @@
     .fade-out {
         animation: fade-out-down 0.4s ease-in forwards;
     }
+
+    [x-cloak] { display: none !important; }
 </style>
 
 
@@ -76,8 +80,9 @@
             $isAdmin = $authUser && $authUser->role && $authUser->role->role_name === 'admin';
         @endphp
 
-<body class="bg-white font-['Poppins']" x-data="{ open: true }">
-    <div class="flex h-screen">
+<body class="bg-white font-['Poppins']" x-data="{ contentVisible: false }" x-init="setTimeout(() => contentVisible = true, 100)">
+
+    <div class="flex">
 
          
             @include('layouts.sidebar') 
@@ -89,8 +94,8 @@
                 
         </div>
 
-        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 relative flex-1 overflow-y-auto h-screen"
->
+        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 relative flex-1 overflow-y-auto h-screen" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
+
     <div class="max-w-6xl mx-auto">
        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
             <i class="fa-solid fa-users text-blue-500 text-4xl w-10 h-10"></i>
@@ -149,7 +154,7 @@
 
 
             <!-- User Management Table -->
-            <div class="overflow-x-auto bg-white rounded-2xl shadow border mb-40">
+            <div class="overflow-hidden bg-white rounded-2xl shadow border mb-40">
                 <table class="min-w-full text-sm divide-y divide-gray-200">
                     <thead class="bg-[#4A90E2] text-white uppercase">
             <tr>
@@ -212,6 +217,9 @@
 
 
               </table>
+              <div class="mt-4">
+                {{ $users->withQueryString()->links('vendor.pagination.tailwind') }}
+            </div>
            </div>
            
             <div class="h-12"></div>

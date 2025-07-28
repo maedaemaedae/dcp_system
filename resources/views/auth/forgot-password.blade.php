@@ -34,22 +34,6 @@
 
 
 <body class="bg-[#EFEFEF] text-gray-800 min-h-screen flex items-center justify-center px-4">
-    <!-- ✅ Navigation Bar -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg">
-
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0">
-                    <a href=<a href="/">
-                   
-                        <img src="{{ asset('images/final-landscape-logo.png') }}" alt="YourLogo" class="h-14 w-auto">
-                    </a>
-                </div>      
-            </div>
-        </div>
-    </nav>
-
 
   <div class="max-w-md w-full bg-white shadow-lg rounded-2xl p-8 space-y-6">
    

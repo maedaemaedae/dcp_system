@@ -76,7 +76,8 @@ class SuperAdminController extends Controller
             });
         }
 
-        $users = $query->get();
+        // 👇 Sort by newest created user first
+        $users = $query->orderByDesc('created_at')->paginate(5); // with pagination
         $roles = Role::all();
 
         return view('superadmin.users.index', compact('users', 'roles'));

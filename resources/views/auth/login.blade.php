@@ -32,6 +32,30 @@
     .shake {
         animation: shake 0.4s ease-in-out;
     }
+    /* Hide browser default password reveal/toggle icon */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+    input[type="password"]::-webkit-credentials-auto-fill-button,
+    input[type="password"]::-webkit-input-password-toggle-button {
+        display: none !important;
+    }
+    input[type="password"]::-webkit-input-clear-button {
+        display: none !important;
+    }
+    input[type="password"]::-webkit-input-password-toggle {
+        display: none !important;
+    }
+    input[type="password"]::-o-clear-button {
+        display: none !important;
+    }
+    input[type="password"]::-o-password-reveal-button {
+        display: none !important;
+    }
+    input[type="password"]::-moz-password-reveal {
+        display: none !important;
+    }
 </style>
 
 <script>
@@ -128,7 +152,7 @@
                             </div>
                             <!-- Slide 3 -->
                             <div class="swiper-slide">
-                                <img src="https://placehold.co/400x550?text=420x550" class="w-full h-full object-cover" />
+                                <img src="{{ asset('images/login-mockups3.png') }}" class="w-full h-full object-cover" />
                             </div>
                         </div>
                     </div>
@@ -190,8 +214,10 @@
                             placeholder="Enter your password"
                             id="password"
                             name="password"
+                            autocomplete="current-password"
                             class="w-80 h-10 px-10 py-1 pr-10 bg-white rounded-md border border-gray-300 text-gray-600 text-[10px] font-medium font-['Poppins'] leading-normal focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2]
-                            @error('email') border-red-500 @enderror"/>
+                            @error('email') border-red-500 @enderror"
+                            inputmode="text"/>
 
                             <!-- Show custom Laravel error when email exists but password is wrong -->
                     @error('email')
@@ -262,7 +288,7 @@
                 Remember me
             </label>
             <a href="{{ route('password.request') }}"
-                class="text-[#4A90E2] hover:text-[#357ABD] text-xs font-bold font-['Poppins'] underline leading-normal transition">
+                class="text-[#4A90E2] hover:text-[#357ABD] text-xs font-bold font-['Poppins'] leading-normal transition">
                 Forgot Password?
             </a>
         </div>
@@ -280,7 +306,7 @@
                     <div class="self-stretch text-center justify-center">
                         <span class="text-[#000] text-xs font-normal font-['Poppins'] leading-normal tracking-tight">Don’t have an account? </span>
                         <a href="{{ route('register') }}"
-                        class="text-[#4A90E2] hover:text-[#357ABD] text-xs font-bold font-['Poppins'] underline leading-normal tracking-tight transition">
+                        class="text-[#4A90E2] hover:text-[#357ABD] text-xs font-bold font-['Poppins'] leading-normal tracking-tight transition">
                         Register
                         </a>
                     </div>

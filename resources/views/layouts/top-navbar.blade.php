@@ -11,10 +11,20 @@
             <span class="text-base text-black">{{ Auth::user()->name }}</span>
             <span class="text-sm text-gray-500">{{ Auth::user()->email }}</span>
 
+
+                @php
+                    $user = auth()->user();
+                    $dashboardRoute = ($user && $user->role_id === 1)
+                        ? 'superadmin.dashboard'
+                        : 'dashboard';
+                @endphp 
+
+
            @php
                 $notifications = Auth::user()->unreadNotifications;
             @endphp
 
+        @if ($user && $user->role_id === 1)
         <div class="relative">
             <button 
                 @click="openBell = !openBell; markNotificationsAsRead();" 
@@ -39,8 +49,9 @@
                 @endif
 
             </button>
+        
 
-            <div x-show="openBell" @click.away="openBell = false" class="absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-2 z-20 text-sm text-gray-700 max-h-96 overflow-y-auto" x-transition>
+            <div x-show="openBell" x-cloak @click.away="openBell = false" class="absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-2 z-20 text-sm text-gray-700 max-h-96 overflow-y-auto" x-transition>
                @forelse ($notifications as $notification)
                 <a href="{{ $notification->data['url'] ?? '#' }}"
                 class="block px-4 py-2 hover:bg-blue-50 border-b border-gray-100">
@@ -58,6 +69,7 @@
 
             </div>
         </div>
+        @endif
 
              
             <!-- Profile Dropdown Trigger -->
@@ -77,7 +89,7 @@
         </div>
 
         <!-- Dropdown Menu -->
-        <div x-show="open" @click.away="open = false"
+        <div x-show="open" x-cloak @click.away="open = false"
              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 text-sm text-gray-700"
              x-transition>
             <a href="{{ route('profile.edit') }}" class="block px-4 py-2 hover:bg-blue-100">Profile</a>

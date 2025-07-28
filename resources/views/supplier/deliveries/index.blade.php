@@ -24,9 +24,11 @@
                 }
             });
     </script>
+
+    <style>[x-cloak] { display: none !important; }</style>
     
 </head>
-<body class="bg-white font-['Poppins']" x-data="{ open: true }">
+<body class="bg-white font-['Poppins']" x-data="{ contentVisible: false }" x-init="setTimeout(() => contentVisible = true, 100)">
     <div class="flex">
 
     @if (session('success'))
@@ -60,19 +62,23 @@
                 
         </div>
 
-    <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen">
+    <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
 
     <div class="max-w-6xl mx-auto">
-        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
+       <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
             <i class="fa-solid fa-truck-ramp-box text-blue-500 text-4xl w-10 h-10"></i>
             My Deliveries
-        </h2>
+            @if(isset($deliveries[0]) && $deliveries[0]->recipient?->package?->project)
+                — {{ $deliveries[0]->recipient->package->project->name }}
+            @endif
+    </h2>
 
         <div class="overflow-x-auto bg-white shadow-lg rounded-xl border border-gray-200">
     <table class="min-w-full text-sm text-left">
         <thead class="bg-[#4A90E2] text-white uppercase text-xs tracking-wider">
             <tr>
                 <th class="px-6 py-4">Recipient</th>
+                <th class="px-6 py-4">Division</th>
                 <th class="px-6 py-4">Package</th>
                 <th class="px-6 py-4 text-center">Quantity</th>
                 <th class="px-6 py-4 text-center">Target Date</th>
@@ -88,12 +94,19 @@
                             ? $delivery->recipient->school->school_name
                             : $delivery->recipient->division->division_name }}
                     </td>
+
+                    <td class="px-6 py-4 text-gray-700">
+                        {{ $delivery->recipient->school->division?->division_name ?? 'N/A' }}
+                    </td>
+
                     <td class="px-6 py-4 text-gray-700">
                         {{ $delivery->recipient->package->packageType->package_code }}
                     </td>
+
                     <td class="px-6 py-4 text-center text-gray-700">
                         {{ $delivery->recipient->quantity }}
                     </td>
+
                     <td class="px-6 py-4 text-center text-gray-700">
                         @if ($delivery->status === 'pending')
                             <form method="POST" action="{{ route('supplier.deliveries.updateTargetDate', $delivery->id) }}" class="inline-flex items-center justify-center">

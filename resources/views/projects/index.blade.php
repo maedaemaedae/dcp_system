@@ -118,17 +118,12 @@ document.addEventListener('DOMContentLoaded', function () {
     animation: fadeInUp 0.4s ease-out both;
 }
 
+[x-cloak] { display: none !important; }
 </style>
-
-
-   
 </head>
 
-<header class="p-6 bg-white shadow">
-        <h2 class="text-xl font-semibold">Projects and Package Types</h2>
-    </header>
+<body class="bg-white font-['Poppins']" x-data="{ contentVisible: false }" x-init="setTimeout(() => contentVisible = true, 100)">
 
-<body class="bg-white font-['Poppins']" x-data="{ open: true }">
     <div class="flex ">
 
     @if (session('success'))
@@ -163,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     
 
-  <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-20 relative flex-1 overflow-y-auto h-screen">
+  <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-20 relative flex-1 overflow-y-auto h-screen" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
 
     <div class="max-w-6xl mx-auto">
         <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
@@ -193,18 +188,18 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </section>
 
-<!-- 📦 Package Types Section -->
+<!--  Package Types Section -->
 <section id="packageTypesSection" class="bg-white rounded-lg shadow p-6 mb-8">
      @include('projects.partials.package-types-card', ['packageTypes' => $packageTypes])
      
 </section>
 
-<!-- 📦 Packages Section -->
+<!--  Packages Section -->
 <section id="packagesSection" class="bg-white rounded-lg shadow p-6 mb-8">
      @include('projects.partials.packages-card', ['packages' => $packages])
 </section>
 
-<!-- 📁 Projects Table Section -->
+<!--  Projects Table Section -->
 <section id="projectsSection" class="bg-white rounded-lg shadow p-6 mb-20">
      @include('projects.partials.projects-table', ['projects' => $projects])
 </section>
@@ -218,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
     @include('projects.partials.edit-package-modal')
    
     <!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+<div id="deleteModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-fadeInUp font-['Poppins']">
         <!-- Close Button -->
         <button onclick="closeModal('deleteModal')"
@@ -244,6 +239,14 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </div>
 
+<script>
+    // Call this function with the delete URL to open the modal and set the form action
+    function openDeleteModal(url) {
+        const form = document.getElementById('deleteForm');
+        form.action = url;
+        openModal('deleteModal');
+    }
+</script>
 
 
 

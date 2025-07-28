@@ -173,7 +173,12 @@
         </div>
 
         <div class="w-full lg:w-1/2 flex justify-center items-center">
-            <img src="{{ asset('images/dashboard mockups 1.png') }}" alt="Dashboard Preview" class="w-full max-w-md lg:max-w-lg object-cover rounded-2xl shadow-2xl ring-1 ring-white/30">
+            <img 
+                src="{{ asset('images/dashboard mockups 1.png') }}" 
+                alt="Dashboard Preview" 
+                class="object-cover rounded-2xl shadow-2xl ring-1 ring-white/30"
+                style="width: 1514px; height: 783;"
+            >
         </div>
     </div>
 </section>

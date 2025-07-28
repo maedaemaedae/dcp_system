@@ -9,9 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <style>
+
+    [x-cloak] {
+        display: none !important;
+    }
+
     @keyframes fadeInUp {
     0% {
         opacity: 0;
@@ -27,8 +33,11 @@
     animation: fadeInUp 0.4s ease-out both;
 }
 
+[x-cloak] { display: none !important; }
+
 </style>
-<body class="bg-white font-['Poppins']" x-data="{ open: true }">
+<body class="bg-white font-['Poppins']" x-data="{ contentVisible: false }" x-init="setTimeout(() => contentVisible = true, 100)">
+
 
 @if (session('success'))
     <div 
@@ -62,7 +71,7 @@
                 
         </div>
 
-    <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen">
+    <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
 
     <div class="max-w-6xl mx-auto">
         <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
@@ -103,17 +112,13 @@
                         <td class="px-5 py-3 pr-1">{{ $delivery->supplier->name }}</td>
                         <td class="px-5 py-3 pr-1">{{ $delivery->target_delivery ?? '—' }}</td>
                         <td class="px-5 py-3">
-                            <form action="{{ route('superadmin.deliveries.updateStatus', $delivery->id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <select name="status"
-                                        onchange="this.form.submit()"
-                                        class="border border-gray-300 px-2 py-1 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="pending" {{ $delivery->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="delivered" {{ $delivery->status === 'delivered' ? 'selected' : '' }}>Delivered</option>
-                                    <option value="cancelled" {{ $delivery->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                </select>
-                            </form>
+                            <select onchange="updateDeliveryStatus({{ $delivery->id }}, this.value)"
+                                            class="border border-gray-300 px-2 py-1 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="pending" {{ $delivery->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="delivered" {{ $delivery->status === 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                        <option value="cancelled" {{ $delivery->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    </select>
+
                         </td>
                         <td class="px-5 py-3">{{ $delivery->creator->name ?? '—' }}</td>
                         <td class="px-5 py-3">
@@ -204,6 +209,31 @@
                     e.preventDefault();
                 }
             });
+
+    function updateDeliveryStatus(deliveryId, status) {
+    fetch(`/superadmin/deliveries/${deliveryId}/status`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ status })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Status update failed.');
+        return response.json();
+    })
+    .then(data => {
+        console.log(data.message);
+        // Optional: show toast/notification
+    })
+    .catch(error => {
+        alert("Failed to update status.");
+        console.error(error);
+    });
+}
+
 </script>
 </body>
 </html>

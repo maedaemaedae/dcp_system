@@ -1,7 +1,7 @@
  
  <!-- Sidebar -->
- <div x-data="{ open: true }" >
-        <aside
+ <div x-data="{ open: true }" x-cloak>
+        <aside  
     :class="open ? 'w-[250px]' : 'w-20'"
     class="fixed top-[80px] left-0 bottom-0 bg-[#033372] text-white font-['Poppins']
            transition-all duration-300 z-50 overflow-hidden hide-scrollbar">
@@ -50,7 +50,7 @@
 
         <div class="relative overflow-hidden">
             <span class="invisible whitespace-nowrap block">Dashboard</span>
-            <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Dashboard</span>
+            <span x-show="open"  x-transition class="absolute left-0 top-0 whitespace-nowrap">Dashboard</span>
         </div>
     </a>
 
@@ -176,6 +176,7 @@
     <div 
         x-show="deliveriesOpen && open"
         x-collapse
+        x-cloak
         style="transition: height 0.3s ease;"
         class="pl-10 mt-2 space-y-1 border-l border-white/20 ml-2"
     >
@@ -198,7 +199,7 @@
         </a>
     </div>
 </div>
-
+</div>
 
 
 

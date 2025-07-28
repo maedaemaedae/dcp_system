@@ -154,21 +154,27 @@ class DeliveryController extends Controller
     }
 
     public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,delivered,cancelled',
-        ]);
+{
+    $delivery = Delivery::findOrFail($id);
+    $delivery->status = $request->input('status');
+    $delivery->save();
 
-        $delivery = Delivery::findOrFail($id);
-        $delivery->status = $request->status;
-        $delivery->save();
-
-        return redirect()->route('superadmin.deliveries.list')->with('success', 'Delivery status updated.');
+    if ($request->expectsJson()) {
+        return response()->json(['message' => 'Status updated successfully.']);
     }
+
+    return back()->with('success', 'Status updated successfully.');
+}
+
 
     public function supplierView()
     {
-        $deliveries = Delivery::with(['recipient.school', 'recipient.division', 'recipient.package.packageType'])
+        $deliveries = Delivery::with([
+                'recipient.school',
+                'recipient.division',
+                'recipient.package.packageType',
+                'recipient.package.project'
+            ])
             ->where('supplier_id', auth()->id())
             ->latest()
             ->get();

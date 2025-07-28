@@ -31,10 +31,13 @@
     animation: fadeInUp 0.4s ease-out both;
 }
 
+[x-cloak] { display: none !important; }
+
 </style>
 
 
-<body class="bg-white font-['Poppins']" x-data="{ open: true }">
+<body class="bg-white font-['Poppins']" x-data="{ contentVisible: false }" x-init="setTimeout(() => contentVisible = true, 100)">
+
     <div class="flex">
 
     @if (session('success'))
@@ -67,7 +70,7 @@
                 
         </div>
 
-        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen">
+        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
 
     <div class="max-w-6xl mx-auto">
         <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
@@ -113,8 +116,8 @@
             
            {{-- ✅ Regional Office Info Table --}}
 <div id="regional-offices-table-wrapper" class="bg-white shadow rounded p-6">
-    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
-        📍 <span class="text-[#1F2937]">Regional Office Info</span>
+    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
+         <span class="text-[#1F2937]">Regional Office Info</span>
     </h3>
 
     <div class="relative overflow-visible">
@@ -167,8 +170,8 @@
 
            {{-- ✅ Division Office Info Table --}}
 <div id="divisions-table-wrapper" class="bg-white shadow rounded p-6 mt-20">
-    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
-        🏢 <span class="text-[#1F2937]">Division Office Info</span>
+    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
+         <span class="text-[#1F2937]">Division Office Info</span>
     </h3>
 
     <div class="relative overflow-visible">
@@ -221,8 +224,8 @@
 
            {{-- ✅ School Info Table --}}
 <div id="schools-table-wrapper" data-wrapper="schools-table-wrapper" class="bg-white shadow rounded p-6 mt-20">
-    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
-        🏫 <span>School Info</span>
+    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
+         <span>School Info</span>
     </h3>
 
     <div class="relative overflow-visible">
@@ -266,8 +269,8 @@
 
            {{-- 📨 Recipients Table --}}
 <div id="recipients-table-wrapper" data-wrapper="recipients-table-wrapper" class="bg-white shadow rounded p-6 mt-20">
-    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
-        📨 <span>Recipients</span>
+    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2 text-[#1F2937]">
+         <span>Recipients</span>
     </h3>
 
     
