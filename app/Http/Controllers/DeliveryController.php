@@ -165,16 +165,22 @@ class DeliveryController extends Controller
 
         return redirect()->route('superadmin.deliveries.list')->with('success', 'Delivery status updated.');
     }
-
+    
     public function supplierView()
     {
-        $deliveries = Delivery::with(['recipient.school', 'recipient.division', 'recipient.package.packageType'])
+        $deliveries = Delivery::with([
+                'recipient.school',
+                'recipient.division',
+                'recipient.package.packageType',
+                'recipient.package.project'
+            ])
             ->where('supplier_id', auth()->id())
             ->latest()
             ->get();
 
         return view('supplier.deliveries.index', compact('deliveries'));
     }
+
 
     public function confirmDelivery(Request $request, $id){
         Log::info('confirmDelivery called', ['id' => $id, 'user_id' => auth()->id()]);

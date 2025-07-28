@@ -63,10 +63,14 @@
     <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen">
 
     <div class="max-w-6xl mx-auto">
-        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
-            <i class="fa-solid fa-truck-ramp-box text-blue-500 text-4xl w-10 h-10"></i>
-            My Deliveries
-        </h2>
+    <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
+        <i class="fa-solid fa-truck-ramp-box text-blue-500 text-4xl w-10 h-10"></i>
+        My Deliveries
+        @if(isset($deliveries[0]) && $deliveries[0]->recipient?->package?->project)
+            — {{ $deliveries[0]->recipient->package->project->name }}
+        @endif
+    </h2>
+
 
         <div class="overflow-x-auto bg-white shadow-lg rounded-xl border border-gray-200">
     <table class="min-w-full text-sm text-left">
