@@ -77,6 +77,7 @@
         <thead class="bg-[#4A90E2] text-white uppercase text-xs tracking-wider">
             <tr>
                 <th class="px-6 py-4">Recipient</th>
+                <th class="px-6 py-4">Division</th>
                 <th class="px-6 py-4">Package</th>
                 <th class="px-6 py-4 text-center">Quantity</th>
                 <th class="px-6 py-4 text-center">Target Date</th>
@@ -91,6 +92,9 @@
                         {{ $delivery->recipient->recipient_type === 'school'
                             ? $delivery->recipient->school->school_name
                             : $delivery->recipient->division->division_name }}
+                    </td>
+                    <td class="px-6 py-4 text-gray-700">
+                        {{ $delivery->recipient->school->division?->division_name ?? 'N/A' }}
                     </td>
                     <td class="px-6 py-4 text-gray-700">
                         {{ $delivery->recipient->package->packageType->package_code }}
