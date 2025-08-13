@@ -15,36 +15,33 @@
                 <span>Import ICT Equipment</span>
             </h3>
 
-            <form method="POST" action="{{ route('ict-equipment.import') }}" enctype="multipart/form-data" class="space-y-4">
-                @csrf
-                <div>
+            <div class="flex gap-4 mb-8">
+                {{-- Import Form --}}
+                <form method="POST" action="{{ route('ict-equipment.import') }}" enctype="multipart/form-data" class="flex gap-4 items-center">
+                    @csrf
                     <label for="ict_csv" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition cursor-pointer">
                         Choose CSV File
                     </label>
-                    <input 
-                        id="ict_csv"
-                        type="file" 
-                        name="csv_file" 
-                        accept=".csv" 
-                        required 
-                        class="hidden" 
-                    />
-                    <p id="ict-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate">
-                        No file selected
-                    </p>
-
-                    <button type="submit" class="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded shadow transition">
+                    <input id="ict_csv" type="file" name="csv_file" accept=".csv" required class="hidden"/>
+                    <p id="ict-file-name" class="text-sm text-gray-700">No file selected</p>
+                    <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded shadow">
                         Import Equipment
                     </button>
-                </div>
-            </form>
-        </div>
+                </form>
 
-        <script>
-        document.getElementById('ict_csv').addEventListener('change', function(){
-            document.getElementById('ict-file-name').textContent = this.files.length ? this.files[0].name : 'No file selected';
-        });
-        </script>
+                {{-- Export Button --}}
+                <a href="{{ route('ict-equipment.export') }}" 
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded shadow self-start">
+                    Export Equipment
+                </a>
+            </div>
+
+            <script>
+            document.getElementById('ict_csv').addEventListener('change', function(){
+                document.getElementById('ict-file-name').textContent = this.files.length ? this.files[0].name : 'No file selected';
+            });
+            </script>
+
 
         @if(session('success'))
             <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">

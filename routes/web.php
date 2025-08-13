@@ -121,10 +121,19 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::delete('/regional-offices/{id}', [RegionalOfficeController::class, 'destroy'])->name('regional-offices.destroy');
 
     // ✅ ICT Equipment Management
-    Route::get('/ict-equipment', [IctEquipmentController::class, 'index'])->name('ict-equipment.index');
-    Route::post('/ict-equipment', [IctEquipmentController::class, 'store'])->name('ict-equipment.store');
-    Route::resource('ict-equipment', IctEquipmentController::class)->middleware('superadmin');
-    Route::post('/ict-equipment/import', [IctEquipmentController::class, 'importIctEquipment'])->name('ict-equipment.import');
+    Route::middleware('superadmin')->group(function () {
+        // Main resource routes, but skip unused ones
+        Route::resource('ict-equipment', IctEquipmentController::class)
+            ->except(['show']);
+
+        // CSV Import / Export
+        Route::post('/ict-equipment/import', [IctEquipmentController::class, 'importIctEquipment'])
+            ->name('ict-equipment.import');
+
+        Route::get('/ict-equipment/export', [IctEquipmentController::class, 'exportIctEquipment'])
+            ->name('ict-equipment.export');
+    });
+
 
 });
 

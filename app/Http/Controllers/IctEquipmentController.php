@@ -167,6 +167,53 @@ class IctEquipmentController extends Controller
         return back()->with('success', 'ICT Equipment imported successfully.');
     }
 
+    public function exportIctEquipment()
+    {
+        $fileName = 'ict_equipment_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        $equipments = IctEquipment::all();
+
+        $headers = [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=\"$fileName\"",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $columns = [
+            'Equipment ID', 'Description', 'Category', 'Brand', 'Model',
+            'Asset #', 'Serial #', 'Location', 'Assigned To',
+            'Purchase Date', 'Warranty Expiry', 'Condition', 'Note'
+        ];
+
+        $callback = function () use ($equipments, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($equipments as $equip) {
+                fputcsv($file, [
+                    $equip->equipment_id,
+                    $equip->item_description,
+                    $equip->category,
+                    $equip->brand,
+                    $equip->model,
+                    $equip->asset_number,
+                    $equip->serial_number,
+                    $equip->location,
+                    $equip->assigned_to,
+                    $equip->purchase_date,
+                    $equip->warranty_expiry,
+                    $equip->condition,
+                    $equip->note ?? ''
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function destroy($id)
     {
         $equipment = IctEquipment::findOrFail($id);
