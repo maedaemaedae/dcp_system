@@ -99,7 +99,23 @@
                 </tbody>
             </table>
         </form>
+
         <h2 class="text-xl font-semibold mb-4">Existing ICT Equipment</h2>
+                <form method="GET" action="{{ route('ict-equipment.index') }}" class="mb-4 flex gap-2">
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Search equipment..."
+                        class="border border-gray-300 rounded px-4 py-2 w-64"
+                    />
+                    <button
+                        type="submit"
+                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    >
+                        Search
+                    </button>
+                </form>
         <table class="w-full border border-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-gray-200 text-sm">
                 <tr>
