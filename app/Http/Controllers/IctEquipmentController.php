@@ -35,4 +35,29 @@ class IctEquipmentController extends Controller
 
         return redirect()->route('ict-equipment.index')->with('success', 'ICT Equipment added successfully.');
     }
+
+    public function edit($id)
+    {
+        $equipment = IctEquipment::findOrFail($id);
+        return view('ict-equipment.edit', compact('equipment'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $equipment = IctEquipment::findOrFail($id);
+        $equipment->update($request->all());
+
+        return redirect()->route('ict-equipment.index')
+            ->with('success', 'Equipment updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        $equipment = IctEquipment::findOrFail($id);
+        $equipment->delete();
+
+        return redirect()->route('ict-equipment.index')
+            ->with('success', 'Equipment deleted successfully.');
+    }
+
 }

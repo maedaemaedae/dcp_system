@@ -123,6 +123,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     // ✅ ICT Equipment Management
     Route::get('/ict-equipment', [IctEquipmentController::class, 'index'])->name('ict-equipment.index');
     Route::post('/ict-equipment', [IctEquipmentController::class, 'store'])->name('ict-equipment.store');
+    Route::resource('ict-equipment', IctEquipmentController::class)->middleware('superadmin');
 });
 
 Route::middleware(['auth', 'supplier'])->group(function () {

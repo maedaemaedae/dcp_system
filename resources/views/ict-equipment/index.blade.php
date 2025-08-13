@@ -84,6 +84,7 @@
                     <th class="p-2">Warranty Expiry</th>
                     <th class="p-2">Condition</th>
                     <th class="p-2">Note</th>
+                    <th class="p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -102,6 +103,20 @@
                         <td class="p-2">{{ $equip->warranty_expiry->format('Y-m-d') }}</td>
                         <td class="p-2">{{ $equip->condition }}</td>
                         <td class="p-2 whitespace-pre-wrap">{{ $equip->note ?? '—' }}</td>
+                        <td class="p-2 flex gap-2">
+                            <a href="{{ route('ict-equipment.edit', $equip->id) }}" 
+                            class="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded">
+                                Edit
+                            </a>
+                            <form action="{{ route('ict-equipment.destroy', $equip->id) }}" method="POST" onsubmit="return confirm('Delete this equipment?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                 @empty
                     <tr>
