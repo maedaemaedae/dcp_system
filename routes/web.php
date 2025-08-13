@@ -124,6 +124,8 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/ict-equipment', [IctEquipmentController::class, 'index'])->name('ict-equipment.index');
     Route::post('/ict-equipment', [IctEquipmentController::class, 'store'])->name('ict-equipment.store');
     Route::resource('ict-equipment', IctEquipmentController::class)->middleware('superadmin');
+    Route::post('/ict-equipment/import', [IctEquipmentController::class, 'importIctEquipment'])->name('ict-equipment.import');
+
 });
 
 Route::middleware(['auth', 'supplier'])->group(function () {

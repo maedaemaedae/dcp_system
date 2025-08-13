@@ -10,6 +10,41 @@
 
     <div class="max-w-7xl mx-auto">
         <h1 class="text-3xl font-bold mb-6">ICT Equipment</h1>
+        <div class="bg-white shadow rounded p-6 mb-8">
+            <h3 class="text-2xl font-bold mb-4 flex items-center gap-2 text-gray-800">
+                <span>Import ICT Equipment</span>
+            </h3>
+
+            <form method="POST" action="{{ route('ict-equipment.import') }}" enctype="multipart/form-data" class="space-y-4">
+                @csrf
+                <div>
+                    <label for="ict_csv" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition cursor-pointer">
+                        Choose CSV File
+                    </label>
+                    <input 
+                        id="ict_csv"
+                        type="file" 
+                        name="csv_file" 
+                        accept=".csv" 
+                        required 
+                        class="hidden" 
+                    />
+                    <p id="ict-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate">
+                        No file selected
+                    </p>
+
+                    <button type="submit" class="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded shadow transition">
+                        Import Equipment
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <script>
+        document.getElementById('ict_csv').addEventListener('change', function(){
+            document.getElementById('ict-file-name').textContent = this.files.length ? this.files[0].name : 'No file selected';
+        });
+        </script>
 
         @if(session('success'))
             <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
