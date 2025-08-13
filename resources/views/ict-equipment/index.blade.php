@@ -147,25 +147,41 @@
                 else if (e.target.classList.contains('save-btn')) {
                     let row = e.target.closest('tr');
                     let id = row.dataset.id;
-                    let inputs = row.querySelectorAll('input, select, textarea');
-                    let data = {
-                        _token: '{{ csrf_token() }}',
-                        _method: 'PUT'
-                    };
-                    let fields = ['equipment_id','item_description','category','brand','model','asset_number','serial_number','location','assigned_to','purchase_date','warranty_expiry','condition','note'];
-                    inputs.forEach((input, i) => data[fields[i]] = input.value);
 
+                    // Gather values
+                    let inputs = row.querySelectorAll('input, select, textarea');
+                    let fields = [
+                        'equipment_id', 'item_description', 'category', 'brand', 'model',
+                        'asset_number', 'serial_number', 'location', 'assigned_to',
+                        'purchase_date', 'warranty_expiry', 'condition', 'note'
+                    ];
+
+                    let formData = new FormData();
+                    formData.append('_token', '{{ csrf_token() }}');
+                    formData.append('_method', 'PUT');
+
+                    inputs.forEach((input, i) => {
+                        formData.append(fields[i], input.value);
+                    });
+
+                    // Send AJAX request to Laravel
                     fetch(`/ict-equipment/${id}`, {
-                        method: 'POST',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                        body: new FormData(Object.assign(new FormData(), Object.entries(data).reduce((fd, [k, v]) => {fd.append(k, v); return fd;}, new FormData())))
+                        method: 'POST', // Laravel will treat this as PUT because of _method
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData
                     })
                     .then(res => res.json())
                     .then(res => {
                         if (res.success) {
+                            // Optional: update row without reload
                             location.reload();
+                        } else {
+                            alert('Error saving changes');
                         }
-                    });
+                    })
+                    .catch(err => console.error(err));
                 }
             });
             </script>
