@@ -87,32 +87,28 @@
                     <th class="p-2">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="equipment-table">
                 @forelse ($equipments as $equip)
-                    <tr class="bg-white border-b">
-                        <td class="p-2">{{ $equip->equipment_id }}</td>
-                        <td class="p-2">{{ $equip->item_description }}</td>
-                        <td class="p-2">{{ $equip->category }}</td>
-                        <td class="p-2">{{ $equip->brand }}</td>
-                        <td class="p-2">{{ $equip->model }}</td>
-                        <td class="p-2">{{ $equip->asset_number }}</td>
-                        <td class="p-2">{{ $equip->serial_number }}</td>
-                        <td class="p-2">{{ $equip->location }}</td>
-                        <td class="p-2">{{ $equip->assigned_to }}</td>
-                        <td class="p-2">{{ $equip->purchase_date->format('Y-m-d') }}</td>
-                        <td class="p-2">{{ $equip->warranty_expiry->format('Y-m-d') }}</td>
-                        <td class="p-2">{{ $equip->condition }}</td>
-                        <td class="p-2 whitespace-pre-wrap">{{ $equip->note ?? '—' }}</td>
+                    <tr class="bg-white border-b" data-id="{{ $equip->id }}">
+                        <td class="p-2 view-mode">{{ $equip->equipment_id }}</td>
+                        <td class="p-2 view-mode">{{ $equip->item_description }}</td>
+                        <td class="p-2 view-mode">{{ $equip->category }}</td>
+                        <td class="p-2 view-mode">{{ $equip->brand }}</td>
+                        <td class="p-2 view-mode">{{ $equip->model }}</td>
+                        <td class="p-2 view-mode">{{ $equip->asset_number }}</td>
+                        <td class="p-2 view-mode">{{ $equip->serial_number }}</td>
+                        <td class="p-2 view-mode">{{ $equip->location }}</td>
+                        <td class="p-2 view-mode">{{ $equip->assigned_to }}</td>
+                        <td class="p-2 view-mode">{{ $equip->purchase_date->format('Y-m-d') }}</td>
+                        <td class="p-2 view-mode">{{ $equip->warranty_expiry->format('Y-m-d') }}</td>
+                        <td class="p-2 view-mode">{{ $equip->condition }}</td>
+                        <td class="p-2 view-mode whitespace-pre-wrap">{{ $equip->note ?? '—' }}</td>
                         <td class="p-2 flex gap-2">
-                            <a href="{{ route('ict-equipment.edit', $equip->id) }}" 
-                            class="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded">
-                                Edit
-                            </a>
-                            <form action="{{ route('ict-equipment.destroy', $equip->id) }}" method="POST" onsubmit="return confirm('Delete this equipment?');">
+                            <button class="edit-btn px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded">Edit</button>
+                            <form action="{{ route('ict-equipment.destroy', $equip->id) }}" method="POST" class="delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
-                                        class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded">
+                                <button type="submit" class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded">
                                     Delete
                                 </button>
                             </form>
@@ -120,10 +116,60 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="13" class="p-4 text-center text-gray-500">No ICT equipment found.</td>
+                        <td colspan="14" class="p-4 text-center text-gray-500">No ICT equipment found.</td>
                     </tr>
                 @endforelse
             </tbody>
+
+            <script>
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('edit-btn')) {
+                    let row = e.target.closest('tr');
+                    row.querySelectorAll('.view-mode').forEach(td => {
+                        let text = td.textContent.trim();
+                        if (td.cellIndex === 11) { // Condition select
+                            td.innerHTML = `<select class="border rounded p-1 w-full">
+                                <option value="IN USE" ${text === "IN USE" ? 'selected' : ''}>IN USE</option>
+                                <option value="FOR REPAIR" ${text === "FOR REPAIR" ? 'selected' : ''}>FOR REPAIR</option>
+                            </select>`;
+                        } else if (td.cellIndex === 9 || td.cellIndex === 10) { // Dates
+                            td.innerHTML = `<input type="date" class="border rounded p-1 w-full" value="${text}">`;
+                        } else if (td.cellIndex === 12) { // Note textarea
+                            td.innerHTML = `<textarea class="border rounded p-1 w-full">${text !== '—' ? text : ''}</textarea>`;
+                        } else {
+                            td.innerHTML = `<input type="text" class="border rounded p-1 w-full" value="${text}">`;
+                        }
+                    });
+                    e.target.textContent = "Save";
+                    e.target.classList.remove("edit-btn");
+                    e.target.classList.add("save-btn");
+                }
+                else if (e.target.classList.contains('save-btn')) {
+                    let row = e.target.closest('tr');
+                    let id = row.dataset.id;
+                    let inputs = row.querySelectorAll('input, select, textarea');
+                    let data = {
+                        _token: '{{ csrf_token() }}',
+                        _method: 'PUT'
+                    };
+                    let fields = ['equipment_id','item_description','category','brand','model','asset_number','serial_number','location','assigned_to','purchase_date','warranty_expiry','condition','note'];
+                    inputs.forEach((input, i) => data[fields[i]] = input.value);
+
+                    fetch(`/ict-equipment/${id}`, {
+                        method: 'POST',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        body: new FormData(Object.assign(new FormData(), Object.entries(data).reduce((fd, [k, v]) => {fd.append(k, v); return fd;}, new FormData())))
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.success) {
+                            location.reload();
+                        }
+                    });
+                }
+            });
+            </script>
+
         </table>
     </div>
 

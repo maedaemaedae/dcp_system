@@ -45,7 +45,32 @@ class IctEquipmentController extends Controller
     public function update(Request $request, $id)
     {
         $equipment = IctEquipment::findOrFail($id);
+
+        $request->validate([
+            'equipment_id' => 'required|string',
+            'item_description' => 'required|string',
+            'category' => 'required|string',
+            'brand' => 'required|string',
+            'model' => 'required|string',
+            'asset_number' => 'required|string',
+            'serial_number' => 'required|string|unique:ict_equipment,serial_number,' . $id,
+            'location' => 'required|string',
+            'assigned_to' => 'required|string',
+            'purchase_date' => 'required|date',
+            'warranty_expiry' => 'required|date',
+            'condition' => 'required|in:IN USE,FOR REPAIR',
+            'note' => 'nullable|string',
+        ]);
+
         $equipment->update($request->all());
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Equipment updated successfully.',
+                'equipment' => $equipment
+            ]);
+        }
 
         return redirect()->route('ict-equipment.index')
             ->with('success', 'Equipment updated successfully.');
