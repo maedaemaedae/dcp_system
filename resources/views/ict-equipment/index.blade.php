@@ -67,7 +67,6 @@
                 </tbody>
             </table>
         </form>
-
         <h2 class="text-xl font-semibold mb-4">Existing ICT Equipment</h2>
         <table class="w-full border border-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-gray-200 text-sm">
@@ -77,10 +76,14 @@
                     <th class="p-2">Category</th>
                     <th class="p-2">Brand</th>
                     <th class="p-2">Model</th>
+                    <th class="p-2">Asset #</th>
                     <th class="p-2">Serial #</th>
                     <th class="p-2">Location</th>
                     <th class="p-2">Assigned To</th>
+                    <th class="p-2">Purchase Date</th>
+                    <th class="p-2">Warranty Expiry</th>
                     <th class="p-2">Condition</th>
+                    <th class="p-2">Note</th>
                 </tr>
             </thead>
             <tbody>
@@ -91,14 +94,18 @@
                         <td class="p-2">{{ $equip->category }}</td>
                         <td class="p-2">{{ $equip->brand }}</td>
                         <td class="p-2">{{ $equip->model }}</td>
+                        <td class="p-2">{{ $equip->asset_number }}</td>
                         <td class="p-2">{{ $equip->serial_number }}</td>
                         <td class="p-2">{{ $equip->location }}</td>
                         <td class="p-2">{{ $equip->assigned_to }}</td>
+                        <td class="p-2">{{ $equip->purchase_date->format('Y-m-d') }}</td>
+                        <td class="p-2">{{ $equip->warranty_expiry->format('Y-m-d') }}</td>
                         <td class="p-2">{{ $equip->condition }}</td>
+                        <td class="p-2 whitespace-pre-wrap">{{ $equip->note ?? '—' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="9" class="p-4 text-center text-gray-500">No ICT equipment found.</td>
+                        <td colspan="13" class="p-4 text-center text-gray-500">No ICT equipment found.</td>
                     </tr>
                 @endforelse
             </tbody>
