@@ -14,7 +14,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\Supplier\SupplierDeliveryController;
 use App\Models\Delivery;
-
+use App\Http\Controllers\IctEquipmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -120,6 +120,9 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::put('/regional-offices/{id}', [RegionalOfficeController::class, 'update'])->name('regional-offices.update');
     Route::delete('/regional-offices/{id}', [RegionalOfficeController::class, 'destroy'])->name('regional-offices.destroy');
 
+    // ✅ ICT Equipment Management
+    Route::get('/ict-equipment', [IctEquipmentController::class, 'index'])->name('ict-equipment.index');
+    Route::post('/ict-equipment', [IctEquipmentController::class, 'store'])->name('ict-equipment.store');
 });
 
 Route::middleware(['auth', 'supplier'])->group(function () {

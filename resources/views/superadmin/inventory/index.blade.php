@@ -59,7 +59,13 @@
     </button>
 </div>
 
-
+    <!-- ICT Equipment Button -->
+    <div class="flex justify-end mb-4">
+        <a href="{{ route('ict-equipment.index') }}"
+        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow transition duration-200">
+            <i class="fa-solid fa-computer mr-2"></i> ICT Equipment
+        </a>
+    </div>
 
     <!-- Schools -->
     <div class="mt-8">
