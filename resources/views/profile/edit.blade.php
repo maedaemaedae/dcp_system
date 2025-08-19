@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="icon" href="{{ asset('images/portrait-logo.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/final-portrait-logo.png') }}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <!-- Cropper CSS -->
@@ -15,9 +15,15 @@
     <!-- Cropper JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
+<style>
+
+    [x-cloak] { display: none !important; }
+
+</style>
+
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-[Poppins]">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-[Poppins]" >
 
 <!-- Toast Notification -->
 <div id="toast"
@@ -43,7 +49,7 @@
     @if ($user && $user->role_id === 1)
         <!-- Back to Home Button -->
         <a href="{{ route('superadmin.dashboard') }}"
-           class="fixed top-[6.5rem] left-6 text-[#4A90E2] hover:text-[#357ABD] text-base font-medium flex items-center z-50 transition-all duration-300 ease-in-out transform hover:-translate-x-1 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-md">
+           class="absolute top-[6.5rem] left-6 text-[#4A90E2] hover:text-[#357ABD] text-base font-medium flex items-center transition-all duration-300 ease-in-out transform hover:-translate-x-1 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-md">
             <!-- Left Arrow Icon -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transition-transform duration-300 group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24"
                  stroke="currentColor" stroke-width="2">
@@ -69,7 +75,13 @@
 
 
     <!-- Main Content -->
-    <main class="py-12">
+    <main class="py-12" 
+            x-data="{ contentVisible: false }" 
+           x-init="$nextTick(() => { contentVisible = true })"
+            x-show="contentVisible" 
+            x-transition.opacity.duration.500ms 
+            x-cloak>
+
         <div class="max-w-5xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
 
 <!-- Profile Image Upload Section -->
@@ -162,16 +174,7 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const target = document.getElementById('profile-photo');
-        if (target) {
-            setTimeout(() => {
-                const yOffset = -100; // para hindi matakpan ng navbar
-                const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                window.scrollTo({ top: y, behavior: 'smooth' });
-            }, 200); // delay to make sure Alpine + layout is ready
-        }
-    });
+    
 </script>
 
 

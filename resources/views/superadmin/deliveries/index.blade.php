@@ -49,7 +49,7 @@
                 
         </div>
 
-    <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
+    <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-[calc(100vh-5rem)]" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
 
     <div class="max-w-6xl mx-auto">
         <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">

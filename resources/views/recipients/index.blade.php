@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Recipients | DCP Tracking Hub</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link rel="icon" href="{{ asset('images/portrait-logo.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/final-portrait-logo.png') }}" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -38,7 +38,8 @@
 
 <body class="bg-white font-['Poppins']" x-data="{ contentVisible: false }" x-init="setTimeout(() => contentVisible = true, 100)">
 
-    <div class="flex">
+   
+
 
     @if (session('success'))
     <div 
@@ -70,7 +71,7 @@
                 
         </div>
 
-        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
+        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-[calc(100vh-5rem)]" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
 
     <div class="max-w-6xl mx-auto">
         <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
@@ -549,6 +550,8 @@ document.addEventListener('DOMContentLoaded', function () {
             openModal('deleteModal');
         }
 
+        
+
 
     // For CSV Uploading
    
@@ -616,11 +619,11 @@ document.addEventListener('alpine:init', () => {
             this.dropdownEl.innerHTML = `
                 <button onclick="openEditRecipientModal(${id}, '${person}', '${position}', '${number}', ${qty})"
                     class="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    ✏️ Edit
+                     Edit
                 </button>
                 <button onclick="openDeleteModal('recipient', ${id})"
                     class="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                    🗑️ Delete
+                     Delete
                 </button>
             `;
 

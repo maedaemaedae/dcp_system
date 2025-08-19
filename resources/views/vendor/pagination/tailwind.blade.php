@@ -1,5 +1,5 @@
 @if ($paginator->hasPages())
-    <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}" class="flex justify-center mt-6">
+    <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}" class="flex justify-center">
         <ul class="inline-flex items-center space-x-1 rounded-md bg-white shadow-md px-2 py-1 border border-gray-200">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())

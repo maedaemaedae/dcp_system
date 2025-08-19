@@ -8,26 +8,33 @@ use Illuminate\Http\Request;
 class IctEquipmentController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = IctEquipment::query();
+{
+    $query = IctEquipment::query();
 
-        if ($request->filled('search')) {
-            $search = $request->search;
+    if ($request->filled('search')) {
+        $search = $request->search;
 
-            // ✅ Search across all columns in the table
-            $columns = \Schema::getColumnListing((new IctEquipment)->getTable());
+        // ✅ Search across all columns in the table
+        $columns = \Schema::getColumnListing((new IctEquipment)->getTable());
 
-            $query->where(function ($q) use ($columns, $search) {
-                foreach ($columns as $column) {
-                    $q->orWhere($column, 'like', "%{$search}%");
-                }
-            });
-        }
-
-        $equipments = $query->paginate(10)->withQueryString();
-
-        return view('ict-equipment.index', compact('equipments'));
+        $query->where(function ($q) use ($columns, $search) {
+            foreach ($columns as $column) {
+                $q->orWhere($column, 'like', "%{$search}%");
+            }
+        });
     }
+
+    // ✅ Use pagination instead of get()
+    $equipments = $query->orderBy('created_at', 'desc')->paginate(10);
+
+    // ✅ Keep search query in pagination links
+    $equipments->appends($request->only('search'));
+
+    return view('ict-equipment.index', compact('equipments'));
+}
+
+
+    
 
 
     public function store(Request $request)
@@ -240,4 +247,7 @@ class IctEquipmentController extends Controller
             ->with('success', 'Equipment deleted successfully.');
     }
 
+
+
+    
 }

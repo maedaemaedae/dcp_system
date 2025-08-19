@@ -132,6 +132,10 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 
         Route::get('/ict-equipment/export', [IctEquipmentController::class, 'exportIctEquipment'])
             ->name('ict-equipment.export');
+
+        // Search functionality
+        Route::get('/ict-equipment/search', [ICTEquipmentController::class, 'search'])->name('ict-equipment.search');
+
     });
 
 

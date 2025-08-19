@@ -44,7 +44,8 @@
     <a href="{{ route($dashboardRoute) }}"
        class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300  
            hover:bg-white hover:text-[#033372] hover:rounded-xl 
-           {{ request()->routeIs($dashboardRoute) ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+           {{ request()->routeIs($dashboardRoute) ? 'bg-white text-[#033372] rounded-xl' : '' }}"
+            title="Dashboard">
         
         <i class="fa-solid fa-gauge-high text-xl w-7 h-7 transition duration-300 ease-in-out"></i>
 
@@ -53,12 +54,6 @@
             <span x-show="open"  x-transition class="absolute left-0 top-0 whitespace-nowrap">Dashboard</span>
         </div>
     </a>
-
-    <!-- Tooltip -->
-    <div x-show="!open" x-cloak
-         class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-        Dashboard
-    </div>
 </div>
 
  
@@ -67,7 +62,8 @@
     <a href="{{ route('superadmin.users') }}"
        class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
            hover:bg-white hover:text-[#033372] hover:rounded-xl
-           {{ request()->routeIs('superadmin.users') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+           {{ request()->routeIs('superadmin.users') ? 'bg-white text-[#033372] rounded-xl' : '' }}"
+            title="Manage Users">
 
         <i class="fa-solid fa-users text-xl w-7 h-7"></i>
 
@@ -76,12 +72,6 @@
             <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Manage Users</span>
         </div>
     </a>
-
-    <!-- Tooltip -->
-    <div x-show="!open" x-cloak
-         class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-        User Management
-    </div>
 </div>
 
 
@@ -90,7 +80,8 @@
     <a href="{{ route('recipients.index') }}"
        class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
            hover:bg-white hover:text-[#033372] hover:rounded-xl
-           {{ request()->routeIs('recipients.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+           {{ request()->routeIs('recipients.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}"
+            title="Recipients">
 
        <i class="fa-solid fa-id-badge text-xl w-7 h-7 pl-1"></i>
 
@@ -99,11 +90,6 @@
             <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Recipients</span>
         </div>
     </a>
-
-    <div x-show="!open" x-cloak
-         class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-        Recipients
-    </div>
 </div>
 
 <!-- Projects -->
@@ -111,7 +97,8 @@
     <a href="{{ route('projects.index') }}"
        class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
            hover:bg-white hover:text-[#033372] hover:rounded-xl
-           {{ request()->routeIs('projects.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+           {{ request()->routeIs('projects.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}"
+            title="Projects">
 
       <i class="fa-solid fa-clipboard-list text-xl w-7 h-7 pl-1"></i>
         <div class="relative overflow-hidden">
@@ -119,10 +106,6 @@
             <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Projects</span>
         </div>
     </a>
-    <div x-show="!open" x-cloak
-         class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-        Projects
-    </div>
 </div>
 
 
@@ -132,7 +115,8 @@
     <a href="{{ route('inventory.index') }}"
        class="flex items-center gap-5 px-5 py-3 text-[14px] transition-all duration-300 
            hover:bg-white hover:text-[#033372] hover:rounded-xl
-           {{ request()->routeIs('inventory.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+           {{ request()->routeIs('inventory.index') ? 'bg-white text-[#033372] rounded-xl' : '' }}"
+            title="Inventory">
 
         <i class="fa-solid fa-boxes-stacked text-xl w-7 h-7"></i>
         <div class="relative overflow-hidden">
@@ -140,10 +124,6 @@
             <span x-show="open" x-transition class="absolute left-0 top-0 whitespace-nowrap">Inventory</span>
         </div>
     </a>
-    <div x-show="!open" x-cloak
-         class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-        Inventory
-    </div>
 </div>
 
 <!-- Deliveries (with child links) -->
@@ -155,7 +135,9 @@
     <button @click="if(open) deliveriesOpen = !deliveriesOpen"
         class="flex items-center gap-5 px-5 py-3 text-[14px] w-full transition-all duration-200 
                hover:bg-white hover:text-[#033372] hover:rounded-xl
-               {{ request()->routeIs('superadmin.deliveries.*') ? 'bg-white text-[#033372] rounded-xl' : '' }}">
+               {{ request()->routeIs('superadmin.deliveries.*') ? 'bg-white text-[#033372] rounded-xl' : '' }}"
+                title="Deliveries">
+
         <i class="fa-solid fa-truck text-xl w-7 h-7"></i>
         <div class="relative overflow-hidden flex-1 text-left">
             <span class="invisible whitespace-nowrap block">Deliveries</span>
@@ -166,11 +148,6 @@
            x-show="open"></i>
     </button>
 
-    <!-- Tooltip for collapsed sidebar -->              
-    <div x-show="!open" x-cloak
-        class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-        Deliveries
-    </div>
 
     <!-- Child links with smooth collapse animation -->
     <div 
@@ -184,7 +161,9 @@
            class="flex items-center gap-2 text-sm py-2.5 px-3.5 rounded-lg transition-all duration-200 mb-2
                   {{ request()->routeIs('superadmin.deliveries.index') 
                       ? 'bg-white text-[#033372] font-medium border-l-4 border-[#033372]' 
-                      : 'text-white hover:bg-white/10 hover:pl-4' }}">
+                      : 'text-white hover:bg-white/10 hover:pl-4' }}"
+                      title="Assign Deliveries">
+
             <i class="fa-solid fa-list-check text-[13px]"></i>
             Assign to Supplier
         </a>
@@ -193,7 +172,9 @@
            class="flex items-center gap-2 text-sm py-2 px-2 rounded-lg transition-all duration-200
                   {{ request()->routeIs('superadmin.deliveries.list') 
                       ? 'bg-white text-[#033372] font-medium border-l-4 border-[#033372]' 
-                      : 'text-white hover:bg-white/10 hover:pl-3' }}">
+                      : 'text-white hover:bg-white/10 hover:pl-3' }}"
+                      title="Assigned Deliveries">
+                      
             <i class="fa-solid fa-truck text-xs"></i>
             Assigned Deliveries
         </a>

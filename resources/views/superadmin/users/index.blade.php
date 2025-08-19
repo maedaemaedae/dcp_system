@@ -94,7 +94,7 @@
                 
         </div>
 
-        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 relative flex-1 overflow-y-auto h-screen" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
+        <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 relative flex-1 overflow-y-auto h-[calc(100vh-5rem)]" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
 
     <div class="max-w-6xl mx-auto">
        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
@@ -159,7 +159,7 @@
                     <thead class="bg-[#4A90E2] text-white uppercase">
             <tr>
                 <th class="px-6 py-3 text-left font-semibold">Name</th>
-                <th class="px-6 py-3 text-left font-semibold">Email</th>
+                <th class="px-6 py-3 text-center font-semibold">Email</th>
                 <th class="px-6 py-3 text-left font-semibold">Current Role</th>
                 <th class="px-6 py-3 text-center font-semibold">Change Role</th>
             </tr>
@@ -182,7 +182,7 @@
 
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
             <td class="px-6 py-4 text-gray-800 dark:text-gray-100">{{ $user->name }}</td>
-            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ $user->email }}</td>
+            <td class="px-6 py-4 text-gray-600 dark:text-gray-300 text-center">{{ $user->email }}</td>
             <td class="px-4 py-5 text-gray-700 dark:text-gray-200"> 
                 <span class="inline-block px-2 py-0.5 rounded-full text-s font-semibold" style="{{ $roleClass }}">
                     {{ $roleName ?? '—' }}

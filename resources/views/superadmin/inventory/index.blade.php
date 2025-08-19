@@ -25,7 +25,7 @@
                 
         </div>
 
-    <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-40 relative flex-1 overflow-y-auto h-screen" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
+    <main  :class="open ? 'ml-[5px]' : 'ml-5'" class="transition-all duration-300 p-8 pb-25 relative flex-1 overflow-y-auto h-[calc(100vh-5rem)]" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
 
     <div class="max-w-6xl mx-auto">
         <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
@@ -60,12 +60,17 @@
 </div>
 
     <!-- ICT Equipment Button -->
-    <div class="flex justify-end mb-4">
-        <a href="{{ route('ict-equipment.index') }}"
-        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow transition duration-200">
-            <i class="fa-solid fa-computer mr-2"></i> ICT Equipment
-        </a>
-    </div>
+<div class="flex justify-start my-5">
+    <a href="{{ route('ict-equipment.index') }}"
+       class="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow transition duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" class="flex-shrink-0">
+            <path fill="currentColor" d="M24 21h2v5h-2zm-4-5h2v10h-2zm-9 10a5.006 5.006 0 0 1-5-5h2a3 3 0 1 0 3-3v-2a5 5 0 0 1 0 10"/>
+            <path fill="currentColor" d="M28 2H4a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h24a2.003 2.003 0 0 0 2-2V4a2 2 0 0 0-2-2m0 9H14V4h14ZM12 4v7H4V4ZM4 28V13h24l.002 15Z"/>
+        </svg>
+        <span>View ICT Equipment Dashboard</span>
+    </a>
+</div>
+
 
     <!-- Schools -->
     <div class="mt-8">
