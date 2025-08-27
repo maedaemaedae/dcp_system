@@ -138,7 +138,11 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 
     });
 
+});
 
+// Partial form loading - accessible to all authenticated users
+Route::middleware('auth')->group(function () {
+    Route::get('/ict-equipment/partials/{partial}', [IctEquipmentController::class, 'getPartial'])->name('ict-equipment.partials');
 });
 
 Route::middleware(['auth', 'supplier'])->group(function () {

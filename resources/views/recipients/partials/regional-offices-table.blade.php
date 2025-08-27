@@ -12,11 +12,11 @@
         <tbody class="divide-y divide-gray-200 bg-white">
             @foreach($regionalOffices as $index => $ro)
                 <tr class="hover:bg-gray-100 transition">
-                    <td class="px-4 py-3">{{ $ro->ro_id }}</td>
-                    <td class="px-4 py-3">{{ $ro->ro_office }}</td>
-                    <td class="px-4 py-3">{{ $ro->ro_address ?? '—' }}</td>
-                    <td class="px-4 py-3">{{ $ro->person_in_charge ?? '—' }}</td>
-                    <td class="px-4 py-3">{{ $ro->contact_no ?? '—' }}</td>
+                    <td class="px-4 py-3 border">{{ $ro->ro_id }}</td>
+                    <td class="px-4 py-3 border">{{ $ro->ro_office }}</td>
+                    <td class="px-4 py-3 border">{{ $ro->ro_address ?? '—' }}</td>
+                    <td class="px-4 py-3 border">{{ $ro->person_in_charge ?? '—' }}</td>
+                    <td class="px-4 py-3 border">{{ $ro->contact_no ?? '—' }}</td>
 
                     <td class="px-4 py-3 text-center">
                         <div 

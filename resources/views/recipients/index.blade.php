@@ -130,11 +130,14 @@
     for="regional_csv"
     class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#4A90E2] border border-[#4A90E2] rounded hover:bg-[#4A90E2] hover:text-white transition cursor-pointer">
 
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
-    </svg>
-    Choose CSV File
+    <i class="fa-solid fa-paperclip"></i> Import CSV
 </label>
+
+<button 
+        type="submit" 
+        class="flex-end items-center gap-2 ml-4 px-4 py-2 bg-[#4A90E2] hover:bg-[#3a78bf] text-white font-medium rounded shadow transition mb-5">
+        <i class="fa-solid fa-upload"></i> Upload
+</button>
 
 <input 
     id="regional_csv"
@@ -150,14 +153,7 @@
     No file selected
 </p>
 
-            <button 
-                type="submit" 
-                class="flex items-center gap-2 px-4 py-2 bg-[#4A90E2] hover:bg-[#3a78bf] text-white font-medium rounded shadow transition mb-5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Import Regional Offices
-            </button>
+           
         </form>
 
         <div class="relative overflow-visible rounded-lg">
@@ -183,10 +179,7 @@
                         for="divisions_csv"
                         class="inline-flex items-center gap-2 px-4 py-2 bg-white text-purple-600 border border-purple-600 rounded hover:bg-purple-600 hover:text-white transition cursor-pointer"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
-                        </svg>
-                        Choose CSV File
+                       <i class="fa-solid fa-paperclip"></i> Import CSV
                     </label>
 
                     <input 
@@ -198,20 +191,19 @@
                         class="hidden"
                     />
 
+                <button 
+                    type="submit" 
+                class="flex-end items-center gap-2 ml-4 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-medium rounded shadow transition mb-5"
+                >
+                    <i class="fa-solid fa-upload"></i> Upload
+                </button>
+
                     <p id="divisions-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
                         No file selected
                     </p>
 
 
-                <button 
-                    type="submit" 
-                class="flex items-center gap-2 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-medium rounded shadow transition mb-5"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Import Divisions
-                </button>
+               
             </div>
         </form>
 
@@ -234,10 +226,7 @@
             @csrf
             <div>
                 <label for="schools_csv" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#10B981] border border-[#10B981] rounded hover:bg-[#10B981] hover:text-white transition cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
-                    </svg>
-                    Choose CSV File
+                    <i class="fa-solid fa-paperclip"></i> Import CSV
                 </label>
                 <input 
                 id="schools_csv"
@@ -248,16 +237,15 @@
                 class="hidden" 
                 />
 
+                <button type="submit" class="flex-end items-center gap-2 ml-4 px-4 py-2 bg-[#10B981] hover:bg-[#059669] text-white font-medium rounded shadow transition mb-5">
+                    <i class="fa-solid fa-upload"></i> Upload
+                </button>
+
                 <p id="schools-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
                     No file selected
                 </p>
 
-                <button type="submit" class="flex items-center gap-2 px-4 py-2 bg-[#10B981] hover:bg-[#059669] text-white font-medium rounded shadow transition mb-5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Import Schools
-                </button>
+                
             </div>
         </form>
 
@@ -281,23 +269,19 @@
             @csrf
             <div>
                 <label for="recipients_csv" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#F59E0B] border border-[#F59E0B] rounded hover:bg-[#F59E0B] hover:text-white transition cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
-                    </svg>
-                    Choose CSV File
+                    <i class="fa-solid fa-paperclip"></i> Import CSV
                 </label>
                 <input id="recipients_csv" type="file" name="csv_file" accept=".csv" required class="hidden" />
+
+                 <button type="submit" class="flex-end items-center gap-2 ml-4 px-4 py-2 bg-[#F59E0B] hover:bg-[#D97706] text-white font-medium rounded shadow transition mb-5">
+                    <i class="fa-solid fa-upload"></i> Upload
+                </button>
 
                 <p id="recipients-file-name" class="mt-3 px-4 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm max-w-full truncate mb-5">
                     No file selected
                 </p>
 
-                <button type="submit" class="flex items-center gap-2 px-4 py-2 bg-[#F59E0B] hover:bg-[#D97706] text-white font-medium rounded shadow transition mb-5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Import Recipients
-                </button>
+               
             </div>
         </form>
 

@@ -5,6 +5,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link rel="icon" href="{{ asset('images/final-portrait-logo.png') }}" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -107,6 +108,22 @@
     </div>
 @endif
 
+        <!-- Category Selection Buttons -->
+        <div class="flex flex-wrap gap-4 mb-6">
+            <button id="allBtn" class="category-btn px-6 py-3 bg-[#2D9CDB] text-white rounded-lg shadow-md hover:bg-[#2384ba] transition-all duration-300 flex items-center gap-2 font-medium">
+                <i class="fa-solid fa-list"></i> All Equipment
+            </button>
+            <button id="laptopBtn" class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium">
+                <i class="fa-solid fa-laptop"></i> Laptops
+            </button>
+            <button id="printerBtn" class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium">
+                <i class="fa-solid fa-print"></i> Printers
+            </button>
+            <button id="desktopBtn" class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium">
+                <i class="fa-solid fa-desktop"></i> Desktops
+            </button>
+        </div>
+
         <!-- Add New Equipment -->
         <div class="flex justify-start mb-10">
             <button id="openModalBtn" 
@@ -127,75 +144,34 @@
         </div>
 
         <!-- Body (Scrollable if needed) -->
-        <form action="{{ route('ict-equipment.store') }}" method="POST" class="overflow-y-auto px-6 py-6 space-y-6">
-            @csrf
+        <div class="overflow-y-auto px-6 py-6 space-y-6">
+            <!-- Category Selection -->
+            <div class="p-4 bg-blue-50 rounded-xl shadow-sm border border-blue-200">
+                <h3 class="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-list text-blue-500"></i> Select Equipment Category
+                </h3>
+                <div class="flex flex-wrap gap-3">
+                    <button type="button" id="selectLaptop" class="category-select-btn px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:border-blue-500 hover:text-blue-600 transition-all duration-300 flex items-center gap-2">
+                        <i class="fa-solid fa-laptop"></i> Laptop
+                    </button>
+                    <button type="button" id="selectPrinter" class="category-select-btn px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:border-blue-500 hover:text-blue-600 transition-all duration-300 flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> Printer
+                    </button>
+                    <button type="button" id="selectDesktop" class="category-select-btn px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:border-blue-500 hover:text-blue-600 transition-all duration-300 flex items-center gap-2">
+                        <i class="fa-solid fa-desktop"></i> Desktop
+                    </button>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">Please select a category to show the appropriate form fields.</p>
+            </div>
 
-            <!-- Equipment Identification -->
-            <div class="p-4 bg-gray-50 rounded-xl shadow-sm">
-                <h3 class="font-semibold text-gray-700 mb-3">🔑 Equipment Identification</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" name="equipment_id" placeholder="Equipment ID" class="border rounded-lg p-2 w-full" required>
-                    <input type="text" name="item_description" placeholder="Description" class="border rounded-lg p-2 w-full" required>
-                    <input type="text" name="category" placeholder="Category" class="border rounded-lg p-2 w-full" required>
-                    <input type="text" name="brand" placeholder="Brand" class="border rounded-lg p-2 w-full" required>
-                    <input type="text" name="model" placeholder="Model" class="border rounded-lg p-2 w-full md:col-span-2" required>
+            <!-- Dynamic Form Container -->
+            <div id="dynamicFormContainer">
+                <div class="text-center py-12 text-gray-500">
+                    <i class="fa-solid fa-arrow-up text-4xl mb-4"></i>
+                    <p class="text-lg">Select a category above to start adding equipment</p>
                 </div>
             </div>
-
-            <!-- Asset Details -->
-            <div class="p-4 bg-gray-50 rounded-xl shadow-sm">
-                <h3 class="font-semibold text-gray-700 mb-3">📦 Asset Details</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" name="asset_number" placeholder="Asset #" class="border rounded-lg p-2 w-full" required>
-                    <input type="text" name="serial_number" placeholder="Serial #" class="border rounded-lg p-2 w-full" required>
-                </div>
-            </div>
-
-            <!-- Assignment & Location -->
-            <div class="p-4 bg-gray-50 rounded-xl shadow-sm">
-                <h3 class="font-semibold text-gray-700 mb-3">📍 Assignment & Location</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" name="location" placeholder="Location" class="border rounded-lg p-2 w-full" required>
-                    <input type="text" name="assigned_to" placeholder="Assigned To" class="border rounded-lg p-2 w-full" required>
-                </div>
-            </div>
-
-            <!-- Purchase & Warranty -->
-            <div class="p-4 bg-gray-50 rounded-xl shadow-sm">
-                <h3 class="font-semibold text-gray-700 mb-3">🧾 Purchase & Warranty</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="date" name="purchase_date" class="border rounded-lg p-2 w-full" required>
-                    <input type="date" name="warranty_expiry" class="border rounded-lg p-2 w-full" required>
-                </div>
-            </div>
-
-            <!-- Status -->
-            <div class="p-4 bg-gray-50 rounded-xl shadow-sm">
-                <h3 class="font-semibold text-gray-700 mb-3">📊 Status</h3>
-                <select name="condition" class="border rounded-lg p-2 w-full" required>
-                    <option value="IN USE">IN USE</option>
-                    <option value="FOR REPAIR">FOR REPAIR</option>
-                </select>
-            </div>
-
-            <!-- Notes -->
-            <div class="p-4 bg-gray-50 rounded-xl shadow-sm">
-                <h3 class="font-semibold text-gray-700 mb-3">📝 Notes (Optional)</h3>
-                <textarea name="note" placeholder="Additional notes..." class="border rounded-lg p-2 w-full h-20 resize-none"></textarea>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex justify-end items-center gap-3 pt-4 border-t">
-                <button type="button" id="cancelModalBtn" 
-                    class="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition">
-                    Cancel
-                </button>
-                <button type="submit" 
-                    class="px-6 py-2.5 bg-[#2D9CDB] hover:bg-[#2384ba] text-white font-semibold rounded-lg shadow-md transition">
-                    Save
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -219,7 +195,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="text" name="equipment_id" id="edit_equipment_id" placeholder="Equipment ID" class="border rounded-lg p-2 w-full" required>
                     <input type="text" name="item_description" id="edit_item_description" placeholder="Description" class="border rounded-lg p-2 w-full" required>
-                    <input type="text" name="category" id="edit_category" placeholder="Category" class="border rounded-lg p-2 w-full" required>
+                    <select name="category" id="edit_category" class="border rounded-lg p-2 w-full" required>
+                        <option value="">Select Category</option>
+                        <option value="laptop">Laptop</option>
+                        <option value="printer">Printer</option>
+                        <option value="desktop">Desktop</option>
+                    </select>
                     <input type="text" name="brand" id="edit_brand" placeholder="Brand" class="border rounded-lg p-2 w-full" required>
                     <input type="text" name="model" id="edit_model" placeholder="Model" class="border rounded-lg p-2 w-full md:col-span-2" required>
                 </div>
@@ -332,8 +313,9 @@
             </div>
         </div>
 
-        <!-- Table -->
-        <div class="bg-white shadow-md rounded-xl overflow-y-hidden overflow-x border border-gray-200">
+        <!-- All Equipment Table (Default) -->
+        <div id="allTable" class="table-container">
+            <div class="bg-white shadow-md rounded-xl overflow-y-hidden overflow-x border border-gray-200">
                 <table class="min-w-full text-sm divide-y divide-gray-200">
                     <thead class="bg-[#4A90E2] text-white sticky top-0">
                     <tr>
@@ -432,8 +414,23 @@
                 </table>
             </div>
             <div class="mt-8">
-                    {{ $equipments->links('vendor.pagination.tailwind') }}
+                {{ $equipments->links('vendor.pagination.tailwind') }}
             </div>
+        </div>
+
+        <!-- Laptop Table -->
+        <div id="laptopTable" class="table-container hidden">
+            @include('ict-equipment.partials.laptop-table')
+        </div>
+
+        <!-- Printer Table -->
+        <div id="printerTable" class="table-container hidden">
+            @include('ict-equipment.partials.printer-table')
+        </div>
+
+        <!-- Desktop Table -->
+        <div id="desktopTable" class="table-container hidden">
+            @include('ict-equipment.partials.desktop-table')
         </div>
 
     </div>
@@ -550,6 +547,171 @@
                 showDeleteModal();
             });
         });
+    });
+
+    // Category switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const tableContainers = document.querySelectorAll('.table-container');
+
+        function showTable(tableId) {
+            // Hide all tables
+            tableContainers.forEach(container => {
+                container.classList.add('hidden');
+            });
+            
+            // Show selected table
+            const selectedTable = document.getElementById(tableId);
+            if (selectedTable) {
+                selectedTable.classList.remove('hidden');
+            }
+        }
+
+        function updateButtonStyles(activeButtonId) {
+            // Reset all buttons to inactive style
+            categoryButtons.forEach(btn => {
+                btn.classList.remove('bg-[#2D9CDB]', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            // Set active button style
+            const activeButton = document.getElementById(activeButtonId);
+            if (activeButton) {
+                activeButton.classList.remove('bg-gray-200', 'text-gray-700');
+                activeButton.classList.add('bg-[#2D9CDB]', 'text-white');
+            }
+        }
+
+        // Add click event listeners to category buttons
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const buttonId = this.id;
+                let tableId = '';
+                
+                switch(buttonId) {
+                    case 'allBtn':
+                        tableId = 'allTable';
+                        break;
+                    case 'laptopBtn':
+                        tableId = 'laptopTable';
+                        break;
+                    case 'printerBtn':
+                        tableId = 'printerTable';
+                        break;
+                    case 'desktopBtn':
+                        tableId = 'desktopTable';
+                        break;
+                }
+                
+                if (tableId) {
+                    showTable(tableId);
+                    updateButtonStyles(buttonId);
+                }
+            });
+        });
+
+        // Initialize with "All Equipment" view
+        updateButtonStyles('allBtn');
+    });
+
+    // Dynamic form switching for add modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectLaptop = document.getElementById('selectLaptop');
+        const selectPrinter = document.getElementById('selectPrinter');
+        const selectDesktop = document.getElementById('selectDesktop');
+        const dynamicFormContainer = document.getElementById('dynamicFormContainer');
+        const categorySelectBtns = document.querySelectorAll('.category-select-btn');
+
+        function updateCategoryButtonStyles(activeButton) {
+            // Reset all category selection buttons
+            categorySelectBtns.forEach(btn => {
+                btn.classList.remove('border-blue-500', 'text-blue-600', 'bg-blue-50');
+                btn.classList.add('border-gray-300', 'text-gray-700', 'bg-white');
+            });
+            
+            // Set active button style
+            if (activeButton) {
+                activeButton.classList.remove('border-gray-300', 'text-gray-700', 'bg-white');
+                activeButton.classList.add('border-blue-500', 'text-blue-600', 'bg-blue-50');
+            }
+        }
+
+        function loadFormPartial(partialName) {
+            console.log('Loading form partial:', partialName);
+            
+            // Get CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            fetch(`/ict-equipment/partials/${partialName}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'text/html',
+                }
+            })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    console.log('Form HTML loaded successfully, length:', html.length);
+                    dynamicFormContainer.innerHTML = html;
+                    // Re-attach event listeners for the new form
+                    attachFormEventListeners();
+                })
+                .catch(error => {
+                    console.error('Error loading form partial:', error);
+                    dynamicFormContainer.innerHTML = `
+                        <div class="text-center py-12 text-red-500">
+                            <i class="fa-solid fa-exclamation-triangle text-4xl mb-4"></i>
+                            <p class="text-lg">Error loading form. Please try again.</p>
+                            <p class="text-sm mt-2">Error: ${error.message}</p>
+                        </div>
+                    `;
+                });
+        }
+
+        function attachFormEventListeners() {
+            // Re-attach cancel button event listener
+            const cancelBtn = document.getElementById('cancelModalBtn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', hideAddModal);
+            }
+            
+            // Add form submission debugging
+            const form = document.querySelector('#dynamicFormContainer form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    console.log('Form being submitted:', this);
+                    console.log('Form data:', new FormData(this));
+                });
+            }
+        }
+
+        if (selectLaptop) {
+            selectLaptop.addEventListener('click', function() {
+                updateCategoryButtonStyles(this);
+                loadFormPartial('create-laptop-fields');
+            });
+        }
+
+        if (selectPrinter) {
+            selectPrinter.addEventListener('click', function() {
+                updateCategoryButtonStyles(this);
+                loadFormPartial('create-printer-fields');
+            });
+        }
+
+        if (selectDesktop) {
+            selectDesktop.addEventListener('click', function() {
+                updateCategoryButtonStyles(this);
+                loadFormPartial('create-desktop-fields');
+            });
+        }
     });
 
     // Alpine.js data and methods for search functionality

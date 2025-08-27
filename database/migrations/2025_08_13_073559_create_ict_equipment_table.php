@@ -18,6 +18,15 @@ return new class extends Migration
             $table->string('model');
             $table->string('asset_number');
             $table->string('serial_number')->unique(); // Unique constraint
+            $table->string('network_ip')->nullable();
+            $table->string('pc_make')->nullable();
+            $table->string('pc_build')->nullable();
+            $table->string('pc_sn')->nullable();
+            $table->string('monitor_sn')->nullable();
+            $table->string('avr_sn')->nullable();
+            $table->string('wifi_adapter_sn')->nullable();
+            $table->string('keyboard_sn')->nullable();
+            $table->string('mouse_sn')->nullable();
             $table->string('location');
             $table->string('assigned_to');
             $table->date('purchase_date');
