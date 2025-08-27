@@ -7,36 +7,6 @@ use Illuminate\Http\Request;
 
 class IctEquipmentController extends Controller
 {
-    /**
-     * ✅ Category-specific CSV headers
-     */
-    private function getCategoryHeaders($category)
-    {
-        $commonHeaders = [
-            'Equipment ID', 'Description', 'Category', 'Brand', 'Model',
-            'Asset #', 'Serial #', 'Location', 'Assigned To',
-            'Purchase Date', 'Warranty Expiry', 'Condition', 'Note'
-        ];
-
-        $desktopHeaders = array_merge($commonHeaders, [
-            'PC Make', 'PC Model', 'PC SN', 'Monitor SN',
-            'AVR SN', 'WiFi Adapter SN', 'Keyboard SN', 'Mouse SN'
-        ]);
-
-        $printerHeaders = array_merge($commonHeaders, [
-            'Network IP'
-        ]);
-
-        $laptopHeaders = $commonHeaders;
-
-        return match($category) {
-            'desktop' => $desktopHeaders,
-            'printer' => $printerHeaders,
-            'laptop'  => $laptopHeaders,
-            default   => $commonHeaders,
-        };
-    }
-
     public function index(Request $request)
     {
         $query = IctEquipment::query();
@@ -44,7 +14,6 @@ class IctEquipmentController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
 
-            // ✅ Search across all columns in the table
             $columns = \Schema::getColumnListing((new IctEquipment)->getTable());
 
             $query->where(function ($q) use ($columns, $search) {
@@ -60,13 +29,6 @@ class IctEquipmentController extends Controller
         $laptops = IctEquipment::where('category', 'laptop')->orderBy('created_at', 'desc')->get();
         $printers = IctEquipment::where('category', 'printer')->orderBy('created_at', 'desc')->get();
         $desktops = IctEquipment::where('category', 'desktop')->orderBy('created_at', 'desc')->get();
-
-        \Log::info('Equipment counts:', [
-            'laptops' => $laptops->count(),
-            'printers' => $printers->count(),
-            'desktops' => $desktops->count(),
-            'all_equipment' => $equipments->total()
-        ]);
 
         return view('ict-equipment.index', compact('equipments', 'laptops', 'printers', 'desktops'));
     }
@@ -122,11 +84,7 @@ class IctEquipmentController extends Controller
             $data['model'] = $request->pc_model;
         }
 
-        \Log::info('ICT Equipment data being inserted:', $data);
-
         $equipment = IctEquipment::create($data);
-
-        \Log::info('ICT Equipment created:', $equipment->toArray());
 
         return redirect()->route('ict-equipment.index')->with('success', 'ICT Equipment added successfully.');
     }
@@ -171,182 +129,249 @@ class IctEquipmentController extends Controller
             ->with('success', 'Equipment updated successfully.');
     }
 
+    /**
+     * Import ICT Equipment by category
+     */
     public function importIctEquipment(Request $request)
-    {
-        $request->validate(['csv_file' => 'required|mimes:csv,txt']);
+{
+    $request->validate([
+        'csv_file' => 'required|mimes:csv,txt',
+        'category' => 'required|in:laptop,printer,desktop'
+    ]);
 
-        $file = fopen($request->file('csv_file'), 'r');
-        $rawHeader = fgetcsv($file);
-        $header = array_map('trim', $rawHeader);
+    $file = fopen($request->file('csv_file'), 'r');
+    $rawHeader = fgetcsv($file);
+    $header = array_map('trim', $rawHeader);
 
-        $category = 'laptop';
-        if (in_array('PC Make', $header)) {
-            $category = 'desktop';
-        } elseif (in_array('Network IP', $header)) {
-            $category = 'printer';
-        }
+    $category = $request->category;
 
-        $requiredHeaders = $this->getCategoryHeaders($category);
+    // category-specific required headers
+    $requiredHeaders = match($category) {
+        'laptop' => ['Equipment ID', 'Description', 'Category', 'Brand', 'Model', 'Asset #', 'Serial #', 'Location', 'Assigned To', 'Purchase Date', 'Warranty Expiry', 'Condition', 'Note'],
+        'printer' => ['Equipment ID', 'Description', 'Category', 'Brand', 'Model', 'Network IP', 'Asset #', 'Serial #', 'Location', 'Assigned To', 'Purchase Date', 'Warranty Expiry', 'Condition', 'Note'],
+        'desktop' => ['Equipment ID', 'Description', 'Category', 'PC_MAKE', 'PC_MODEL', 'Asset #', 'PC_SN', 'MONITOR_SN', 'AVR_SN', 'WIFI ADAPTER_SN', 'KEYBOARD_SN', 'MOUSE_SN', 'Location', 'Assigned To', 'Purchase Date', 'Warranty Expiry', 'Condition', 'Note'],
+    };
 
-        $missingHeaders = array_diff($requiredHeaders, $header);
-        if (!empty($missingHeaders)) {
-            $missingList = implode(', ', $missingHeaders);
-            return back()->withErrors(["Missing required column(s): {$missingList}"])->with('upload_source', 'ict_equipment');
-        }
-
-        $rows = [];
-        while (($line = fgetcsv($file)) !== false) {
-            $rows[] = array_combine($header, $line);
-        }
-        fclose($file);
-
-        $inserted = [];
-        $errors = [];
-
-        foreach ($rows as $index => $row) {
-            $rowNum = $index + 2;
-
-            $equipment_id   = trim($row['Equipment ID'] ?? '');
-            $description    = trim($row['Description'] ?? '');
-            $categoryField  = trim($row['Category'] ?? $category);
-            $brand          = trim($row['Brand'] ?? '');
-            $model          = trim($row['Model'] ?? '');
-            $asset_number   = trim($row['Asset #'] ?? '');
-            $serial_number  = trim($row['Serial #'] ?? '');
-            $location       = trim($row['Location'] ?? '');
-            $assigned_to    = trim($row['Assigned To'] ?? '');
-            $purchase_date  = trim($row['Purchase Date'] ?? '');
-            $warranty_exp   = trim($row['Warranty Expiry'] ?? '');
-            $condition      = trim($row['Condition'] ?? '');
-            $note           = trim($row['Note'] ?? '');
-
-            if (!$equipment_id || !$description || !$categoryField || !$brand || !$asset_number || !$serial_number) {
-                $errors[] = "Row {$rowNum}: Missing required values.";
-                continue;
-            }
-
-            if (IctEquipment::where('serial_number', $serial_number)->exists()) {
-                $errors[] = "Row {$rowNum}: Serial number '{$serial_number}' already exists.";
-                continue;
-            }
-
-            if (!in_array($condition, ['IN USE', 'FOR REPAIR'])) {
-                $errors[] = "Row {$rowNum}: Condition must be 'IN USE' or 'FOR REPAIR'.";
-                continue;
-            }
-
-            $data = [
-                'equipment_id'   => $equipment_id,
-                'item_description' => $description,
-                'category'       => $categoryField,
-                'brand'          => $brand,
-                'model'          => $model,
-                'asset_number'   => $asset_number,
-                'serial_number'  => $serial_number,
-                'location'       => $location,
-                'assigned_to'    => $assigned_to,
-                'purchase_date'  => $purchase_date,
-                'warranty_expiry'=> $warranty_exp,
-                'condition'      => $condition,
-                'note'           => $note ?: null,
-            ];
-
-            if ($category === 'desktop') {
-                $data['pc_make']        = $row['PC Make'] ?? null;
-                $data['pc_model']       = $row['PC Model'] ?? null;
-                $data['pc_sn']          = $row['PC SN'] ?? null;
-                $data['monitor_sn']     = $row['Monitor SN'] ?? null;
-                $data['avr_sn']         = $row['AVR SN'] ?? null;
-                $data['wifi_adapter_sn']= $row['WiFi Adapter SN'] ?? null;
-                $data['keyboard_sn']    = $row['Keyboard SN'] ?? null;
-                $data['mouse_sn']       = $row['Mouse SN'] ?? null;
-            }
-
-            if ($category === 'printer') {
-                $data['network_ip']     = $row['Network IP'] ?? null;
-            }
-
-            $inserted[] = $data;
-        }
-
-        if (!empty($errors)) {
-            return back()->withErrors($errors)->with('upload_source', 'ict_equipment');
-        }
-
-        IctEquipment::insert($inserted);
-
-        return back()->with('success', 'ICT Equipment imported successfully.');
+    $missingHeaders = array_diff($requiredHeaders, $header);
+    if (!empty($missingHeaders)) {
+        return back()->withErrors(["Missing required column(s): " . implode(', ', $missingHeaders)]);
     }
 
-    public function exportIctEquipment(Request $request)
-    {
-        $category = $request->get('category', 'all');
-        $fileName = 'ict_equipment_' . $category . '_' . now()->format('Y-m-d_H-i-s') . '.csv';
+    $rows = [];
+    while (($line = fgetcsv($file)) !== false) {
+        $rows[] = array_combine($header, $line);
+    }
+    fclose($file);
 
-        $query = IctEquipment::query();
-        if ($category !== 'all') {
-            $query->where('category', $category);
-        }
-        $equipments = $query->get();
+    $inserted = [];
 
-        $headers = [
-            "Content-Type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=\"$fileName\"",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
+    foreach ($rows as $row) {
+        $data = [
+            'equipment_id'   => $row['Equipment ID'] ?? null,
+            'item_description' => $row['Description'] ?? null,
+            'category'       => $category, // force category
+            'brand'          => $row['Brand'] ?? null,
+            'model'          => $row['Model'] ?? null,
+            'asset_number'   => $row['Asset #'] ?? null,
+            'serial_number'  => $row['Serial #'] ?? null,
+            'location'       => $row['Location'] ?? null,
+            'assigned_to'    => $row['Assigned To'] ?? null,
+            'purchase_date'  => $row['Purchase Date'] ?? null,
+            'warranty_expiry'=> $row['Warranty Expiry'] ?? null,
+            'condition'      => $row['Condition'] ?? null,
+            'note'           => $row['Note'] ?? null,
         ];
 
-        $columns = $this->getCategoryHeaders($category === 'all' ? 'laptop' : $category);
+        // Handle desktop-specific fields
+        if ($category === 'desktop') {
+            $data['pc_make']        = $row['PC_MAKE'] ?? null;
+            $data['model']          = $row['PC_MODEL'] ?? null;
+            $data['pc_sn']          = $row['PC_SN'] ?? null;
+            $data['monitor_sn']     = $row['MONITOR_SN'] ?? null;
+            $data['avr_sn']         = $row['AVR_SN'] ?? null;
+            $data['wifi_adapter_sn']= $row['WIFI ADAPTER_SN'] ?? null;
+            $data['keyboard_sn']    = $row['KEYBOARD_SN'] ?? null;
+            $data['mouse_sn']       = $row['MOUSE_SN'] ?? null;
+        }
 
-        $callback = function () use ($equipments, $columns) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
+        // Handle printer-specific fields
+        if ($category === 'printer') {
+            $data['network_ip'] = $row['Network IP'] ?? null;
+        }
 
-            foreach ($equipments as $equip) {
-                $row = [
-                    $equip->equipment_id,
-                    $equip->item_description,
-                    $equip->category,
-                    $equip->brand,
-                    $equip->model,
-                    $equip->asset_number,
-                    $equip->serial_number,
-                    $equip->location,
-                    $equip->assigned_to,
-                    $equip->purchase_date,
-                    $equip->warranty_expiry,
-                    $equip->condition,
-                    $equip->note ?? ''
-                ];
+        $inserted[] = $data;
+    }
 
-                if ($equip->category === 'desktop') {
-                    $row = array_merge($row, [
+    IctEquipment::insert($inserted);
+
+    return back()->with('success', ucfirst($category) . ' equipment imported successfully.');
+}
+
+    
+
+    /**
+     * Export ICT Equipment by category
+     */
+    public function exportIctEquipment(Request $request)
+{
+    $request->validate([
+        'category' => 'required|in:laptop,printer,desktop'
+    ]);
+
+    $category = $request->category;
+    $equipments = IctEquipment::where('category', $category)->get();
+
+    $fileName = "{$category}_equipment_" . now()->format('Y-m-d_H-i-s') . '.csv';
+
+    $headers = [
+        "Content-Type" => "text/csv",
+        "Content-Disposition" => "attachment; filename=\"$fileName\"",
+        "Pragma" => "no-cache",
+        "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+        "Expires" => "0"
+    ];
+
+    // 🔹 Category-specific headers
+    switch ($category) {
+        case 'printer':
+            $columns = [
+                'Equipment ID',
+                'Description',
+                'Category',
+                'Brand',
+                'Model',
+                'Network IP',
+                'Asset #',
+                'Serial #',
+                'Location',
+                'Assigned To',
+                'Purchase Date',
+                'Warranty Expiry',
+                'Condition',
+                'Note'
+            ];
+            break;
+
+        case 'desktop':
+            $columns = [
+                'Equipment ID',
+                'Description',
+                'Category',
+                'PC_MAKE',
+                'PC_MODEL',
+                'Asset #',
+                'PC_SN',
+                'MONITOR_SN',
+                'AVR_SN',
+                'WIFI ADAPTER_SN',
+                'KEYBOARD_SN',
+                'MOUSE_SN',
+                'Location',
+                'Assigned To',
+                'Purchase Date',
+                'Warranty Expiry',
+                'Condition',
+                'Note'
+            ];
+            break;
+
+        case 'laptop':
+        default:
+            $columns = [
+                'Equipment ID',
+                'Description',
+                'Category',
+                'Brand',
+                'Model',
+                'Asset #',
+                'Serial #',
+                'Location',
+                'Assigned To',
+                'Purchase Date',
+                'Warranty Expiry',
+                'Condition',
+                'Note'
+            ];
+            break;
+    }
+
+    $callback = function () use ($equipments, $columns, $category) {
+        $file = fopen('php://output', 'w');
+        fputcsv($file, $columns);
+
+        foreach ($equipments as $equip) {
+            switch ($category) {
+                case 'printer':
+                    $row = [
+                        $equip->equipment_id,
+                        $equip->item_description,
+                        $equip->category,
+                        $equip->brand,
+                        $equip->model,
+                        $equip->network_ip,
+                        $equip->asset_number,
+                        $equip->serial_number,
+                        $equip->location,
+                        $equip->assigned_to,
+                        $equip->purchase_date,
+                        $equip->warranty_expiry,
+                        $equip->condition,
+                        $equip->note ?? ''
+                    ];
+                    break;
+
+                case 'desktop':
+                    $row = [
+                        $equip->equipment_id,
+                        $equip->item_description,
+                        $equip->category,
                         $equip->pc_make,
-                        $equip->pc_model,
+                        $equip->model,
+                        $equip->asset_number,
                         $equip->pc_sn,
                         $equip->monitor_sn,
                         $equip->avr_sn,
                         $equip->wifi_adapter_sn,
                         $equip->keyboard_sn,
-                        $equip->mouse_sn
-                    ]);
-                }
+                        $equip->mouse_sn,
+                        $equip->location,
+                        $equip->assigned_to,
+                        $equip->purchase_date,
+                        $equip->warranty_expiry,
+                        $equip->condition,
+                        $equip->note ?? ''
+                    ];
+                    break;
 
-                if ($equip->category === 'printer') {
-                    $row = array_merge($row, [
-                        $equip->network_ip
-                    ]);
-                }
-
-                fputcsv($file, $row);
+                case 'laptop':
+                default:
+                    $row = [
+                        $equip->equipment_id,
+                        $equip->item_description,
+                        $equip->category,
+                        $equip->brand,
+                        $equip->model,
+                        $equip->asset_number,
+                        $equip->serial_number,
+                        $equip->location,
+                        $equip->assigned_to,
+                        $equip->purchase_date,
+                        $equip->warranty_expiry,
+                        $equip->condition,
+                        $equip->note ?? ''
+                    ];
+                    break;
             }
 
-            fclose($file);
-        };
+            fputcsv($file, $row);
+        }
 
-        return response()->stream($callback, 200, $headers);
-    }
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
+
 
     public function destroy($id)
     {
@@ -360,7 +385,7 @@ class IctEquipmentController extends Controller
     public function getPartial($partial)
     {
         $allowedPartials = ['create-laptop-fields', 'create-printer-fields', 'create-desktop-fields'];
-        
+
         if (!in_array($partial, $allowedPartials)) {
             abort(404);
         }

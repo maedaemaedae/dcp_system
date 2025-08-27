@@ -68,7 +68,7 @@
         </h1>
 
         <!-- Import & Export Section -->
-        <div class="bg-white shadow-md rounded-xl p-6 mb-8 border border-gray-100 flex flex-wrap gap-4 items-center justify-between">
+        <div class="bg-white shadow-md rounded-xl p-6 mb-8 border border-gray-100 flex flex-wrap gap-4 items-center justify-between hidden">
             <form method="POST" action="{{ route('ict-equipment.import') }}" enctype="multipart/form-data" class="flex flex-wrap items-center gap-3">
                 @csrf
                 <label for="ict_csv" 
@@ -87,6 +87,8 @@
                 <i class="fa-solid fa-file-export"></i> Export CSV
             </a>
         </div>
+
+
 
         @if (session('success'))
     <div 
@@ -131,6 +133,22 @@
                 <i class="fa-solid fa-plus"></i> Add New Equipment
             </button>
         </div>
+
+        <div class="mb-4 flex gap-2">
+    <a href="{{ route('ict-equipment.export', ['category' => 'laptop']) }}" 
+       class="btn btn-primary">
+        Export Laptops
+    </a>
+    <a href="{{ route('ict-equipment.export', ['category' => 'printer']) }}" 
+       class="btn btn-primary">
+        Export Printers
+    </a>
+    <a href="{{ route('ict-equipment.export', ['category' => 'desktop']) }}" 
+       class="btn btn-primary">
+        Export Desktops
+    </a>
+</div>
+
 
         <!-- Add Modal -->
 <div id="equipmentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">

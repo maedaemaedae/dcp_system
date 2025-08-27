@@ -47,13 +47,24 @@ class InventoryController extends Controller
         }
     }
 
-    foreach ($divisionInventories as $division) {
-        foreach ($division->inventories as $inventory) {
-            $inventory->computed_quantity = $inventory->deliveredItems
-                ->filter(fn($item) => $item->packageContent->item_name === $inventory->item_name)
-                ->sum('quantity_delivered');
+        // For division inventories, sum total quantity for each item name
+        foreach ($divisionInventories as $division) {
+            $itemTotals = [];
+            foreach ($division->inventories as $inventory) {
+                $itemName = $inventory->item_name;
+                $quantity = $inventory->deliveredItems
+                    ->filter(fn($item) => $item->packageContent->item_name === $itemName)
+                    ->sum('quantity_delivered');
+                if (!isset($itemTotals[$itemName])) {
+                    $itemTotals[$itemName] = 0;
+                }
+                $itemTotals[$itemName] += $quantity;
+                // Optionally, keep per-inventory computed_quantity as before
+                $inventory->computed_quantity = $quantity;
+            }
+            // Attach total quantities per item name to division
+            $division->total_quantities = $itemTotals;
         }
-    }
 
     // Sort by latest inventory date
         $schoolInventories = $schoolInventories->sortByDesc(function ($school) {
@@ -72,9 +83,9 @@ class InventoryController extends Controller
 
     public function create()
     {
-        $schools = School::all();
-        $divisions = Division::all();
-        return view('superadmin.inventory.create', compact('schools', 'divisions'));
+    $schools = School::all();
+    $divisions = DivisionOffice::all();
+    return view('superadmin.inventory.create', compact('schools', 'divisions'));
     }
 
     public function store(Request $request)
@@ -105,9 +116,9 @@ class InventoryController extends Controller
 
     public function edit(Inventory $inventory)
     {
-        $schools = School::all();
-        $divisions = Division::all();
-        return view('superadmin.inventory.edit', compact('inventory', 'schools', 'divisions'));
+    $schools = School::all();
+    $divisions = DivisionOffice::all();
+    return view('superadmin.inventory.edit', compact('inventory', 'schools', 'divisions'));
     }
 
     public function update(Request $request, Inventory $inventory)
@@ -164,5 +175,3 @@ class InventoryController extends Controller
 }
 
 }
-
-

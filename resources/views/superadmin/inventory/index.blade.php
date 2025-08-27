@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory | DCP Tracking Hub</title>
-    <link rel="icon" href="{{ asset('images/final-portrait-logo.png') }}" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -153,6 +152,27 @@
                     @if ($division->inventories->isEmpty())
                         <p class="text-gray-500 italic">No items found.</p>
                     @else
+                            @if (!empty($division->total_quantities))
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-green-700 mb-2">Total Quantity per Item</h4>
+                                <table class="w-full text-sm border border-green-200 rounded-lg overflow-hidden mb-4">
+                                    <thead class="bg-green-100 text-green-800 text-xs uppercase">
+                                        <tr>
+                                            <th class="px-4 py-2 text-left">Item Name</th>
+                                            <th class="px-4 py-2 text-left">Total Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-green-100">
+                                        @foreach ($division->total_quantities as $itemName => $totalQty)
+                                            <tr>
+                                                <td class="px-4 py-2">{{ $itemName }}</td>
+                                                <td class="px-4 py-2">{{ $totalQty }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @endif
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
                                 <thead class="bg-green-50 text-green-700 text-xs uppercase">

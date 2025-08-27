@@ -219,6 +219,17 @@ Route::post('/inventory/mark-as-read', [InventoryController::class, 'markAsRead'
 Route::put('/supplier/deliveries/{id}/update-target-date', [DeliveryController::class, 'updateTargetDate'])
     ->name('supplier.deliveries.updateTargetDate');
 
+// Export per category
+Route::get('/ict-equipment/export/laptop', [IctEquipmentController::class, 'exportIctEquipment'])->name('ict-equipment.export');
+Route::get('/ict-equipment/export/printer', [IctEquipmentController::class, 'exportIctEquipment'])->name('ict-equipment.export');
+Route::get('/ict-equipment/export/desktop', [IctEquipmentController::class, 'exportIctEquipment'])->name('ict-equipment.export');
+
+// Import per category
+Route::post('/ict-equipment/import/laptop', [IctEquipmentController::class, 'importIctEquipment'])->name('ict-equipment.import');
+Route::post('/ict-equipment/import/printer', [IctEquipmentController::class, 'importIctEquipment'])->name('ict-equipment.import');
+Route::post('/ict-equipment/import/desktop', [IctEquipmentController::class, 'importIctEquipment'])->name('ict-equipment.import');
+
+
 
 
 require __DIR__.'/auth.php';

@@ -20,7 +20,7 @@
         </thead>
        <tbody id="laptop-table" class="divide-y divide-gray-100">
     @forelse ($laptops as $equip)
-        <tr class="hover:bg-blue-50 transition-colors duration-200" data-id="{{ $equip->id }}">
+        <tr class="hover:bg-blue-50 transition-colors duration-200">
             <td class="p-2 border">{{ $equip->equipment_id }}</td>
             <td class="p-2 border">{{ $equip->item_description }}</td>
             <td class="p-2 border">{{ $equip->category }}</td>
@@ -40,10 +40,6 @@
                 @endif
             </td>
             <td class="p-2 border">{{ $equip->note ?? '—' }}</td>
-            <td class="p-2 border text-center">
-                <button class="edit-btn text-blue-600 hover:text-blue-800">Edit</button>
-                <button class="delete-btn text-red-600 hover:text-red-800">Delete</button>
-            </td>
         </tr>
     @empty
         <tr>
