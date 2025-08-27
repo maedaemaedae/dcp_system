@@ -136,6 +136,8 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
         // Search functionality
         Route::get('/ict-equipment/search', [ICTEquipmentController::class, 'search'])->name('ict-equipment.search');
 
+        // ICT Equipment dashboard
+        Route::get('/ict-equipment/dashboard', [IctEquipmentController::class, 'dashboard'])->name('ict-equipment.dashboard');
     });
 
 });
@@ -219,6 +221,15 @@ Route::post('/inventory/mark-as-read', [InventoryController::class, 'markAsRead'
 Route::put('/supplier/deliveries/{id}/update-target-date', [DeliveryController::class, 'updateTargetDate'])
     ->name('supplier.deliveries.updateTargetDate');
 
+
+
+Route::get('/ict-equipment', [IctEquipmentController::class, 'index'])->name('ict-equipment.index');
+Route::get('/ict-equipment/laptops', [IctEquipmentController::class, 'laptops'])->name('ict-equipment.laptops');
+Route::get('/ict-equipment/printers', [IctEquipmentController::class, 'printers'])->name('ict-equipment.printers');
+Route::get('/ict-equipment/desktops', [IctEquipmentController::class, 'desktops'])->name('ict-equipment.desktops');
+
+Route::get('/ict-equipment/in-use', [IctEquipmentController::class, 'inUse'])->name('ict-equipment.in-use');
+Route::get('/ict-equipment/for-repair', [IctEquipmentController::class, 'forRepair'])->name('ict-equipment.for-repair');
 
 
 require __DIR__.'/auth.php';

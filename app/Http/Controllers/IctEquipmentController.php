@@ -43,10 +43,7 @@ class IctEquipmentController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-
-            // ✅ Search across all columns in the table
             $columns = \Schema::getColumnListing((new IctEquipment)->getTable());
-
             $query->where(function ($q) use ($columns, $search) {
                 foreach ($columns as $column) {
                     $q->orWhere($column, 'like', "%{$search}%");
@@ -57,18 +54,68 @@ class IctEquipmentController extends Controller
         $equipments = $query->orderBy('created_at', 'desc')->paginate(10);
         $equipments->appends($request->only('search'));
 
+        // Always provide these for the index view
         $laptops = IctEquipment::where('category', 'laptop')->orderBy('created_at', 'desc')->get();
         $printers = IctEquipment::where('category', 'printer')->orderBy('created_at', 'desc')->get();
         $desktops = IctEquipment::where('category', 'desktop')->orderBy('created_at', 'desc')->get();
 
-        \Log::info('Equipment counts:', [
-            'laptops' => $laptops->count(),
-            'printers' => $printers->count(),
-            'desktops' => $desktops->count(),
-            'all_equipment' => $equipments->total()
-        ]);
-
         return view('ict-equipment.index', compact('equipments', 'laptops', 'printers', 'desktops'));
+    }
+
+    public function laptops()
+    {
+    $laptops = \App\Models\IctEquipment::where('category', 'laptop')->orderBy('created_at', 'desc')->get();
+    return view('ict-equipment.laptops', compact('laptops'));
+    }
+
+    public function printers()
+    {
+    $printers = \App\Models\IctEquipment::where('category', 'printer')->orderBy('created_at', 'desc')->get();
+    return view('ict-equipment.printers', compact('printers'));
+    }
+
+    public function desktops()
+    {
+    $desktops = \App\Models\IctEquipment::where('category', 'desktop')->orderBy('created_at', 'desc')->get();
+    return view('ict-equipment.desktops', compact('desktops'));
+    }
+
+    public function inUse()
+    {
+        $inUseEquipments = IctEquipment::where('condition', 'IN USE')->orderBy('created_at', 'desc')->get();
+        return view('ict-equipment.in-use', compact('inUseEquipments'));
+    }
+
+    public function forRepair()
+    {
+        $forRepairEquipments = IctEquipment::where('condition', 'FOR REPAIR')->orderBy('created_at', 'desc')->get();
+        return view('ict-equipment.for-repair', compact('forRepairEquipments'));
+    }
+
+    public function search(Request $request)
+    {
+        $query = \App\Models\IctEquipment::query();
+
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+        if ($request->filled('condition')) {
+            $query->where('condition', $request->condition);
+        }
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $columns = \Schema::getColumnListing((new \App\Models\IctEquipment)->getTable());
+            $query->where(function ($q) use ($columns, $search) {
+                foreach ($columns as $column) {
+                    $q->orWhere($column, 'like', "%{$search}%");
+                }
+            });
+        }
+
+        $equipments = $query->orderBy('created_at', 'desc')->paginate(10);
+        $equipments->appends($request->all());
+
+        return view('ict-equipment.index', compact('equipments'));
     }
 
     public function store(Request $request)
@@ -84,7 +131,7 @@ class IctEquipmentController extends Controller
             }
         }
 
-        $request->validate([
+    $request->validate([
             'equipment_id' => 'required|string',
             'item_description' => 'required|string',
             'category' => 'required|string',
@@ -129,6 +176,37 @@ class IctEquipmentController extends Controller
         \Log::info('ICT Equipment created:', $equipment->toArray());
 
         return redirect()->route('ict-equipment.index')->with('success', 'ICT Equipment added successfully.');
+    }
+
+    public function dashboard()
+    {
+        // Gather dashboard metrics
+        $totalEquipments = \App\Models\IctEquipment::count();
+        $inUseCount = \App\Models\IctEquipment::where('condition', 'IN USE')->count();
+        $forRepairCount = \App\Models\IctEquipment::where('condition', 'FOR REPAIR')->count();
+
+        $laptopCount = \App\Models\IctEquipment::where('category', 'laptop')->count();
+        $printerCount = \App\Models\IctEquipment::where('category', 'printer')->count();
+        $desktopCount = \App\Models\IctEquipment::where('category', 'desktop')->count();
+
+        $categoryCounts = \App\Models\IctEquipment::select('category', \DB::raw('count(*) as count'))
+            ->groupBy('category')
+            ->get();
+
+        $locationCounts = \App\Models\IctEquipment::select('location', \DB::raw('count(*) as count'))
+            ->groupBy('location')
+            ->get();
+
+        return view('ict-equipment.dashboard', compact(
+            'totalEquipments',
+            'inUseCount',
+            'forRepairCount',
+            'laptopCount',
+            'printerCount',
+            'desktopCount',
+            'categoryCounts',
+            'locationCounts'
+        ));
     }
 
     public function edit($id)
