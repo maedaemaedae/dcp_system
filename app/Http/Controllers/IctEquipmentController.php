@@ -10,6 +10,69 @@ use App\Models\Printer;
 
 class IctEquipmentController extends Controller
 {
+    public function dashboard()
+    {
+    $totalEquipments = \App\Models\Laptop::count() + \App\Models\Printer::count() + \App\Models\Desktop::count();
+        $inUseCount = \App\Models\Laptop::where('condition', 'IN USE')->count()
+            + \App\Models\Printer::where('condition', 'IN USE')->count()
+            + \App\Models\Desktop::where('condition', 'IN USE')->count();
+        $forRepairCount = \App\Models\Laptop::where('condition', 'FOR REPAIR')->count()
+            + \App\Models\Printer::where('condition', 'FOR REPAIR')->count()
+            + \App\Models\Desktop::where('condition', 'FOR REPAIR')->count();
+        $laptopCount = \App\Models\Laptop::count();
+        $printerCount = \App\Models\Printer::count();
+        $desktopCount = \App\Models\Desktop::count();
+
+        // Category chart: sum from all models
+        $categoryCounts = collect([
+            [
+                'category' => 'Laptop',
+                'count' => \App\Models\Laptop::count(),
+            ],
+            [
+                'category' => 'Printer',
+                'count' => \App\Models\Printer::count(),
+            ],
+            [
+                'category' => 'Desktop',
+                'count' => \App\Models\Desktop::count(),
+            ],
+        ]);
+
+        // Location chart: sum from all models
+        $locationCounts = collect()
+            ->merge(\App\Models\Laptop::select('location')
+                ->selectRaw('COUNT(*) as count')
+                ->groupBy('location')
+                ->get())
+            ->merge(\App\Models\Printer::select('location')
+                ->selectRaw('COUNT(*) as count')
+                ->groupBy('location')
+                ->get())
+            ->merge(\App\Models\Desktop::select('location')
+                ->selectRaw('COUNT(*) as count')
+                ->groupBy('location')
+                ->get())
+            ->groupBy('location')
+            ->map(function($group) {
+                return [
+                    'location' => $group->first()['location'],
+                    'count' => $group->sum('count'),
+                ];
+            })
+            ->values();
+
+        return view('ict-equipment.dashboard', compact(
+            'totalEquipments',
+            'inUseCount',
+            'forRepairCount',
+            'laptopCount',
+            'printerCount',
+            'desktopCount',
+            'categoryCounts',
+            'locationCounts'
+        ));
+    }
     public function index(Request $request)
     {
         $query = IctEquipment::query();
@@ -42,57 +105,57 @@ class IctEquipmentController extends Controller
     \Log::info('Store method called with data:', $request->all());
 
     // ✅ pick validation rules per category
-    $rules = match ($request->category) {
-        'desktop' => [
-            'equipment_id'     => 'required|string',
-            'item_description' => 'required|string',
-            'pc_make'          => 'required|string',
-            'pc_model'         => 'required|string',
-            'asset_number'     => 'required|string',
-            'pc_sn'            => 'required|string|unique:desktops,pc_sn',
-            'monitor_sn'       => 'nullable|string',
-            'avr_sn'           => 'nullable|string',
-            'wifi_adapter_sn'  => 'nullable|string',
-            'keyboard_sn'      => 'nullable|string',
-            'mouse_sn'         => 'nullable|string',
-            'location'         => 'required|string',
-            'assigned_to'      => 'required|string',
-            'purchase_date'    => 'required|date',
-            'warranty_expiry'  => 'required|date',
-            'condition'        => 'required|in:IN USE,FOR REPAIR',
-            'note'             => 'nullable|string',
-        ],
-        'printer' => [
-            'equipment_id'     => 'required|string',
-            'item_description' => 'required|string',
-            'brand'            => 'required|string',
-            'model'            => 'required|string',
-            'network_ip'       => 'nullable|string',
-            'asset_number'     => 'required|string',
-            'serial_number'    => 'required|string|unique:printers,serial_number',
-            'location'         => 'required|string',
-            'assigned_to'      => 'required|string',
-            'purchase_date'    => 'required|date',
-            'warranty_expiry'  => 'required|date',
-            'condition'        => 'required|in:IN USE,FOR REPAIR',
-            'note'             => 'nullable|string',
-        ],
-        'laptop' => [
-            'equipment_id'     => 'required|string',
-            'item_description' => 'required|string',
-            'brand'            => 'required|string',
-            'model'            => 'required|string',
-            'asset_number'     => 'required|string',
-            'serial_number'    => 'required|string|unique:laptops,serial_number',
-            'location'         => 'required|string',
-            'assigned_to'      => 'required|string',
-            'purchase_date'    => 'required|date',
-            'warranty_expiry'  => 'required|date',
-            'condition'        => 'required|in:IN USE,FOR REPAIR',
-            'note'             => 'nullable|string',
-        ],
-        default => []
-    };
+        $rules = match ($request->category) {
+            'desktop' => [
+                'equipment_id'     => 'required|string',
+                'item_description' => 'required|string',
+                'pc_make'          => 'required|string',
+                'pc_model'         => 'required|string',
+                'asset_number'     => 'required|string',
+                'pc_sn'            => 'required|string|unique:desktops,pc_sn',
+                'monitor_sn'       => 'nullable|string',
+                'avr_sn'           => 'nullable|string',
+                'wifi_adapter_sn'  => 'nullable|string',
+                'keyboard_sn'      => 'nullable|string',
+                'mouse_sn'         => 'nullable|string',
+                'location'         => 'required|string',
+                'assigned_to'      => 'required|string',
+                'purchase_date'    => 'required|date',
+                'warranty_expiry'  => 'required|date',
+                'condition'        => 'required|in:IN USE,FOR REPAIR',
+                'note'             => 'nullable|string',
+            ],
+            'printer' => [
+                'equipment_id'     => 'required|string',
+                'item_description' => 'required|string',
+                'brand'            => 'required|string',
+                'model'            => 'required|string',
+                'network_ip'       => 'nullable|string',
+                'asset_number'     => 'required|string',
+                'serial_number'    => 'required|string|unique:printers,serial_number',
+                'location'         => 'required|string',
+                'assigned_to'      => 'required|string',
+                'purchase_date'    => 'required|date',
+                'warranty_expiry'  => 'required|date',
+                'condition'        => 'required|in:IN USE,FOR REPAIR',
+                'note'             => 'nullable|string',
+            ],
+            'laptop' => [
+                'equipment_id'     => 'required|string',
+                'item_description' => 'required|string',
+                'brand'            => 'required|string',
+                'model'            => 'required|string',
+                'asset_number'     => 'required|string',
+                'serial_number'    => 'required|string|unique:laptops,serial_number',
+                'location'         => 'required|string',
+                'assigned_to'      => 'required|string',
+                'purchase_date'    => 'required|date',
+                'warranty_expiry'  => 'required|date',
+                'condition'        => 'required|in:IN USE,FOR REPAIR',
+                'note'             => 'nullable|string',
+            ],
+            default => [],
+        };
 
     $validated = $request->validate($rules);
 
@@ -187,6 +250,7 @@ class IctEquipmentController extends Controller
             'condition'      => 'required|in:IN USE,FOR REPAIR',
             'note'           => 'nullable|string',
         ],
+        default => [],
     };
 
     $validated = $request->validate($rules);

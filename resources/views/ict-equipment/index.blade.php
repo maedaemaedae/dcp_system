@@ -326,12 +326,7 @@
 </div>
 
         <!-- Wrapper -->
-    <div x-data="{
-        search: '',
-        matches(row) {
-            return this.search === '' || row.toLowerCase().includes(this.search.toLowerCase());
-        }
-    }" class="space-y-4">
+    <div x-data="equipmentTable" class="space-y-4">
 
         <!-- Search bar -->
         <div>
