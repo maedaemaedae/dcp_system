@@ -1,4 +1,4 @@
-<div class="bg-white shadow-md rounded-xl overflow-hidden">
+<div class="bg-white shadow-md rounded-xl overflow-x-auto">
     <table class="min-w-full text-sm border border-gray-300">
         <thead class="bg-[#4A90E2] text-white sticky top-0">
             <tr>
@@ -19,37 +19,42 @@
                 <th class="p-3 text-center sticky right-0 bg-[#4A90E2] z-10">Action</th>
             </tr>
         </thead>
-        <tbody id="printer-table" class="divide-y divide-gray-100">
-            @forelse ($printers as $equip)
-                <tr class="hover:bg-blue-50 transition-colors duration-200" data-id="{{ $equip->id }}">
-                    <td class="p-2 border">{{ $equip->equipment_id }}</td>
-                    <td class="p-2 border">{{ $equip->item_description }}</td>
-                    <td class="p-2 border">{{ $equip->category }}</td>
-                    <td class="p-2 border">{{ $equip->brand }}</td>
-                    <td class="p-2 border">{{ $equip->model }}</td>
-                    <td class="p-2 border">{{ $equip->network_ip ?? '—' }}</td>
-                    <td class="p-2 border">{{ $equip->asset_number }}</td>
-                    <td class="p-2 border">{{ $equip->serial_number }}</td>
-                    <td class="p-2 border">{{ $equip->location }}</td>
-                    <td class="p-2 border">{{ $equip->assigned_to }}</td>
-                    <td class="p-2 border">{{ $equip->purchase_date->format('Y-m-d') }}</td>
-                    <td class="p-2 border">{{ $equip->warranty_expiry->format('Y-m-d') }}</td>
-                    <td class="p-2 border">
-                        @if($equip->condition === 'IN USE')
-                            <span class="px-2 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded">IN USE</span>
-                        @elseif($equip->condition === 'FOR REPAIR')
-                            <span class="px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-700 rounded">FOR REPAIR</span>
-                        @endif
-                    </td>
-                    <td class="p-2 border">{{ $equip->note ?? '—' }}</td>
+        <tbody class="divide-y divide-gray-100">
+            @forelse ($printers as $printer)
+                <tr class="hover:bg-blue-50 transition-colors duration-200">
+                    <td class="p-2 border">{{ $printer->equipment_id }}</td>
+                    <td class="p-2 border">{{ $printer->item_description }}</td>
+                    <td class="p-2 border">{{ $printer->category }}</td>
+                    <td class="p-2 border">{{ $printer->brand }}</td>
+                    <td class="p-2 border">{{ $printer->model }}</td>
+                    <td class="p-2 border">{{ $printer->network_ip ?? '—' }}</td>
+                    <td class="p-2 border">{{ $printer->asset_number }}</td>
+                    <td class="p-2 border">{{ $printer->serial_number }}</td>
+                    <td class="p-2 border">{{ $printer->location }}</td>
+                    <td class="p-2 border">{{ $printer->assigned_to }}</td>
+                    <td class="p-2 border">{{ $printer->purchase_date->format('Y-m-d') }}</td>
+                    <td class="p-2 border">{{ $printer->warranty_expiry->format('Y-m-d') }}</td>
+                    <td class="p-2 border">{{ $printer->condition }}</td>
+                    <td class="p-2 border">{{ $printer->note ?? '—' }}</td>
                     <td class="p-2 border text-center">
-                        <button class="edit-btn text-blue-600 hover:text-blue-800">Edit</button>
-                        <button class="delete-btn text-red-600 hover:text-red-800">Delete</button>
+                    <button class="text-green-600 hover:text-green-800" 
+                            data-modal-open="editPrinterModal-{{ $printer->id }}">
+                            Edit
+                        </button>
+                        <form action="{{ route('ict-equipment.destroy', ['category' => 'printer', 'id' => $printer->id]) }}" 
+                            method="POST" 
+                            onsubmit="return confirm('Are you sure you want to delete this laptop?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-800">Delete</button>
+                        </form>
+
                     </td>
                 </tr>
+                @include('ict-equipment.partials.edit-printer', ['printer' => $printer])
             @empty
                 <tr>
-                    <td colspan="14" class="p-6 text-center text-gray-500">No equipment found.</td>
+                    <td colspan="15" class="p-6 text-center text-gray-500">No printers found.</td>
                 </tr>
             @endforelse
         </tbody>

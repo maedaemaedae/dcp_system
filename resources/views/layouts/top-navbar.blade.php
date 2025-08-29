@@ -1,9 +1,12 @@
 
 <!-- Top Navbar -->
 <header class="w-full h-20 fixed top-0 left-0 bg-white shadow-md flex items-center justify-between px-8 z-10">
-    <div class="flex items-center gap-2">
+<div class="flex items-center gap-2">
+    <a href="{{ route('superadmin.dashboard') }}">
         <img src="{{ asset('images/final-landscape-logo.png') }}" class="h-20 w-auto ml-[-20px]" alt="Logo">
-    </div>
+    </a>
+</div>
+
 
     <div class="relative" x-data="{ open: false, openBell: false }">
         <!-- User Name and Notification Bell -->

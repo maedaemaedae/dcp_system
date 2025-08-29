@@ -90,6 +90,16 @@
 
 
 
+        @if ($errors->any())
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+        <ul class="list-disc pl-5">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
         @if (session('success'))
     <div 
         x-data="{ show: true }" 
@@ -112,9 +122,6 @@
 
         <!-- Category Selection Buttons -->
         <div class="flex flex-wrap gap-4 mb-6">
-            <button id="allBtn" class="category-btn px-6 py-3 bg-[#2D9CDB] text-white rounded-lg shadow-md hover:bg-[#2384ba] transition-all duration-300 flex items-center gap-2 font-medium">
-                <i class="fa-solid fa-list"></i> All Equipment
-            </button>
             <button id="laptopBtn" class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium">
                 <i class="fa-solid fa-laptop"></i> Laptops
             </button>
@@ -134,25 +141,46 @@
             </button>
         </div>
 
-        <div class="mb-4 flex gap-2">
-    <a href="{{ route('ict-equipment.export', ['category' => 'laptop']) }}" 
-       class="btn btn-primary">
-        Export Laptops
-    </a>
-    <a href="{{ route('ict-equipment.export', ['category' => 'printer']) }}" 
-       class="btn btn-primary">
-        Export Printers
-    </a>
-    <a href="{{ route('ict-equipment.export', ['category' => 'desktop']) }}" 
-       class="btn btn-primary">
-        Export Desktops
-    </a>
-</div>
+    <div class="mb-4 flex gap-2">
+        <form method="POST" action="{{ route('ict-equipment.import.category', ['category' => 'laptop']) }}" enctype="multipart/form-data" class="flex items-center gap-2">
+            @csrf
+            <label for="import-laptop-csv" class="btn btn-secondary cursor-pointer px-3 py-2 bg-green-100 text-green-800 rounded hover:bg-green-200 flex items-center gap-2">
+                <i class="fa-solid fa-file-import"></i> Import Laptops
+            </label>
+            <input id="import-laptop-csv" type="file" name="csv_file" accept=".csv" required class="hidden" onchange="this.form.submit()"/>
+        </form>
+        <a href="{{ route('ict-equipment.export', ['category' => 'laptop']) }}" 
+           class="btn btn-primary">
+            Export Laptops
+        </a>
+        <form method="POST" action="{{ route('ict-equipment.import.category', ['category' => 'printer']) }}" enctype="multipart/form-data" class="flex items-center gap-2">
+            @csrf
+            <label for="import-printer-csv" class="btn btn-secondary cursor-pointer px-3 py-2 bg-green-100 text-green-800 rounded hover:bg-green-200 flex items-center gap-2">
+                <i class="fa-solid fa-file-import"></i> Import Printers
+            </label>
+            <input id="import-printer-csv" type="file" name="csv_file" accept=".csv" required class="hidden" onchange="this.form.submit()"/>
+        </form>
+        <a href="{{ route('ict-equipment.export', ['category' => 'printer']) }}" 
+           class="btn btn-primary">
+            Export Printers
+        </a>
+        <form method="POST" action="{{ route('ict-equipment.import.category', ['category' => 'desktop']) }}" enctype="multipart/form-data" class="flex items-center gap-2">
+            @csrf
+            <label for="import-desktop-csv" class="btn btn-secondary cursor-pointer px-3 py-2 bg-green-100 text-green-800 rounded hover:bg-green-200 flex items-center gap-2">
+                <i class="fa-solid fa-file-import"></i> Import Desktops
+            </label>
+            <input id="import-desktop-csv" type="file" name="csv_file" accept=".csv" required class="hidden" onchange="this.form.submit()"/>
+        </form>
+        <a href="{{ route('ict-equipment.export', ['category' => 'desktop']) }}" 
+           class="btn btn-primary">
+            Export Desktops
+        </a>
+    </div>
 
 
         <!-- Add Modal -->
 <div id="equipmentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-    <div id="equipmentModalContent" class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col relative mx-4">
+    <div id="equipmentModalContent" class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col relative mx-4x">
         <!-- Header -->
         <div class="sticky top-0 z-10 flex justify-between items-center px-6 py-4 border-b bg-white rounded-t-2xl">
             <h2 class="text-2xl font-bold text-gray-800">Add New ICT Equipment</h2>
@@ -331,110 +359,7 @@
             </div>
         </div>
 
-        <!-- All Equipment Table (Default) -->
-        <div id="allTable" class="table-container">
-            <div class="bg-white shadow-md rounded-xl overflow-y-hidden overflow-x border border-gray-200">
-                <table class="min-w-full text-sm divide-y divide-gray-200">
-                    <thead class="bg-[#4A90E2] text-white sticky top-0">
-                    <tr>
-                        <th class="p-3 text-left whitespace-nowrap">Equipment ID</th>
-                        <th class="p-3 text-left">Description</th>
-                        <th class="p-2 text-center">Category</th>
-                        <th class="p-3 text-center">Brand</th>
-                        <th class="p-3 text-center">Model</th>
-                        <th class="p-3 text-center whitespace-nowrap">Asset #</th>
-                        <th class="p-3 text-center whitespace-nowrap">Serial #</th>
-                        <th class="p-3 text-center">Location</th>
-                        <th class="p-3 text-center whitespace-nowrap">Assigned To</th>
-                        <th class="p-3 text-center whitespace-nowrap">Purchase Date</th>
-                        <th class="p-3 text-center whitespace-nowrap">Warranty Expiry</th>
-                        <th class="p-3 text-center">Condition</th>
-                        <th class="p-3 text-center">Note</th>
-                        <th class="p-3 text-center sticky right-0 bg-[#4A90E2] z-10">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody id="equipment-table" class="divide-y divide-gray-100">
-                        @forelse ($equipments as $equip)
-                            <tr class="hover:bg-gray-50 transition" data-id="{{ $equip->id }}"
-                            x-show="matches(`{{ strtolower(
-                                $equip->equipment_id . ' ' .
-                                $equip->item_description . ' ' .
-                                $equip->category . ' ' .
-                                $equip->brand . ' ' .
-                                $equip->model . ' ' .
-                                $equip->asset_number . ' ' .
-                                $equip->serial_number . ' ' .
-                                $equip->location . ' ' .
-                                $equip->assigned_to . ' ' .
-                                $equip->purchase_date->format('Y-m-d') . ' ' .
-                                $equip->warranty_expiry->format('Y-m-d') . ' ' .
-                                $equip->condition . ' ' .
-                                ($equip->note ?? '')
-                            ) }}`)">
-                                <td class="p-2 text-left">{{ $equip->equipment_id }}</td>
-                                <td class="p-2 text-left">{{ $equip->item_description }}</td>
-                                <td class="p-2 text-center">{{ $equip->category }}</td>
-                                <td class="p-2 text-center">{{ $equip->brand }}</td>
-                                <td class="p-2 text-center">{{ $equip->model }}</td>
-                                <td class="p-2 text-center">{{ $equip->asset_number }}</td>
-                                <td class="p-2 text-center">{{ $equip->serial_number }}</td>
-                                <td class="p-2 text-center">{{ $equip->location }}</td>
-                                <td class="p-2 text-center">{{ $equip->assigned_to }}</td>
-                                <td class="p-2 text-center">{{ $equip->purchase_date->format('Y-m-d') }}</td>
-                                <td class="p-2 text-center">{{ $equip->warranty_expiry->format('Y-m-d') }}</td>
-                                <td class="p-2 text-center">
-                                    @if($equip->condition === 'IN USE')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200 whitespace-nowrap">
-                                            <i class="fa-solid fa-circle-check text-green-600"></i> IN USE
-                                        </span>
-                                    @elseif($equip->condition === 'FOR REPAIR')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 border border-yellow-200 whitespace-nowrap">
-                                            <i class="fa-solid fa-screwdriver-wrench text-yellow-600"></i> FOR REPAIR
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 border border-gray-200 whitespace-nowrap">
-                                            <i class="fa-solid fa-circle-question text-gray-500"></i> {{ $equip->condition }}
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="p-2 text-center whitespace-pre-wrap">{{ $equip->note ?? '—' }}</td>
-                                <td class="p-2 text-center flex gap-3 justify-center sticky right-0 bg-white">
-                                    <button type="button"
-                            class="edit-btn group relative text-blue-600 hover:text-white transition rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300"
-                            title="Edit">
-                            <span class="sr-only">Edit</span>
-                            <span class="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 group-hover:bg-blue-600 transition">
-                                <i class="fa-solid fa-pen group-hover:scale-110 transition-transform"></i>
-                            </span>
-                            <span class="absolute left-1/2 -translate-x-1/2 top-12 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10">
-                                Edit
-                            </span>
-                        </button>
-                        <button type="button"
-                            class="delete-btn group relative text-red-600 hover:text-white transition rounded-full focus:outline-none focus:ring-2 focus:ring-red-300"
-                            title="Delete">
-                            <span class="sr-only">Delete</span>
-                            <span class="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 group-hover:bg-red-600 transition">
-                                <i class="fa-solid fa-trash group-hover:scale-110 transition-transform"></i>
-                            </span>
-                            <span class="absolute left-1/2 -translate-x-1/2 top-12 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10">
-                                Delete
-                            </span>
-                        </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="14" class="p-6 text-center text-gray-500">No ICT equipment found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-8">
-                {{ $equipments->links('vendor.pagination.tailwind') }}
-            </div>
-        </div>
+        
 
         <!-- Laptop Table -->
         <div id="laptopTable" class="table-container hidden">
@@ -747,7 +672,32 @@
             }
         }));
     });
+    
+    
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Open modal
+    document.querySelectorAll("[data-modal-open]").forEach(button => {
+        button.addEventListener("click", () => {
+            const modalId = button.getAttribute("data-modal-open");
+            document.getElementById(modalId).classList.remove("hidden");
+            document.getElementById(modalId).classList.add("flex");
+        });
+    });
+
+    // Close modal
+    document.querySelectorAll("[data-modal-close]").forEach(button => {
+        button.addEventListener("click", () => {
+            const modalId = button.getAttribute("data-modal-close");
+            document.getElementById(modalId).classList.add("hidden");
+            document.getElementById(modalId).classList.remove("flex");
+        });
+    });
+});
+</script>
+
 
 </body>
 </html>

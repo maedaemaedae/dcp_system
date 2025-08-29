@@ -224,11 +224,21 @@ Route::get('/ict-equipment/export/laptop', [IctEquipmentController::class, 'expo
 Route::get('/ict-equipment/export/printer', [IctEquipmentController::class, 'exportIctEquipment'])->name('ict-equipment.export');
 Route::get('/ict-equipment/export/desktop', [IctEquipmentController::class, 'exportIctEquipment'])->name('ict-equipment.export');
 
-// Import per category
-Route::post('/ict-equipment/import/laptop', [IctEquipmentController::class, 'importIctEquipment'])->name('ict-equipment.import');
-Route::post('/ict-equipment/import/printer', [IctEquipmentController::class, 'importIctEquipment'])->name('ict-equipment.import');
-Route::post('/ict-equipment/import/desktop', [IctEquipmentController::class, 'importIctEquipment'])->name('ict-equipment.import');
+// Import per category (improved, with category parameter)
+Route::post('/ict-equipment/import/{category}', [IctEquipmentController::class, 'importIctEquipment'])->name('ict-equipment.import.category');
 
+//Delete in ICT-EQUIPMENT
+Route::delete('/ict-equipment/{category}/{id}', [IctEquipmentController::class, 'destroy'])
+    ->name('ict-equipment.destroy');
+
+    //ict-equipment update
+    Route::prefix('ict-equipment')->group(function () {
+        Route::put('{category}/{id}', [IctEquipmentController::class, 'update'])
+            ->name('ict-equipment.update');
+    });
+
+
+    
 
 
 

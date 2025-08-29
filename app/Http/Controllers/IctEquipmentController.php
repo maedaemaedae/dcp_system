@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\IctEquipment;
 use Illuminate\Http\Request;
+use App\Models\Desktop;
+use App\Models\Laptop;
+use App\Models\Printer;
 
 class IctEquipmentController extends Controller
 {
@@ -26,68 +29,91 @@ class IctEquipmentController extends Controller
         $equipments = $query->orderBy('created_at', 'desc')->paginate(10);
         $equipments->appends($request->only('search'));
 
-        $laptops = IctEquipment::where('category', 'laptop')->orderBy('created_at', 'desc')->get();
-        $printers = IctEquipment::where('category', 'printer')->orderBy('created_at', 'desc')->get();
-        $desktops = IctEquipment::where('category', 'desktop')->orderBy('created_at', 'desc')->get();
+        $laptops = Laptop::orderBy('created_at', 'desc')->paginate(10);
+        $printers = Printer::orderBy('created_at', 'desc')->paginate(10);
+        $desktops = Desktop::orderBy('created_at', 'desc')->paginate(10);
+        
 
         return view('ict-equipment.index', compact('equipments', 'laptops', 'printers', 'desktops'));
     }
 
     public function store(Request $request)
-    {
-        \Log::info('Store method called with data:', $request->all());
+{
+    \Log::info('Store method called with data:', $request->all());
 
-        if ($request->category === 'desktop') {
-            if ($request->filled('pc_sn')) {
-                $request->merge(['serial_number' => $request->pc_sn]);
-            }
-            if ($request->filled('pc_make')) {
-                $request->merge(['brand' => $request->pc_make]);
-            }
-        }
-
-        $request->validate([
-            'equipment_id' => 'required|string',
+    // ✅ pick validation rules per category
+    $rules = match ($request->category) {
+        'desktop' => [
+            'equipment_id'     => 'required|string',
             'item_description' => 'required|string',
-            'category' => 'required|string',
-            'brand' => 'required|string',
-            'model' => 'nullable|string',
-            'asset_number' => 'required|string',
-            'serial_number' => 'required|string|unique:ict_equipment,serial_number',
-            'location' => 'required|string',
-            'assigned_to' => 'required|string',
-            'purchase_date' => 'required|date',
-            'warranty_expiry' => 'required|date',
-            'condition' => 'required|in:IN USE,FOR REPAIR',
-            'note' => 'nullable|string',
-            'network_ip' => 'nullable|string',
-            'pc_make' => 'nullable|string',
-            'pc_model' => 'nullable|string',
-            'pc_sn' => 'nullable|string',
-            'monitor_sn' => 'nullable|string',
-            'avr_sn' => 'nullable|string',
-            'wifi_adapter_sn' => 'nullable|string',
-            'keyboard_sn' => 'nullable|string',
-            'mouse_sn' => 'nullable|string',
-        ]);
+            'pc_make'          => 'required|string',
+            'pc_model'         => 'required|string',
+            'asset_number'     => 'required|string',
+            'pc_sn'            => 'required|string|unique:desktops,pc_sn',
+            'monitor_sn'       => 'nullable|string',
+            'avr_sn'           => 'nullable|string',
+            'wifi_adapter_sn'  => 'nullable|string',
+            'keyboard_sn'      => 'nullable|string',
+            'mouse_sn'         => 'nullable|string',
+            'location'         => 'required|string',
+            'assigned_to'      => 'required|string',
+            'purchase_date'    => 'required|date',
+            'warranty_expiry'  => 'required|date',
+            'condition'        => 'required|in:IN USE,FOR REPAIR',
+            'note'             => 'nullable|string',
+        ],
+        'printer' => [
+            'equipment_id'     => 'required|string',
+            'item_description' => 'required|string',
+            'brand'            => 'required|string',
+            'model'            => 'required|string',
+            'network_ip'       => 'nullable|string',
+            'asset_number'     => 'required|string',
+            'serial_number'    => 'required|string|unique:printers,serial_number',
+            'location'         => 'required|string',
+            'assigned_to'      => 'required|string',
+            'purchase_date'    => 'required|date',
+            'warranty_expiry'  => 'required|date',
+            'condition'        => 'required|in:IN USE,FOR REPAIR',
+            'note'             => 'nullable|string',
+        ],
+        'laptop' => [
+            'equipment_id'     => 'required|string',
+            'item_description' => 'required|string',
+            'brand'            => 'required|string',
+            'model'            => 'required|string',
+            'asset_number'     => 'required|string',
+            'serial_number'    => 'required|string|unique:laptops,serial_number',
+            'location'         => 'required|string',
+            'assigned_to'      => 'required|string',
+            'purchase_date'    => 'required|date',
+            'warranty_expiry'  => 'required|date',
+            'condition'        => 'required|in:IN USE,FOR REPAIR',
+            'note'             => 'nullable|string',
+        ],
+        default => []
+    };
 
-        $data = $request->only([
-            'equipment_id', 'item_description', 'category', 'brand', 'model',
-            'asset_number', 'serial_number', 'location', 'assigned_to',
-            'purchase_date', 'warranty_expiry', 'condition', 'note',
-            'network_ip', 'pc_make', 'pc_sn', 'monitor_sn',
-            'avr_sn', 'wifi_adapter_sn', 'keyboard_sn', 'mouse_sn'
-        ]);
+    $validated = $request->validate($rules);
 
-        if ($request->category === 'desktop' && $request->filled('pc_model')) {
-            $data['pc_build'] = $request->pc_model;
-            $data['model'] = $request->pc_model;
-        }
+    // ✅ save to the right table
+    $model = match ($request->category) {
+        'desktop' => Desktop::class,
+        'printer' => Printer::class,
+        'laptop'  => Laptop::class,
+        default   => null,
+    };
 
-        $equipment = IctEquipment::create($data);
-
-        return redirect()->route('ict-equipment.index')->with('success', 'ICT Equipment added successfully.');
+    if (!$model) {
+        return back()->withErrors(['Invalid category.']);
     }
+
+    $equipment = $model::create($validated);
+
+    return redirect()->route('ict-equipment.index')
+        ->with('success', ucfirst($request->category).' added successfully.');
+}
+
 
     public function edit($id)
     {
@@ -95,61 +121,114 @@ class IctEquipmentController extends Controller
         return view('ict-equipment.edit', compact('equipment'));
     }
 
-    public function update(Request $request, $id)
-    {
-        $equipment = IctEquipment::findOrFail($id);
+    public function update(Request $request, $category, $id)
+{
+    // pick correct model based on category
+    $model = match ($category) {
+        'laptop'  => Laptop::class,
+        'printer' => Printer::class,
+        'desktop' => Desktop::class,
+        default   => null,
+    };
 
-        $request->validate([
-            'equipment_id' => 'required|string',
-            'item_description' => 'required|string',
-            'category' => 'required|string',
-            'brand' => 'required|string',
-            'model' => 'required|string',
-            'asset_number' => 'required|string',
-            'serial_number' => 'required|string|unique:ict_equipment,serial_number,' . $id,
-            'location' => 'required|string',
-            'assigned_to' => 'required|string',
-            'purchase_date' => 'required|date',
-            'warranty_expiry' => 'required|date',
-            'condition' => 'required|in:IN USE,FOR REPAIR',
-            'note' => 'nullable|string',
-        ]);
-
-        $equipment->update($request->all());
-
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Equipment updated successfully.',
-                'equipment' => $equipment
-            ]);
-        }
-
-        return redirect()->route('ict-equipment.index')
-            ->with('success', 'Equipment updated successfully.');
+    if (!$model) {
+        return back()->withErrors(['Invalid category.']);
     }
+
+    $equipment = $model::findOrFail($id);
+
+    // validation rules can differ per category
+    $rules = match ($category) {
+        'laptop' => [
+            'equipment_id'   => 'required|string',
+            'item_description' => 'required|string',
+            'brand'          => 'required|string',
+            'model'          => 'required|string',
+            'asset_number'   => 'required|string',
+            'serial_number'  => 'required|string|unique:laptops,serial_number,' . $id,
+            'location'       => 'required|string',
+            'assigned_to'    => 'required|string',
+            'purchase_date'  => 'required|date',
+            'warranty_expiry'=> 'required|date',
+            'condition'      => 'required|in:IN USE,FOR REPAIR',
+            'note'           => 'nullable|string',
+        ],
+        'printer' => [
+            'equipment_id'   => 'required|string',
+            'item_description' => 'required|string',
+            'brand'          => 'required|string',
+            'model'          => 'required|string',
+            'network_ip'     => 'nullable|string',
+            'asset_number'   => 'required|string',
+            'serial_number'  => 'required|string|unique:printers,serial_number,' . $id,
+            'location'       => 'required|string',
+            'assigned_to'    => 'required|string',
+            'purchase_date'  => 'required|date',
+            'warranty_expiry'=> 'required|date',
+            'condition'      => 'required|in:IN USE,FOR REPAIR',
+            'note'           => 'nullable|string',
+        ],
+        'desktop' => [
+            'equipment_id'   => 'required|string',
+            'item_description' => 'required|string',
+            'pc_make'        => 'required|string',
+            'pc_model'       => 'required|string',
+            'asset_number'   => 'required|string',
+            'pc_sn'          => 'required|string|unique:desktops,pc_sn,' . $id,
+            'monitor_sn'     => 'nullable|string',
+            'avr_sn'         => 'nullable|string',
+            'wifi_adapter_sn'=> 'nullable|string',
+            'keyboard_sn'    => 'nullable|string',
+            'mouse_sn'       => 'nullable|string',
+            'location'       => 'required|string',
+            'assigned_to'    => 'required|string',
+            'purchase_date'  => 'required|date',
+            'warranty_expiry'=> 'required|date',
+            'condition'      => 'required|in:IN USE,FOR REPAIR',
+            'note'           => 'nullable|string',
+        ],
+    };
+
+    $validated = $request->validate($rules);
+
+    $equipment->update($validated);
+
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => ucfirst($category) . ' updated successfully.',
+            'equipment' => $equipment
+        ]);
+    }
+
+    return redirect()->route('ict-equipment.index')
+        ->with('success', ucfirst($category) . ' updated successfully.');
+}
+
 
     /**
      * Import ICT Equipment by category
      */
-    public function importIctEquipment(Request $request)
+    public function importIctEquipment(Request $request, $category = null)
 {
+    // Accept category from route parameter only
+    if (!in_array($category, ['laptop', 'printer', 'desktop'])) {
+        return back()->withErrors(["Invalid category."]);
+    }
+
     $request->validate([
         'csv_file' => 'required|mimes:csv,txt',
-        'category' => 'required|in:laptop,printer,desktop'
     ]);
 
     $file = fopen($request->file('csv_file'), 'r');
     $rawHeader = fgetcsv($file);
-    $header = array_map('trim', $rawHeader);
-
-    $category = $request->category;
+    $header = array_map(fn($h) => strtolower(trim($h)), $rawHeader);
 
     // category-specific required headers
     $requiredHeaders = match($category) {
-        'laptop' => ['Equipment ID', 'Description', 'Category', 'Brand', 'Model', 'Asset #', 'Serial #', 'Location', 'Assigned To', 'Purchase Date', 'Warranty Expiry', 'Condition', 'Note'],
-        'printer' => ['Equipment ID', 'Description', 'Category', 'Brand', 'Model', 'Network IP', 'Asset #', 'Serial #', 'Location', 'Assigned To', 'Purchase Date', 'Warranty Expiry', 'Condition', 'Note'],
-        'desktop' => ['Equipment ID', 'Description', 'Category', 'PC_MAKE', 'PC_MODEL', 'Asset #', 'PC_SN', 'MONITOR_SN', 'AVR_SN', 'WIFI ADAPTER_SN', 'KEYBOARD_SN', 'MOUSE_SN', 'Location', 'Assigned To', 'Purchase Date', 'Warranty Expiry', 'Condition', 'Note'],
+        'laptop' => ['equipment id', 'description', 'category', 'brand', 'model', 'asset #', 'serial #', 'location', 'assigned to', 'purchase date', 'warranty expiry', 'condition', 'note'],
+        'printer' => ['equipment id', 'description', 'category', 'brand', 'model', 'network ip', 'asset #', 'serial #', 'location', 'assigned to', 'purchase date', 'warranty expiry', 'condition', 'note'],
+        'desktop' => ['equipment id', 'description', 'category', 'pc_make', 'pc_model', 'asset #', 'pc_sn', 'monitor_sn', 'avr_sn', 'wifi adapter_sn', 'keyboard_sn', 'mouse_sn', 'location', 'assigned to', 'purchase date', 'warranty expiry', 'condition', 'note'],
     };
 
     $missingHeaders = array_diff($requiredHeaders, $header);
@@ -157,55 +236,94 @@ class IctEquipmentController extends Controller
         return back()->withErrors(["Missing required column(s): " . implode(', ', $missingHeaders)]);
     }
 
+    $headerIndexes = array_flip($header);
     $rows = [];
     while (($line = fgetcsv($file)) !== false) {
-        $rows[] = array_combine($header, $line);
+        $rowAssoc = [];
+        foreach ($headerIndexes as $col => $idx) {
+            $rowAssoc[$col] = $line[$idx] ?? null;
+        }
+        $rows[] = $rowAssoc;
     }
     fclose($file);
 
     $inserted = [];
+    $matchedRows = 0;
 
     foreach ($rows as $row) {
-        $data = [
-            'equipment_id'   => $row['Equipment ID'] ?? null,
-            'item_description' => $row['Description'] ?? null,
-            'category'       => $category, // force category
-            'brand'          => $row['Brand'] ?? null,
-            'model'          => $row['Model'] ?? null,
-            'asset_number'   => $row['Asset #'] ?? null,
-            'serial_number'  => $row['Serial #'] ?? null,
-            'location'       => $row['Location'] ?? null,
-            'assigned_to'    => $row['Assigned To'] ?? null,
-            'purchase_date'  => $row['Purchase Date'] ?? null,
-            'warranty_expiry'=> $row['Warranty Expiry'] ?? null,
-            'condition'      => $row['Condition'] ?? null,
-            'note'           => $row['Note'] ?? null,
-        ];
-
-        // Handle desktop-specific fields
+        $rowCategory = strtolower(trim($row['category'])); // keep row category separate
+    
+        if ($rowCategory !== $category) {
+            continue; // skip rows that don’t match the selected category
+        }
+    
+        $matchedRows++; // ✅ count matched rows
+    
         if ($category === 'desktop') {
-            $data['pc_make']        = $row['PC_MAKE'] ?? null;
-            $data['model']          = $row['PC_MODEL'] ?? null;
-            $data['pc_sn']          = $row['PC_SN'] ?? null;
-            $data['monitor_sn']     = $row['MONITOR_SN'] ?? null;
-            $data['avr_sn']         = $row['AVR_SN'] ?? null;
-            $data['wifi_adapter_sn']= $row['WIFI ADAPTER_SN'] ?? null;
-            $data['keyboard_sn']    = $row['KEYBOARD_SN'] ?? null;
-            $data['mouse_sn']       = $row['MOUSE_SN'] ?? null;
+            Desktop::create([
+                'equipment_id'    => $row['equipment id'],
+                'item_description'=> $row['description'],
+                'category'        => 'Desktop',
+                'pc_make'         => $row['pc_make'] ?? null,
+                'pc_model'        => $row['pc_model'] ?? null,
+                'asset_number'    => $row['asset #'] ?? null,
+                'pc_sn'           => $row['pc_sn'] ?? null,
+                'monitor_sn'      => $row['monitor_sn'] ?? null,
+                'avr_sn'          => $row['avr_sn'] ?? null,
+                'wifi_adapter_sn' => $row['wifi adapter_sn'] ?? null,
+                'keyboard_sn'     => $row['keyboard_sn'] ?? null,
+                'mouse_sn'        => $row['mouse_sn'] ?? null,
+                'location'        => $row['location'],
+                'assigned_to'     => $row['assigned to'],
+                'purchase_date'   => $row['purchase date'],
+                'warranty_expiry' => $row['warranty expiry'],
+                'condition'       => $row['condition'],
+                'note'            => $row['note'] ?? null,
+            ]);
+        } elseif ($category === 'laptop') {
+            Laptop::create([
+                'equipment_id'    => $row['equipment id'],
+                'item_description'=> $row['description'],
+                'category'        => 'Laptop',
+                'brand'           => $row['brand'],
+                'model'           => $row['model'],
+                'asset_number'    => $row['asset #'],
+                'serial_number'   => $row['serial #'],
+                'location'        => $row['location'],
+                'assigned_to'     => $row['assigned to'],
+                'purchase_date'   => $row['purchase date'],
+                'warranty_expiry' => $row['warranty expiry'],
+                'condition'       => $row['condition'],
+                'note'            => $row['note'] ?? null,
+            ]);
+        } elseif ($category === 'printer') {
+            Printer::create([
+                'equipment_id'    => $row['equipment id'],
+                'item_description'=> $row['description'],
+                'category'        => 'Printer',
+                'brand'           => $row['brand'],
+                'model'           => $row['model'],
+                'network_ip'      => $row['network ip'] ?? null,
+                'asset_number'    => $row['asset #'],
+                'serial_number'   => $row['serial #'],
+                'location'        => $row['location'],
+                'assigned_to'     => $row['assigned to'],
+                'purchase_date'   => $row['purchase date'],
+                'warranty_expiry' => $row['warranty expiry'],
+                'condition'       => $row['condition'],
+                'note'            => $row['note'] ?? null,
+            ]);
         }
-
-        // Handle printer-specific fields
-        if ($category === 'printer') {
-            $data['network_ip'] = $row['Network IP'] ?? null;
-        }
-
-        $inserted[] = $data;
     }
+    
 
-    IctEquipment::insert($inserted);
-
+    if ($matchedRows === 0) {
+        return back()->withErrors(["No rows matched the selected category for import."]);
+    }
+    
     return back()->with('success', ucfirst($category) . ' equipment imported successfully.');
-}
+}    
+
 
     
 
@@ -219,7 +337,12 @@ class IctEquipmentController extends Controller
     ]);
 
     $category = $request->category;
-    $equipments = IctEquipment::where('category', $category)->get();
+    $equipments = match($category) {
+        'laptop'  => Laptop::all(),
+        'printer' => Printer::all(),
+        'desktop' => Desktop::all(),
+    };
+    
 
     $fileName = "{$category}_equipment_" . now()->format('Y-m-d_H-i-s') . '.csv';
 
@@ -326,7 +449,7 @@ class IctEquipmentController extends Controller
                         $equip->item_description,
                         $equip->category,
                         $equip->pc_make,
-                        $equip->model,
+                        $equip->pc_model,
                         $equip->asset_number,
                         $equip->pc_sn,
                         $equip->monitor_sn,
@@ -373,23 +496,48 @@ class IctEquipmentController extends Controller
 }
 
 
-    public function destroy($id)
-    {
-        $equipment = IctEquipment::findOrFail($id);
-        $equipment->delete();
+public function destroy(Request $request, $category, $id)
+{
+    // pick correct model based on category
+    $model = match ($category) {
+        'laptop'  => Laptop::class,
+        'printer' => Printer::class,
+        'desktop' => Desktop::class,
+        default   => null,
+    };
 
-        return redirect()->route('ict-equipment.index')
-            ->with('success', 'Equipment deleted successfully.');
+    if (!$model) {
+        return back()->withErrors(['Invalid category.']);
     }
 
-    public function getPartial($partial)
-    {
-        $allowedPartials = ['create-laptop-fields', 'create-printer-fields', 'create-desktop-fields'];
+    $equipment = $model::findOrFail($id);
+    $equipment->delete();
 
-        if (!in_array($partial, $allowedPartials)) {
-            abort(404);
-        }
-
-        return view("ict-equipment.partials.{$partial}");
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => ucfirst($category) . ' deleted successfully.'
+        ]);
     }
+
+    return redirect()->route('ict-equipment.index')
+        ->with('success', ucfirst($category) . ' deleted successfully.');
+}
+
+
+
+
+
+public function getPartial($partial)
+{
+    $allowedPartials = ['create-laptop-fields', 'create-printer-fields', 'create-desktop-fields'];
+
+    if (!in_array($partial, $allowedPartials)) {
+        abort(404);
+    }
+
+    return view("ict-equipment.partials.{$partial}");
+}
+
+
 }
