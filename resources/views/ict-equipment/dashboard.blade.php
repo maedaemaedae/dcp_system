@@ -11,6 +11,7 @@
     <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="bg-gray-50 font-['Poppins'] text-gray-800">
+    
     <div class="max-w-6xl mx-auto py-10">
         <h2 class="text-4xl font-bold text-gray-800 mb-8 flex items-center gap-4">
             <i class="fa-solid fa-desktop text-blue-500 text-3xl"></i>
@@ -19,7 +20,7 @@
 
         <!-- Metric Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-10">
-            <a href="{{ route('ict-equipment.index') }}" class="bg-white rounded-xl shadow p-6 flex flex-col items-center hover:bg-blue-50 transition cursor-pointer">
+            <a class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
                 <span class="fa-solid fa-desktop text-2xl text-blue-500 mb-2"></span>
                 <span class="text-lg font-semibold">Total Equipments</span>
                 <span class="text-3xl font-bold mt-2">{{ $totalEquipments ?? 0 }}</span>

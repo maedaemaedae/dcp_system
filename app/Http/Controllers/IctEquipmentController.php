@@ -73,32 +73,56 @@ class IctEquipmentController extends Controller
             'locationCounts'
         ));
     }
-    public function index(Request $request)
-    {
-        $query = IctEquipment::query();
 
-        if ($request->filled('search')) {
-            $search = $request->search;
 
-            $columns = \Schema::getColumnListing((new IctEquipment)->getTable());
+   public function index(Request $request)
+{
+    $query = IctEquipment::query();
 
-            $query->where(function ($q) use ($columns, $search) {
-                foreach ($columns as $column) {
-                    $q->orWhere($column, 'like', "%{$search}%");
-                }
-            });
-        }
+    // 🔍 Search filter
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $columns = \Schema::getColumnListing((new IctEquipment)->getTable());
 
-        $equipments = $query->orderBy('created_at', 'desc')->paginate(10);
-        $equipments->appends($request->only('search'));
-
-        $laptops = Laptop::orderBy('created_at', 'desc')->paginate(10);
-        $printers = Printer::orderBy('created_at', 'desc')->paginate(10);
-        $desktops = Desktop::orderBy('created_at', 'desc')->paginate(10);
-        
-
-        return view('ict-equipment.index', compact('equipments', 'laptops', 'printers', 'desktops'));
+        $query->where(function ($q) use ($columns, $search) {
+            foreach ($columns as $column) {
+                $q->orWhere($column, 'like', "%{$search}%");
+            }
+        });
     }
+
+    $category = $request->get('category');
+    $condition = $request->get('condition');
+
+    // Default all equipments (with condition filter if exists)
+    if ($condition) {
+        $query->where('condition', $condition);
+    }
+
+    $equipments = $query->orderBy('created_at', 'desc')->paginate(10);
+    $equipments->appends($request->only('search', 'category', 'condition'));
+
+    // Category-specific queries (respecting condition filter)
+    $laptops  = Laptop::when($condition, fn($q) => $q->where('condition', $condition))
+                      ->orderBy('created_at', 'desc')->paginate(10);
+
+    $printers = Printer::when($condition, fn($q) => $q->where('condition', $condition))
+                       ->orderBy('created_at', 'desc')->paginate(10);
+
+    $desktops = Desktop::when($condition, fn($q) => $q->where('condition', $condition))
+                       ->orderBy('created_at', 'desc')->paginate(10);
+
+    return view('ict-equipment.index', [
+        'equipments' => $equipments,
+        'laptops' => $laptops,
+        'printers' => $printers,
+        'desktops' => $desktops,
+        'selectedCategory' => $category,
+        'selectedCondition' => $condition,
+    ]);
+}
+
+
 
     public function store(Request $request)
 {

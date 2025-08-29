@@ -61,7 +61,7 @@
 
     <!-- ICT Equipment Button -->
 <div class="flex justify-start my-5">
-    <a href="{{ route('ict-equipment.index') }}"
+    <a href="{{ route('ict-equipment.dashboard') }}"
        class="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow transition duration-200">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" class="flex-shrink-0">
             <path fill="currentColor" d="M24 21h2v5h-2zm-4-5h2v10h-2zm-9 10a5.006 5.006 0 0 1-5-5h2a3 3 0 1 0 3-3v-2a5 5 0 0 1 0 10"/>
