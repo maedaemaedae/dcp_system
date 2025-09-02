@@ -51,21 +51,29 @@
 
     <div class="relative px-6 py-8 max-w-8xl mx-auto" x-show="contentVisible" x-transition.opacity.duration.500ms x-cloak>
         
-         <!-- Back to Inventory Button -->
-        <a href="{{ route('ict-equipment.dashboard') }}"
-           class="absolute top-[6.5rem] left-6 text-[#4A90E2] hover:text-[#357ABD] text-base font-medium flex items-center transition-all duration-300 ease-in-out transform hover:-translate-x-1 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-md">
-            <!-- Left Arrow Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transition-transform duration-300 group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to ICT Equipment Dashboard
-        </a>
+       <!-- Back to ICT Equipment Dashboard Button -->
+<a href="{{ route('ict-equipment.dashboard') }}"
+   class="inline-flex items-center mt-20 mb-6 text-[#4A90E2] hover:text-[#357ABD] 
+          border border-[#4A90E2] text-base font-medium transition-all duration-300 
+          ease-in-out transform hover:-translate-x-1 bg-white dark:bg-gray-800 
+          px-4 py-2 rounded-full shadow-md">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+         stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+    Back to ICT Equipment Dashboard
+</a>
 
-        <!-- Page Title -->
-        <h1 class="text-3xl md:text-4xl font-bold mt-48 mb-16 flex items-center gap-3">
-            ICT Equipment
-        </h1>
+<!-- Page Title -->
+<h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 
+           dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
+    <i class="fa-solid fa-boxes-stacked text-blue-500 text-4xl w-10 h-10"></i>
+    ICT Equipment Inventory
+</h2>
+
+
+
+
 
         
 
@@ -143,41 +151,7 @@
             </button>
         </div>
 
-    <div class="mb-4 flex gap-2">
-        <form method="POST" action="{{ route('ict-equipment.import.category', ['category' => 'laptop']) }}" enctype="multipart/form-data" class="flex items-center gap-2">
-            @csrf
-            <label for="import-laptop-csv" class="btn btn-secondary cursor-pointer px-3 py-2 bg-green-100 text-green-800 rounded hover:bg-green-200 flex items-center gap-2">
-                <i class="fa-solid fa-file-import"></i> Import Laptops
-            </label>
-            <input id="import-laptop-csv" type="file" name="csv_file" accept=".csv" required class="hidden" onchange="this.form.submit()"/>
-        </form>
-        <a href="{{ route('ict-equipment.export', ['category' => 'laptop']) }}" 
-           class="btn btn-primary">
-            Export Laptops
-        </a>
-        <form method="POST" action="{{ route('ict-equipment.import.category', ['category' => 'printer']) }}" enctype="multipart/form-data" class="flex items-center gap-2">
-            @csrf
-            <label for="import-printer-csv" class="btn btn-secondary cursor-pointer px-3 py-2 bg-green-100 text-green-800 rounded hover:bg-green-200 flex items-center gap-2">
-                <i class="fa-solid fa-file-import"></i> Import Printers
-            </label>
-            <input id="import-printer-csv" type="file" name="csv_file" accept=".csv" required class="hidden" onchange="this.form.submit()"/>
-        </form>
-        <a href="{{ route('ict-equipment.export', ['category' => 'printer']) }}" 
-           class="btn btn-primary">
-            Export Printers
-        </a>
-        <form method="POST" action="{{ route('ict-equipment.import.category', ['category' => 'desktop']) }}" enctype="multipart/form-data" class="flex items-center gap-2">
-            @csrf
-            <label for="import-desktop-csv" class="btn btn-secondary cursor-pointer px-3 py-2 bg-green-100 text-green-800 rounded hover:bg-green-200 flex items-center gap-2">
-                <i class="fa-solid fa-file-import"></i> Import Desktops
-            </label>
-            <input id="import-desktop-csv" type="file" name="csv_file" accept=".csv" required class="hidden" onchange="this.form.submit()"/>
-        </form>
-        <a href="{{ route('ict-equipment.export', ['category' => 'desktop']) }}" 
-           class="btn btn-primary">
-            Export Desktops
-        </a>
-    </div>
+    
 
 
         <!-- Add Modal -->
@@ -700,6 +674,33 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById(modalId).classList.remove("flex");
         });
     });
+});
+</script>
+
+<!-- File input handling for import forms -->
+<script>
+document.getElementById('import-laptop-csv').addEventListener('change', function(e) {
+    let fileName = e.target.files.length ? e.target.files[0].name : "";
+    document.getElementById('laptopFileName').textContent = fileName;
+    
+    // Show upload button if file selected
+    document.getElementById('laptopUploadBtn').classList.toggle('hidden', !fileName);
+});
+
+document.getElementById('import-printer-csv').addEventListener('change', function(e) {
+    let fileName = e.target.files.length ? e.target.files[0].name : "";
+    document.getElementById('printerFileName').textContent = fileName;
+    
+    // Show upload button if file selected
+    document.getElementById('printerUploadBtn').classList.toggle('hidden', !fileName);
+});
+
+document.getElementById('import-desktop-csv').addEventListener('change', function(e) {
+    let fileName = e.target.files.length ? e.target.files[0].name : "";
+    document.getElementById('desktopFileName').textContent = fileName;
+    
+    // Show upload button if file selected
+    document.getElementById('desktopUploadBtn').classList.toggle('hidden', !fileName);
 });
 </script>
 

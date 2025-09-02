@@ -59,17 +59,25 @@
     </button>
 </div>
 
-    <!-- ICT Equipment Button -->
-<div class="flex justify-start my-5">
+ <!-- Compact ICT Equipment Button -->
+<div class="flex justify-start my-4">
     <a href="{{ route('ict-equipment.dashboard') }}"
-       class="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow transition duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" class="flex-shrink-0">
-            <path fill="currentColor" d="M24 21h2v5h-2zm-4-5h2v10h-2zm-9 10a5.006 5.006 0 0 1-5-5h2a3 3 0 1 0 3-3v-2a5 5 0 0 1 0 10"/>
-            <path fill="currentColor" d="M28 2H4a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h24a2.003 2.003 0 0 0 2-2V4a2 2 0 0 0-2-2m0 9H14V4h14ZM12 4v7H4V4ZM4 28V13h24l.002 15Z"/>
-        </svg>
-        <span>View ICT Equipment Dashboard</span>
+       class="flex items-center gap-2.5 px-4 py-2.5 bg-blue-500 text-white rounded-lg shadow-sm hover:bg-blue-600 hover:scale-105 transition transform duration-200">
+       
+        <!-- Icon with background circle -->
+        <div class="flex-shrink-0 w-8 h-8 bg-blue-700 rounded-full flex items-center justify-center shadow-inner">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" class="text-white">
+                <path fill="currentColor" d="M24 21h2v5h-2zm-4-5h2v10h-2zm-9 10a5.006 5.006 0 0 1-5-5h2a3 3 0 1 0 3-3v-2a5 5 0 0 1 0 10"/>
+                <path fill="currentColor" d="M28 2H4a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h24a2.003 2.003 0 0 0 2-2V4a2 2 0 0 0-2-2m0 9H14V4h14ZM12 4v7H4V4ZM4 28V13h24l.002 15Z"/>
+            </svg>
+        </div>
+
+        <!-- Text -->
+        <span class="font-medium text-base">View ICT Equipment Dashboard</span>
     </a>
 </div>
+
+
 
 
     <!-- Schools -->

@@ -36,62 +36,67 @@
              <i class="fa-solid fa-gauge-high text-blue-500 text-4xl w-10 h-10"></i>
             Superadmin Dashboard
         </h2>
-
-        <!-- 📊 Modern Metric Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-    <x-dashboard.card title="Total Schools" :value="$schoolCount ?? 0" icon="school" />
-    <x-dashboard.card title="Total Recipients" :value="$recipientCount ?? 0" icon="users" />
-    <x-dashboard.card title="Delivered Items" :value="$deliveredItemCount ?? 0" icon="box" />
-    <x-dashboard.card title="Pending Deliveries" :value="$pending ?? 0" icon="clock" />
-    <x-dashboard.card title="Delivered Packages" :value="$delivered ?? 0" icon="check-circle" />
-    <x-dashboard.card title="Cancelled Deliveries" :value="$cancelled ?? 0" icon="ban" />
+<!-- 📊 Modern Metric Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+    <x-dashboard.card title="Total Schools" :value="$schoolCount ?? 0" icon="school" color="from-indigo-500 to-blue-500" />
+    <x-dashboard.card title="Total Recipients" :value="$recipientCount ?? 0" icon="users" color="from-green-500 to-emerald-500" />
+    <x-dashboard.card title="Delivered Items" :value="$deliveredItemCount ?? 0" icon="box" color="from-pink-500 to-rose-500" />
+    <x-dashboard.card title="Pending Deliveries" :value="$pending ?? 0" icon="clock" color="from-yellow-500 to-orange-500" />
+    <x-dashboard.card title="Delivered Packages" :value="$delivered ?? 0" icon="check-circle" color="from-teal-500 to-cyan-500" />
+    <x-dashboard.card title="Cancelled Deliveries" :value="$cancelled ?? 0" icon="ban" color="from-red-500 to-pink-500" />
 </div>
 
 
 <!-- 📈 Charts Section -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
 
     <!-- 🏫 Schools per Division Chart -->
-    <div class="bg-white rounded-xl border border-gray-200 shadow p-6 hover:shadow-md transition-all duration-300 h-[500px]">
-        <h2 class="text-xl font-semibold mb-6 text-center text-gray-800">Schools per Division</h2>
-        <div class="w-full h-[420px] relative">
-            <canvas id="regionChart" class="absolute inset-0"></canvas>
+    <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-[500px] flex flex-col">
+        <div class="bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-t-2xl p-4">
+            <h2 class="text-lg font-semibold text-center">Schools per Division</h2>
+        </div>
+        <div class="flex-1 p-6">
+            <canvas id="regionChart" class="w-full h-full"></canvas>
         </div>
     </div>
 
     <!-- 🚚 Delivery Status Overview Donut Chart -->
-    <div class="bg-white/80 backdrop-blur-md rounded-2xl border border-gray-200 shadow-md p-6 hover:shadow-lg transition-all duration-300 h-[500px] flex flex-col justify-between">
-        <h2 class="text-xl font-semibold text-center text-gray-800 tracking-wide mb-2">Delivery Status Overview</h2>
-        
-        <div class="flex justify-center">
-            <div class="w-full max-w-[300px]" style="aspect-ratio: 1 / 1;">
-                <canvas id="statusChart" class="w-full h-full"></canvas>
-            </div>
+    <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-[500px] flex flex-col">
+        <div class="bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-t-2xl p-4">
+            <h2 class="text-lg font-semibold text-center">Delivery Status Overview</h2>
         </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-y-3 text-sm text-gray-700 text-center mt-4">
-            <div class="flex flex-col items-center">
-                <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #FACC15;"></span>
-                <span class="font-medium">Pending</span>
-                <span class="text-xs text-gray-500">{{ $pending }}</span>
+        <div class="flex-1 flex flex-col justify-center p-6">
+            <div class="flex justify-center mb-6">
+                <div class="w-full max-w-[280px]" style="aspect-ratio: 1 / 1;">
+                    <canvas id="statusChart" class="w-full h-full"></canvas>
+                </div>
             </div>
-            <div class="flex flex-col items-center">
-                <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #FB923C;"></span>
-                <span class="font-medium">Partial</span>
-                <span class="text-xs text-gray-500">{{ $partial }}</span>
-            </div>
-            <div class="flex flex-col items-center">
-                <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #22C55E;"></span>
-                <span class="font-medium">Delivered</span>
-                <span class="text-xs text-gray-500">{{ $delivered }}</span>
-            </div>
-            <div class="flex flex-col items-center">
-                <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #EF4444;"></span>
-                <span class="font-medium">Cancelled</span>
-                <span class="text-xs text-gray-500">{{ $cancelled }}</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-y-4 text-sm text-gray-700 text-center">
+                <div class="flex flex-col items-center">
+                    <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #FACC15;"></span>
+                    <span class="font-medium">Pending</span>
+                    <span class="text-xs text-gray-500">{{ $pending }}</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #FB923C;"></span>
+                    <span class="font-medium">Partial</span>
+                    <span class="text-xs text-gray-500">{{ $partial }}</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #22C55E;"></span>
+                    <span class="font-medium">Delivered</span>
+                    <span class="text-xs text-gray-500">{{ $delivered }}</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="inline-block w-3 h-3 rounded-full mb-1" style="background-color: #EF4444;"></span>
+                    <span class="font-medium">Cancelled</span>
+                    <span class="text-xs text-gray-500">{{ $cancelled }}</span>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
 
 </div>
 
