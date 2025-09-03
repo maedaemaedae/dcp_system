@@ -130,18 +130,18 @@
     </div>
 @endif
 
-        <!-- Category Selection Buttons -->
-        <div class="flex flex-wrap gap-4 mb-6">
-            <button id="laptopBtn" class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium">
-                <i class="fa-solid fa-laptop"></i> Laptops
-            </button>
-            <button id="printerBtn" class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium">
-                <i class="fa-solid fa-print"></i> Printers
-            </button>
-            <button id="desktopBtn" class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium">
-                <i class="fa-solid fa-desktop"></i> Desktops
-            </button>
-        </div>
+       <div class="flex gap-4 mb-4">
+    <button class="category-btn px-4 py-2 bg-blue-500 text-white rounded" data-category="laptop">
+        Laptops
+    </button>
+    <button class="category-btn px-4 py-2 bg-green-500 text-white rounded" data-category="printer">
+        Printers
+    </button>
+    <button class="category-btn px-4 py-2 bg-purple-500 text-white rounded" data-category="desktop">
+        Desktops
+    </button>
+</div>
+
 
         <!-- Add New Equipment -->
         <div class="flex justify-start mb-10">
@@ -332,24 +332,30 @@
 
         
 
-       <!-- Laptop Table -->
-<div id="laptopTable" 
+   <!-- Laptop Table -->
+<div id="laptops-table-wrapper"
      class="table-container {{ $selectedCategory === 'laptop' || (!$selectedCategory && $selectedCondition) ? '' : 'hidden' }}">
-    <h2 class="text-xl font-bold mb-3">Laptops {{ $selectedCondition ? "({$selectedCondition})" : '' }}</h2>
+    <h2 class="text-xl font-bold mb-3">
+        Laptops {{ $selectedCondition ? "({$selectedCondition})" : '' }}
+    </h2>
     @include('ict-equipment.partials.laptop-table', ['laptops' => $laptops])
 </div>
 
-<!-- Printer Table -->
-<div id="printerTable" 
+   <!-- Printer Table -->
+<div id="printers-table-wrapper"
      class="table-container {{ $selectedCategory === 'printer' || (!$selectedCategory && $selectedCondition) ? '' : 'hidden' }}">
-    <h2 class="text-xl font-bold mb-3">Printers {{ $selectedCondition ? "({$selectedCondition})" : '' }}</h2>
+    <h2 class="text-xl font-bold mb-3">
+        Printers {{ $selectedCondition ? "({$selectedCondition})" : '' }}
+    </h2>
     @include('ict-equipment.partials.printer-table', ['printers' => $printers])
 </div>
 
 <!-- Desktop Table -->
-<div id="desktopTable" 
+<div id="desktops-table-wrapper"
      class="table-container {{ $selectedCategory === 'desktop' || (!$selectedCategory && $selectedCondition) ? '' : 'hidden' }}">
-    <h2 class="text-xl font-bold mb-3">Desktops {{ $selectedCondition ? "({$selectedCondition})" : '' }}</h2>
+    <h2 class="text-xl font-bold mb-3">
+        Desktops {{ $selectedCondition ? "({$selectedCondition})" : '' }}
+    </h2>
     @include('ict-equipment.partials.desktop-table', ['desktops' => $desktops])
 </div>
 
@@ -357,6 +363,152 @@
 
     </div>
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // IDs of the wrappers (must match your partials)
+    const wrapperIds = [
+        'laptops-table-wrapper',
+        'printers-table-wrapper',
+        'desktops-table-wrapper'
+    ];
+
+    // helpers
+    function wrapperSelector() {
+        return wrapperIds.map(id => `#${id}`).join(', ');
+    }
+    function categoryFromWrapperId(id) {
+        // "laptops-table-wrapper" -> "laptop"
+        if (!id) return null;
+        const name = id.replace('-table-wrapper', '');
+        return name.endsWith('s') ? name.slice(0, -1) : name;
+    }
+    function wrapperIdFromCategory(category) {
+        return `${category}s-table-wrapper`; // laptop -> laptops-table-wrapper
+    }
+
+    // find initial active category: visible wrapper (Blade sets hidden class)
+    let activeCategory = (() => {
+        const visible = document.querySelector('.table-container:not(.hidden)');
+        if (visible && visible.id) return categoryFromWrapperId(visible.id);
+        // fallback: try URL param "category"
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('category')) return urlParams.get('category');
+        return 'laptop';
+    })();
+
+    // show only chosen category wrapper
+    function showCategory(category) {
+        if (!category) return;
+        wrapperIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (id === wrapperIdFromCategory(category)) el.classList.remove('hidden');
+            else el.classList.add('hidden');
+        });
+
+        // optional: highlight active button if you have .category-btn with data-category
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            if (btn.dataset && btn.dataset.category === category) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    // attach category button handlers
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const cat = this.dataset.category;
+            if (!cat) return;
+            activeCategory = cat;
+            showCategory(activeCategory);
+
+            // update URL (optional) so refresh keeps the category
+            try {
+                const url = new URL(window.location);
+                url.searchParams.set('category', cat);
+                history.replaceState({}, '', url);
+            } catch (e) { /* ignore */ }
+        });
+    });
+
+    // Delegated click handler for pagination anchors inside any wrapper
+    document.addEventListener('click', async function (e) {
+        const link = e.target.closest('a');
+        if (!link) return;
+        if (!link.href) return;
+
+        // find the wrapper the clicked link sits inside (if any)
+        let wrapperEl = null;
+        for (const id of wrapperIds) {
+            const found = link.closest('#' + id);
+            if (found) { wrapperEl = found; break; }
+        }
+        if (!wrapperEl) return; // not a link inside our tables
+
+        // Only handle pagination-ish links
+        const href = link.getAttribute('href');
+        const isPageLink = link.closest('.pagination') !== null
+            || /([?&](page|laptop_page|printer_page|desktop_page)=)/.test(href);
+        if (!isPageLink) return;
+
+        e.preventDefault();
+
+        // set activeCategory from the wrapper the link is in
+        activeCategory = categoryFromWrapperId(wrapperEl.id);
+        const targetWrapperId = wrapperEl.id; // e.g. "desktops-table-wrapper"
+        const targetWrapper = document.getElementById(targetWrapperId);
+        if (!targetWrapper) return;
+
+        try {
+            const res = await fetch(href, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            if (!res.ok) throw new Error('Network response not ok');
+
+            const html = await res.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            // try to find the same wrapper in the response
+            const newWrapper = doc.querySelector('#' + targetWrapperId);
+
+            if (newWrapper) {
+                targetWrapper.innerHTML = newWrapper.innerHTML;
+            } else {
+                // server returned only the inner partial - replace innerHTML directly
+                // (safe fallback)
+                targetWrapper.innerHTML = doc.body.innerHTML;
+            }
+
+            // Keep showing the same category
+            showCategory(activeCategory);
+
+            // Update URL page param (optional, preserves browser history)
+            try {
+                const url = new URL(href, window.location.origin);
+                history.replaceState({}, '', url);
+            } catch (err) { /* ignore */ }
+
+            // If you use Alpine, attempt to init new content
+            if (window.Alpine && typeof window.Alpine.initTree === 'function') {
+                try { window.Alpine.initTree(targetWrapper); } catch (err) { /* ignore */ }
+            }
+        } catch (err) {
+            console.error('Pagination fetch error:', err);
+        }
+    });
+
+    // initial show
+    showCategory(activeCategory);
+});
+</script>
+
+
 
 
 

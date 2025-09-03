@@ -1,4 +1,8 @@
- <div class="mb-6 flex flex-wrap gap-4">
+
+ 
+
+
+<div class="mb-6 flex flex-wrap gap-4">
 <!-- Laptops -->
     <div class="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg shadow-sm border">
     <form method="POST" action="{{ route('ict-equipment.import.category', ['category' => 'laptop']) }}" 
@@ -26,6 +30,7 @@
         <i class="fa-solid fa-file-export"></i> Export
     </a>
 </div>
+
 
 
 <div class="bg-white shadow-md rounded-xl overflow-x-auto">
@@ -160,5 +165,11 @@
             @endforelse
         </tbody>
     </table>
+     <!-- Pagination (you can keep vendor pagination) -->
+      <div class="mt-4 pagination">
+       {{ $laptops->appends(request()->except('page'))->links('vendor.pagination.tailwind') }}
+          </div>
 </div>
 </div>
+
+

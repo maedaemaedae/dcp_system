@@ -104,14 +104,50 @@ class IctEquipmentController extends Controller
 
     // Category-specific queries (respecting condition filter)
     $laptops  = Laptop::when($condition, fn($q) => $q->where('condition', $condition))
-                      ->orderBy('created_at', 'desc')->paginate(10);
+                  ->orderBy('created_at', 'desc')
+                  ->paginate(2, ['*'], 'laptop_page');
 
-    $printers = Printer::when($condition, fn($q) => $q->where('condition', $condition))
-                       ->orderBy('created_at', 'desc')->paginate(10);
+$printers = Printer::when($condition, fn($q) => $q->where('condition', $condition))
+                   ->orderBy('created_at', 'desc')
+                   ->paginate(2, ['*'], 'printer_page');
 
-    $desktops = Desktop::when($condition, fn($q) => $q->where('condition', $condition))
-                       ->orderBy('created_at', 'desc')->paginate(10);
+$desktops = Desktop::when($condition, fn($q) => $q->where('condition', $condition))
+                   ->orderBy('created_at', 'desc')
+                   ->paginate(2, ['*'], 'desktop_page');
 
+
+  // AJAX: return only the laptop partial (renders HTML fragment)
+    if ($request->ajax()) {
+    $category = $request->get('category');
+    $condition = $request->get('condition');
+
+    if ($category === 'laptop') {
+        return view('ict-equipment.partials.laptop-table', [
+            'laptops' => $laptops,
+            'selectedCategory' => $category,
+            'selectedCondition' => $condition,
+        ])->render();
+    }
+
+    if ($category === 'printer') {
+        return view('ict-equipment.partials.printer-table', [
+            'printers' => $printers,
+            'selectedCategory' => $category,
+            'selectedCondition' => $condition,
+        ])->render();
+    }
+
+    if ($category === 'desktop') {
+        return view('ict-equipment.partials.desktop-table', [
+            'desktops' => $desktops,
+            'selectedCategory' => $category,
+            'selectedCondition' => $condition,
+        ])->render();
+    }
+}
+
+
+    // Full page
     return view('ict-equipment.index', [
         'equipments' => $equipments,
         'laptops' => $laptops,
@@ -120,6 +156,14 @@ class IctEquipmentController extends Controller
         'selectedCategory' => $category,
         'selectedCondition' => $condition,
     ]);
+
+    $laptops = Laptop::paginate(2);
+
+    if ($request->ajax()) {
+        return view('ict-equipment.partials.laptop-table', compact('laptops'))->render();
+    }
+
+    return view('ict-equipment.index', compact('laptops'));
 }
 
 

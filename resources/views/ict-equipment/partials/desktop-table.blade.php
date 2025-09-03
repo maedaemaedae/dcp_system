@@ -1,4 +1,6 @@
- <div class="mb-6 flex flex-wrap gap-4">
+
+
+<div class="mb-6 flex flex-wrap gap-4">
 <!-- Printers -->
     <div class="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg shadow-sm border">
     <form method="POST" action="{{ route('ict-equipment.import.category', ['category' => 'desktop']) }}" 
@@ -165,5 +167,9 @@
             @endforelse
         </tbody>
     </table>
+     <!-- Pagination -->
+    <div class="mt-4">
+        {{ $desktops->links('vendor.pagination.tailwind') }}
+    </div>
 </div>
 </div>

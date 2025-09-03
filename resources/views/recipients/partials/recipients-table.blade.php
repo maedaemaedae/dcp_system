@@ -54,39 +54,43 @@
                     <td class="px-4 py-2 border">{{ $r->updated_at?->format('Y-m-d') ?? '—' }}</td>
                     <td class="px-4 py-3 text-center">
                                         <div 
-                                            x-data="{
-                                                open: false,
-                                                flip: false,    
-                                                toggle() {
-                                                    this.open = !this.open;
+                                                x-data="{
+                                                    open: false,
+                                                    flip: false,
+                                                    toggle() {
+                                                        this.open = !this.open;
 
-                                                    if (this.open) {
-                                                        this.$nextTick(() => {
-                                                            const dropdown = this.$refs.dropdown;
-                                                            const rect = dropdown.getBoundingClientRect();
-                                                            this.flip = (window.innerHeight - rect.bottom) < 150;
-                                                        });
+                                                        if (this.open) {
+                                                            this.$nextTick(() => {
+                                                                setTimeout(() => {
+                                                                    const dropdown = $el.querySelector('[data-dropdown]');
+                                                                    if (dropdown) {
+                                                                        const rect = dropdown.getBoundingClientRect();
+                                                                        this.flip = (window.innerHeight - rect.bottom) < 20;
+                                                                    }
+                                                                }, 10);
+                                                            });
+                                                        }
                                                     }
-                                                }
-                                            }"
-                                            class="relative inline-block text-left"
-                                        >
-                                            <button @click="toggle" @click.outside="open = false"
-                                                class="p-2 hover:bg-gray-200 rounded-full transition duration-150 focus:outline-none focus:ring-2 focus:ring-yellow-400 flex items-center justify-center">
-                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm0 5.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm0 5.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
-                                                </svg>
-                                            </button>
-
-                                            <!-- Dropdown -->
-                                            <div 
-                                                x-show="open"
-                                                x-transition
-                                                x-ref="dropdown"
-                                                :class="flip ? 'bottom-full mb-2 origin-bottom-right' : 'top-full mt-2 origin-top-right'"
-                                                class="absolute right-0 z-30 w-36 bg-white rounded-xl shadow-xl border border-gray-200 py-1"
-                                                @click.outside="open = false"
+                                                }" 
+                                                class="relative inline-block text-left"
                                             >
+                                                <button @click="toggle" @click.outside="open = false"
+                                                    class="p-2 hover:bg-gray-200 rounded-full transition duration-150 focus:outline-none focus:ring-2 focus:ring-orange-300">
+                                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm0 5.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm0 5.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
+                                                    </svg>
+                                                </button>
+
+                                                <div 
+                                                    x-show="open"
+                                                    x-transition
+                                                    :class="flip ? 'bottom-full mb-2' : 'mt-2'"
+                                                    class="absolute right-0 z-30 w-32 bg-white rounded-xl shadow-xl border border-gray-200 py-1"
+                                                    @click.outside="open = false"
+                                                    data-dropdown
+                                                    style="display: none;"
+                                                >
                                                 <button 
                                                     @click="openEditRecipientModal({{ $r->id }}, '{{ $r->contact_person }}', '{{ $r->position }}', '{{ $r->contact_number }}', {{ $r->quantity }}); open = false;" 
                                                     class="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
