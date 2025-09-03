@@ -160,7 +160,7 @@
         </tbody>
     </table>
      <div class="mt-4 pagination">
-     {{ $printers->links('vendor.pagination.tailwind') }}
+     {{ $printers->appends(request()->except('page'))->links('vendor.pagination.tailwind') }}
     </div>
 </div>
 </div>

@@ -169,7 +169,7 @@
     </table>
      <!-- Pagination -->
     <div class="mt-4">
-        {{ $desktops->links('vendor.pagination.tailwind') }}
+        {{ $desktops->appends(request()->except('page'))->links('vendor.pagination.tailwind') }}
     </div>
 </div>
 </div>
