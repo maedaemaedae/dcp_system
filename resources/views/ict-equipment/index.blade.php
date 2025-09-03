@@ -130,17 +130,18 @@
     </div>
 @endif
 
-       <div class="flex gap-4 mb-4">
-    <button class="category-btn px-4 py-2 bg-blue-500 text-white rounded" data-category="laptop">
-        Laptops
-    </button>
-    <button class="category-btn px-4 py-2 bg-green-500 text-white rounded" data-category="printer">
-        Printers
-    </button>
-    <button class="category-btn px-4 py-2 bg-purple-500 text-white rounded" data-category="desktop">
-        Desktops
-    </button>
-</div>
+        <!-- Category Selection Buttons -->
+        <div class="flex flex-wrap gap-4 mb-6">
+            <button class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium" data-category="laptop">
+                <i class="fa-solid fa-laptop"></i> Laptops
+            </button>
+            <button class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium" data-category="printer">
+                <i class="fa-solid fa-print"></i> Printers
+            </button>
+            <button class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium" data-category="desktop">
+                <i class="fa-solid fa-desktop"></i> Desktops
+            </button>
+        </div>
 
 
         <!-- Add New Equipment -->

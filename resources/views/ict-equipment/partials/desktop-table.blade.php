@@ -92,72 +92,68 @@
 
 
                         <td class="p-2 border">{{ $desktop->note ?? '—' }}</td>
-                    <td class="p-2 border text-center">
-    <div 
-        x-data="{
-            open: false,
-            flip: false,
-            toggle() {
-                this.open = !this.open;
+            <td class="p-2 border text-center">
+    <div x-data="{ openDropdown: false, openDelete: false }" class="relative inline-block text-left">
 
-                if (this.open) {
-                    this.$nextTick(() => {
-                        const rect = this.$el.getBoundingClientRect();
-                        this.flip = (window.innerHeight - rect.bottom) < 120;
-                    });
-                }
-            }
-        }"
-        class="relative inline-block text-left"
-    >
-        <!-- 3 Dots Button -->
-        <button @click="toggle" @click.outside="open = false"
-            class="p-2 hover:bg-gray-200 rounded-full transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <!-- 3 Dots -->
+        <button @click="openDropdown = !openDropdown" @click.outside="openDropdown = false"
+            class="p-2 hover:bg-gray-200 rounded-full transition duration-150">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm0 5.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm0 5.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
             </svg>
         </button>
 
         <!-- Dropdown -->
-        <div 
-            x-show="open"
-            x-transition
-            :class="flip ? 'bottom-full mb-2' : 'mt-2'"
-            class="absolute right-0 z-30 w-36 bg-white rounded-xl shadow-xl border border-gray-200 py-1"
-            @click.outside="open = false"
-            style="display: none;"
-        >
+        <div x-show="openDropdown" x-transition
+            class="absolute right-0 z-30 w-40 bg-white rounded-xl shadow-xl border border-gray-200 py-1"
+            style="display: none;">
+
             <!-- Edit -->
-            <button 
-                @click="open = false" 
-                data-modal-open="editPrinterModal-{{ $desktop->id }}"
-                class="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-blue-600"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-blue-600" viewBox="0 0 20 20">
-                    <path d="M17.414 2.586a2 2 0 010 2.828l-1.828 1.828-2.828-2.828L14.586 2.586a2 2 0 012.828 0zM3 17.25V14.5a1 1 0 01.293-.707l8.5-8.5 2.828 2.828-8.5 8.5A1 1 0 019.5 17.25H3z"/>
-                </svg>
-                Edit
+            <button @click="openDropdown = false" 
+                data-modal-open="editDesktopModal-{{ $desktop->id }}"
+                class="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-blue-600">
+                ✏️ Edit
             </button>
 
             <!-- Delete -->
-            <form 
-                action="{{ route('ict-equipment.destroy', ['category' => 'desktop', 'id' => $desktop->id]) }}" 
-                method="POST" 
-                onsubmit="return confirm('Are you sure you want to delete this laptop?');"
-            >
-                @csrf
-                @method('DELETE')
-                <button type="submit" 
-                    class="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-red-600" viewBox="0 0 20 20">
-                        <path d="M6 7a1 1 0 011 1v6a1 1 0 01-2 0V8a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 01-2 0V8a1 1 0 011-1zm4-3h-2.5l-.71-.71A1 1 0 0010.5 3h-1a1 1 0 00-.71.29L8.09 4H5a1 1 0 000 2h10a1 1 0 100-2zM6 16a2 2 0 002 2h4a2 2 0 002-2V6H6v10z"/>
-                    </svg>
-                    Delete
-                </button>
-            </form>
+            <button @click="openDropdown = false; openDelete = true"
+                class="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600">
+                🗑 Delete
+            </button>
+        </div>
+
+        <!-- Delete Modal -->
+        <div x-show="openDelete" x-transition
+            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+            style="display: none;">
+            <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Confirm Delete</h2>
+                <p class="text-gray-600 mb-6">
+                    Are you sure you want to delete this desktop? This action cannot be undone.
+                </p>
+
+                <div class="flex justify-end gap-3">
+                    <!-- Cancel -->
+                    <button type="button" @click="openDelete = false"
+                        class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100">
+                        Cancel
+                    </button>
+
+                    <!-- Confirm Delete -->
+                    <form method="POST" action="{{ route('ict-equipment.destroy', ['category' => 'desktop', 'id' => $desktop->id]) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </td>
+
                 </tr>
                 @include('ict-equipment.partials.edit-desktop', ['desktop' => $desktop])
             @empty

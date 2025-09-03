@@ -652,8 +652,10 @@ public function destroy(Request $request, $category, $id)
         ]);
     }
 
-    return redirect()->route('ict-equipment.index')
-        ->with('success', ucfirst($category) . ' deleted successfully.');
+    return redirect()
+    ->route('ict-equipment.index', $request->query())
+    ->with('success', ucfirst($category) . ' deleted successfully.');
+
 }
 
 
