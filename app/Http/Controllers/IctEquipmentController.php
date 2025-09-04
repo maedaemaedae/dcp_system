@@ -95,57 +95,53 @@ class IctEquipmentController extends Controller
     $condition = $request->get('condition');
 
     // Default all equipments (with condition filter if exists)
-    if ($condition) {
-        $query->where('condition', $condition);
-    }
+   // Default all equipments (with condition filter if exists)
+if ($condition) {
+    $query->where('condition', $condition);
+}
 
-    $equipments = $query->orderBy('created_at', 'desc')->paginate(10);
-    $equipments->appends($request->only('search', 'category', 'condition'));
+$equipments = $query->orderBy('created_at', 'desc')->paginate(10);
+// ✅ Keep all query params in pagination links
+$equipments->appends(request()->query());
 
-    // Category-specific queries (respecting condition filter)
-    $laptops  = Laptop::when($condition, fn($q) => $q->where('condition', $condition))
+// Category-specific queries (with condition filter if any)
+$laptops  = Laptop::when($condition, fn($q) => $q->where('condition', $condition))
                   ->orderBy('created_at', 'desc')
-                  ->paginate(2, ['*'], 'laptop_page');
+                  ->paginate(2, ['*'], 'laptop_page')
+                  ->appends(request()->query());
 
 $printers = Printer::when($condition, fn($q) => $q->where('condition', $condition))
                    ->orderBy('created_at', 'desc')
-                   ->paginate(2, ['*'], 'printer_page');
+                   ->paginate(2, ['*'], 'printer_page')
+                   ->appends(request()->query());
 
 $desktops = Desktop::when($condition, fn($q) => $q->where('condition', $condition))
                    ->orderBy('created_at', 'desc')
-                   ->paginate(2, ['*'], 'desktop_page');
+                   ->paginate(2, ['*'], 'desktop_page')
+                   ->appends(request()->query());
 
 
-  // AJAX: return only the laptop partial (renders HTML fragment)
+    // 🔑 Detect active category (from pagination or dropdown)
+    if ($request->has('laptop_page')) {
+        $category = 'laptop';
+    } elseif ($request->has('printer_page')) {
+        $category = 'printer';
+    } elseif ($request->has('desktop_page')) {
+        $category = 'desktop';
+    }
+
+    // ✅ AJAX: return only partials
     if ($request->ajax()) {
-    $category = $request->get('category');
-    $condition = $request->get('condition');
-
-    if ($category === 'laptop') {
-        return view('ict-equipment.partials.laptop-table', [
-            'laptops' => $laptops,
-            'selectedCategory' => $category,
-            'selectedCondition' => $condition,
-        ])->render();
+        if ($category === 'laptop') {
+            return view('ict-equipment.partials.laptop-table', compact('laptops', 'category', 'condition'));
+        }
+        if ($category === 'printer') {
+            return view('ict-equipment.partials.printer-table', compact('printers', 'category', 'condition'));
+        }
+        if ($category === 'desktop') {
+            return view('ict-equipment.partials.desktop-table', compact('desktops', 'category', 'condition'));
+        }
     }
-
-    if ($category === 'printer') {
-        return view('ict-equipment.partials.printer-table', [
-            'printers' => $printers,
-            'selectedCategory' => $category,
-            'selectedCondition' => $condition,
-        ])->render();
-    }
-
-    if ($category === 'desktop') {
-        return view('ict-equipment.partials.desktop-table', [
-            'desktops' => $desktops,
-            'selectedCategory' => $category,
-            'selectedCondition' => $condition,
-        ])->render();
-    }
-}
-
 
     // Full page
     return view('ict-equipment.index', [
@@ -156,15 +152,8 @@ $desktops = Desktop::when($condition, fn($q) => $q->where('condition', $conditio
         'selectedCategory' => $category,
         'selectedCondition' => $condition,
     ]);
-
-    $laptops = Laptop::paginate(2);
-
-    if ($request->ajax()) {
-        return view('ict-equipment.partials.laptop-table', compact('laptops'))->render();
-    }
-
-    return view('ict-equipment.index', compact('laptops'));
 }
+
 
 
 
@@ -652,11 +641,17 @@ public function destroy(Request $request, $category, $id)
         ]);
     }
 
-    return redirect()
-    ->route('ict-equipment.index', $request->query())
-    ->with('success', ucfirst($category) . ' deleted successfully.');
+    // Preserve all query params (category, condition, page, etc.)
+    $params = $request->query(); 
+    $params['category'] = $category; // enforce current category
 
+    return redirect()
+        ->route('ict-equipment.index', $params)
+        ->with('success', ucfirst($category) . ' deleted successfully.');
 }
+
+
+
 
 
 

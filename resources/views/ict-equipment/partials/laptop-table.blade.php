@@ -33,6 +33,7 @@
 
 
 
+
 <div class="bg-white shadow-md rounded-xl overflow-x-auto">
     <table class="min-w-full text-sm border border-gray-300">
         <thead class="bg-[#4A90E2] text-white sticky top-0">
@@ -163,12 +164,12 @@
                     <td colspan="14" class="p-6 text-center text-gray-500">No laptops found.</td>
                 </tr>
             @endforelse
+    </tr>
         </tbody>
     </table>
-     <!-- Pagination (you can keep vendor pagination) -->
-      <div class="mt-4 pagination">
-       {{ $laptops->appends(request()->except('page'))->links('vendor.pagination.tailwind') }}
-          </div>
+    <!-- Laptops Pagination -->
+<div class="mt-4 pagination">
+{{ $laptops->appends(request()->query())->links('vendor.pagination.tailwind') }}</div>
 </div>
 </div>
 

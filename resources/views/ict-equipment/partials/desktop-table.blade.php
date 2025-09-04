@@ -163,9 +163,9 @@
             @endforelse
         </tbody>
     </table>
-     <!-- Pagination -->
-    <div class="mt-4">
-        {{ $desktops->appends(request()->except('page'))->links('vendor.pagination.tailwind') }}
-    </div>
+    <!-- Desktops Pagination -->
+<div class="mt-4 pagination">
+{{ $desktops->appends(request()->query())->links('vendor.pagination.tailwind') }}
+</div>
 </div>
 </div>

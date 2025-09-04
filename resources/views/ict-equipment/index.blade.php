@@ -68,8 +68,14 @@
 <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 
            dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
     <i class="fa-solid fa-boxes-stacked text-blue-500 text-4xl w-10 h-10"></i>
-    ICT Equipment Inventory
+
+    @if(request()->has('condition'))
+        {{ request('condition') }} Equipments
+    @else
+        ICT Equipment Inventory
+    @endif
 </h2>
+
 
 
 
@@ -130,18 +136,8 @@
     </div>
 @endif
 
-        <!-- Category Selection Buttons -->
-        <div class="flex flex-wrap gap-4 mb-6">
-            <button class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium" data-category="laptop">
-                <i class="fa-solid fa-laptop"></i> Laptops
-            </button>
-            <button class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium" data-category="printer">
-                <i class="fa-solid fa-print"></i> Printers
-            </button>
-            <button class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium" data-category="desktop">
-                <i class="fa-solid fa-desktop"></i> Desktops
-            </button>
-        </div>
+       
+
 
 
         <!-- Add New Equipment -->
@@ -302,68 +298,124 @@
     </div>
 </div>
 
-        <!-- Wrapper -->
-    <div x-data="equipmentTable" class="space-y-4">
+       
 
-        <!-- Search bar -->
-        <div>
-            <label for="search" class="block font-medium text-sm mb-2 text-gray-700">Search Equipment</label>
-            <div class="relative w-[50%] mb-10">
-                <!-- Search icon -->
-                <i class="fa fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+    <!-- 🔍 Global Search Bar -->
+<div class="mb-6">
+  <input type="text" id="globalSearch"
+    placeholder="Search by Equipment ID, Asset #, or Serial #"
+    class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none" />
+</div>
 
-                <!-- Input -->
-                <input type="text" id="search" x-model="search"
-                       placeholder="Equipment ID, Description, Category, etc."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-full shadow-sm 
-                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                              placeholder-gray-400 pl-10">
+         <!-- Category Selection Buttons -->
+<div class="flex flex-wrap gap-4 mb-6">
+  <button
+    class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium"
+    data-category="laptop">
+    <i class="fa-solid fa-laptop"></i> Laptops
+  </button>
+  <button
+    class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium"
+    data-category="printer">
+    <i class="fa-solid fa-print"></i> Printers
+  </button>
+  <button
+    class="category-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 flex items-center gap-2 font-medium"
+    data-category="desktop">
+    <i class="fa-solid fa-desktop"></i> Desktops
+  </button>
+</div>
 
-                <!-- Clear button -->
-                <button type="button" x-show="search" @click="search = ''"
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        title="Clear search">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                         viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
+<script>
+  const buttons = document.querySelectorAll('.category-btn');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // remove active class from all buttons
+      buttons.forEach(b => b.classList.remove('bg-blue-500', 'text-white'));
+      buttons.forEach(b => b.classList.add('bg-gray-200', 'text-gray-700'));
+
+      // add active class to clicked one
+      btn.classList.remove('bg-gray-200', 'text-gray-700');
+      btn.classList.add('bg-blue-500', 'text-white');
+    });
+  });
+</script>
 
         
 
-   <!-- Laptop Table -->
+<!-- Laptop Table -->
 <div id="laptops-table-wrapper"
-     class="table-container {{ $selectedCategory === 'laptop' || (!$selectedCategory && $selectedCondition) ? '' : 'hidden' }}">
-    <h2 class="text-xl font-bold mb-3">
-        Laptops {{ $selectedCondition ? "({$selectedCondition})" : '' }}
-    </h2>
+     class="table-container {{ $selectedCategory === 'laptop' || request()->has('laptop_page') ? '' : 'hidden' }}">
     @include('ict-equipment.partials.laptop-table', ['laptops' => $laptops])
+    <p class="no-results hidden text-center text-gray-500 mt-4">No laptops found.</p>
 </div>
 
-   <!-- Printer Table -->
+<!-- Printer Table -->
 <div id="printers-table-wrapper"
-     class="table-container {{ $selectedCategory === 'printer' || (!$selectedCategory && $selectedCondition) ? '' : 'hidden' }}">
-    <h2 class="text-xl font-bold mb-3">
-        Printers {{ $selectedCondition ? "({$selectedCondition})" : '' }}
-    </h2>
+     class="table-container {{ $selectedCategory === 'printer' || request()->has('printer_page') ? '' : 'hidden' }}">
     @include('ict-equipment.partials.printer-table', ['printers' => $printers])
+    <p class="no-results hidden text-center text-gray-500 mt-4">No printers found.</p>
 </div>
 
 <!-- Desktop Table -->
 <div id="desktops-table-wrapper"
-     class="table-container {{ $selectedCategory === 'desktop' || (!$selectedCategory && $selectedCondition) ? '' : 'hidden' }}">
-    <h2 class="text-xl font-bold mb-3">
-        Desktops {{ $selectedCondition ? "({$selectedCondition})" : '' }}
-    </h2>
+     class="table-container {{ $selectedCategory === 'desktop' || request()->has('desktop_page') ? '' : 'hidden' }}">
     @include('ict-equipment.partials.desktop-table', ['desktops' => $desktops])
+    <p class="no-results hidden text-center text-gray-500 mt-4">No desktops found.</p>
 </div>
+
 
         
 
     </div>
 </div>
+
+<!-- ✅ Search + No Results Script -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("globalSearch");
+    const tableWrappers = document.querySelectorAll(".table-container");
+
+    searchInput.addEventListener("keyup", function () {
+        const searchValue = this.value.toLowerCase();
+
+        tableWrappers.forEach(wrapper => {
+            const rows = wrapper.querySelectorAll("tbody tr");
+            const noResultsMsg = wrapper.querySelector(".no-results");
+
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const equipmentId = row.querySelector("td:nth-child(1)")?.innerText.toLowerCase() || "";
+                const assetNum   = row.querySelector("td:nth-child(6)")?.innerText.toLowerCase() || "";
+                const serialNum  = (
+                    row.querySelector("td:nth-child(7)") || // Laptop/Printer Serial
+                    row.querySelector("td:nth-child(6)") || // Fallback Asset
+                    row.querySelector("td:nth-child(5)") || // PC_SN for Desktop
+                    row.querySelector("td:nth-child(7)")    // Another fallback
+                )?.innerText.toLowerCase() || "";
+
+                if (equipmentId.includes(searchValue) ||
+                    assetNum.includes(searchValue) ||
+                    serialNum.includes(searchValue)) {
+                    row.style.display = "";
+                    visibleCount++;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            // Toggle "No results" message
+            if (visibleCount === 0) {
+                noResultsMsg.classList.remove("hidden");
+            } else {
+                noResultsMsg.classList.add("hidden");
+            }
+        });
+    });
+});
+</script>
 
 
 <script>

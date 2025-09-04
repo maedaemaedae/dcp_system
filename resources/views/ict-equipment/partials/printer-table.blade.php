@@ -29,6 +29,8 @@
     </a>
 </div>
 
+
+
 <div class="bg-white shadow-md rounded-xl overflow-x-auto">
     <table class="min-w-full text-sm border border-gray-300">
         <thead class="bg-[#4A90E2] text-white sticky top-0">
@@ -155,8 +157,9 @@
             @endforelse
         </tbody>
     </table>
-     <div class="mt-4 pagination">
-     {{ $printers->appends(request()->except('page'))->links('vendor.pagination.tailwind') }}
-    </div>
+     <!-- Printers Pagination -->
+<div class="mt-4 pagination">
+{{ $printers->appends(request()->query())->links('vendor.pagination.tailwind') }}
+</div>
 </div>
 </div>
