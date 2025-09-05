@@ -98,10 +98,15 @@
 <!-- Alpine wrapper -->
 <div x-data="{
     search: '',
-    matches(text) {
-        return this.search === '' || text.toLowerCase().includes(this.search.toLowerCase());
+    matches(school, division, packageType) {
+        if (this.search === '') return true;
+        const term = this.search.toLowerCase();
+        return (school?.toLowerCase().includes(term) ||
+                division?.toLowerCase().includes(term) ||
+                packageType?.toLowerCase().includes(term));
     }
 }" class="mb-10">
+
     
    <!-- Search bar -->
 <label for="search" class="block font-medium text-sm mb-2 text-gray-700">Search School or Office</label>
@@ -175,7 +180,7 @@
             <tbody class="bg-white divide-y divide-gray-100">
                 @foreach ($recipients->where('recipient_type', 'school') as $recipient)
                     <tr class="hover:bg-blue-50 transition cursor-pointer"
-                        x-show="matches('{{ optional($recipient->school)->school_name }}')"
+                        x-show="matches('{{ optional($recipient->school)->school_name }}', '{{ $recipient->package->packageType->package_code ?? '' }}')"
                         @click="const checkbox = $el.querySelector('input[type=checkbox]'); checkbox.checked = !checkbox.checked">
                         <!-- Custom Checkbox -->
                         <td class="px-4 py-4 text-center">
@@ -217,7 +222,7 @@
             <tbody class="bg-white divide-y divide-gray-100">
                 @foreach ($recipients->where('recipient_type', 'division') as $recipient)
                     <tr class="hover:bg-blue-50 transition cursor-pointer"
-                        x-show="matches('{{ optional($recipient->division)->division_name }}')"
+                        x-show="matches('{{ optional($recipient->division)->division_name }}', '{{ $recipient->package->packageType->package_code ?? '' }}')"
                         @click="const checkbox = $el.querySelector('input[type=checkbox]'); checkbox.checked = !checkbox.checked">
                         <td class="px-4 py-4 text-center">
                             <div class="flex justify-center">

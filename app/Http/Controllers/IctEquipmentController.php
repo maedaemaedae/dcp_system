@@ -93,6 +93,7 @@ class IctEquipmentController extends Controller
 
     $category = $request->get('category');
     $condition = $request->get('condition');
+    $search    = $request->input('search');
 
     // Default all equipments (with condition filter if exists)
    // Default all equipments (with condition filter if exists)
@@ -104,11 +105,22 @@ $equipments = $query->orderBy('created_at', 'desc')->paginate(10);
 // ✅ Keep all query params in pagination links
 $equipments->appends(request()->query());
 
-// Category-specific queries (with condition filter if any)
-$laptops  = Laptop::when($condition, fn($q) => $q->where('condition', $condition))
-                  ->orderBy('created_at', 'desc')
-                  ->paginate(2, ['*'], 'laptop_page')
-                  ->appends(request()->query());
+ // ✅ Category-specific queries (search + condition applied)
+     $laptops = Laptop::when($search, function ($q) use ($search) {
+                    $q->where(function ($query) use ($search) {
+                        $query->where('equipment_id', 'like', "%{$search}%")
+                              ->orWhere('item_description', 'like', "%{$search}%")
+                              ->orWhere('brand', 'like', "%{$search}%")
+                              ->orWhere('model', 'like', "%{$search}%")
+                              ->orWhere('asset_number', 'like', "%{$search}%")
+                              ->orWhere('serial_number', 'like', "%{$search}%")
+                              ->orWhere('assigned_to', 'like', "%{$search}%");
+                    });
+                })
+                ->when($condition, fn($q) => $q->where('condition', $condition))
+                ->orderBy('created_at', 'desc')
+                ->paginate(2, ['*'], 'laptop_page')
+                ->appends($request->query());
 
 $printers = Printer::when($condition, fn($q) => $q->where('condition', $condition))
                    ->orderBy('created_at', 'desc')

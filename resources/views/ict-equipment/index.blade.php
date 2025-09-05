@@ -300,12 +300,73 @@
 
        
 
-    <!-- 🔍 Global Search Bar -->
-<div class="mb-6">
-  <input type="text" id="globalSearch"
-    placeholder="Search by Equipment ID, Asset #, or Serial #"
-    class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none" />
+   <!-- 🔍 Global Search Bar -->
+<div class="mb-4">
+    <input type="text" id="searchInput"
+        value="{{ request('search') }}"
+        placeholder="Search by Equipment ID, Asset #, Serial #..."
+        class="px-3 py-2 border rounded-lg w-80">
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+
+    let typingTimer;
+    const delay = 400; // ms delay
+
+    searchInput.addEventListener("keyup", function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            fetchResults(searchInput.value.trim());
+        }, delay);
+    });
+
+    function fetchResults(query) {
+        const url = new URL("{{ route('ict-equipment.index') }}", window.location.origin);
+
+        if (query) {
+            url.searchParams.set("search", query);
+        } else {
+            // 🔑 Kapag walang laman → tanggalin lang yung search param
+            url.searchParams.delete("search");
+        }
+
+        // 🔑 I-preserve ang current condition filter (hal. IN USE o FOR REPAIR)
+        @if(request()->has('condition'))
+            url.searchParams.set("condition", "{{ request('condition') }}");
+        @endif
+
+        fetch(url, {
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+
+            // Update all table wrappers
+            document.querySelector("#laptops-table-wrapper").innerHTML =
+                doc.querySelector("#laptops-table-wrapper").innerHTML;
+
+            document.querySelector("#printers-table-wrapper").innerHTML =
+                doc.querySelector("#printers-table-wrapper").innerHTML;
+
+            document.querySelector("#desktops-table-wrapper").innerHTML =
+                doc.querySelector("#desktops-table-wrapper").innerHTML;
+        })
+        .catch(err => console.error("Realtime search error:", err));
+    }
+});
+</script>
+
+
+
+
+
+
+
+
 
          <!-- Category Selection Buttons -->
 <div class="flex flex-wrap gap-4 mb-6">
