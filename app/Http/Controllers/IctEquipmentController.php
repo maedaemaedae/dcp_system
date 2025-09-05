@@ -109,12 +109,8 @@ $equipments->appends(request()->query());
      $laptops = Laptop::when($search, function ($q) use ($search) {
                     $q->where(function ($query) use ($search) {
                         $query->where('equipment_id', 'like', "%{$search}%")
-                              ->orWhere('item_description', 'like', "%{$search}%")
-                              ->orWhere('brand', 'like', "%{$search}%")
-                              ->orWhere('model', 'like', "%{$search}%")
                               ->orWhere('asset_number', 'like', "%{$search}%")
-                              ->orWhere('serial_number', 'like', "%{$search}%")
-                              ->orWhere('assigned_to', 'like', "%{$search}%");
+                              ->orWhere('serial_number', 'like', "%{$search}%");
                     });
                 })
                 ->when($condition, fn($q) => $q->where('condition', $condition))
@@ -122,15 +118,31 @@ $equipments->appends(request()->query());
                 ->paginate(2, ['*'], 'laptop_page')
                 ->appends($request->query());
 
-$printers = Printer::when($condition, fn($q) => $q->where('condition', $condition))
-                   ->orderBy('created_at', 'desc')
-                   ->paginate(2, ['*'], 'printer_page')
-                   ->appends(request()->query());
+$printers = Printer::when($search, function ($q) use ($search) {
+                $q->where(function ($query) use ($search) {
+                    $query->where('equipment_id', 'like', "%{$search}%")                      
+                          ->orWhere('asset_number', 'like', "%{$search}%")
+                          ->orWhere('serial_number', 'like', "%{$search}%")
+                          ->orWhere('network_ip', 'like', "%{$search}%");
+                });
+            })
+            ->when($condition, fn($q) => $q->where('condition', $condition))
+            ->orderBy('created_at', 'desc')
+            ->paginate(2, ['*'], 'printer_page')
+            ->appends($request->query());
 
-$desktops = Desktop::when($condition, fn($q) => $q->where('condition', $condition))
-                   ->orderBy('created_at', 'desc')
-                   ->paginate(2, ['*'], 'desktop_page')
-                   ->appends(request()->query());
+$desktops = Desktop::when($search, function ($q) use ($search) {
+                $q->where(function ($query) use ($search) {
+                    $query->where('equipment_id', 'like', "%{$search}%")
+                          ->orWhere('asset_number', 'like', "%{$search}%")
+                          ->orWhere('pc_sn', 'like', "%{$search}%");
+
+                });
+            })
+            ->when($condition, fn($q) => $q->where('condition', $condition))
+            ->orderBy('created_at', 'desc')
+            ->paginate(2, ['*'], 'desktop_page')
+            ->appends($request->query());
 
 
     // 🔑 Detect active category (from pagination or dropdown)

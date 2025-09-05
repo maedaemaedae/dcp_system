@@ -300,13 +300,14 @@
 
        
 
-   <!-- 🔍 Global Search Bar -->
+  <!-- 🔍 Global Search Bar -->
 <div class="mb-4">
     <input type="text" id="searchInput"
         value="{{ request('search') }}"
-        placeholder="Search by Equipment ID, Asset #, Serial #..."
-        class="px-3 py-2 border rounded-lg w-80">
+        placeholder="Search by Equipment ID, Asset #, Serial #, Network IP, PC SN"
+        class="px-3 py-2 border rounded-lg w-full max-w-3xl">
 </div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -354,8 +355,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.querySelector("#desktops-table-wrapper").innerHTML =
                 doc.querySelector("#desktops-table-wrapper").innerHTML;
+
+            // ✅ Apply highlighting after DOM update
+            highlightMatches(query);
         })
         .catch(err => console.error("Realtime search error:", err));
+    }
+
+    // ✅ Highlight function
+    function highlightMatches(query) {
+        if (!query) return; // walang i-highlight kung walang search
+
+        document.querySelectorAll(".table-container tbody tr td").forEach(cell => {
+            const text = cell.innerText;
+            const regex = new RegExp(`(${query})`, "gi");
+            cell.innerHTML = text.replace(regex, `<mark>$1</mark>`);
+        });
     }
 });
 </script>
@@ -433,10 +448,13 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 <!-- ✅ Search + No Results Script -->
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("globalSearch");
     const tableWrappers = document.querySelectorAll(".table-container");
+
+    if (!searchInput) return; // Safety check kung wala yung search input
 
     searchInput.addEventListener("keyup", function () {
         const searchValue = this.value.toLowerCase();
@@ -449,17 +467,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
             rows.forEach(row => {
                 const equipmentId = row.querySelector("td:nth-child(1)")?.innerText.toLowerCase() || "";
-                const assetNum   = row.querySelector("td:nth-child(6)")?.innerText.toLowerCase() || "";
-                const serialNum  = (
+                const assetNum    = row.querySelector("td:nth-child(6)")?.innerText.toLowerCase() || "";
+                const serialNum   = (
                     row.querySelector("td:nth-child(7)") || // Laptop/Printer Serial
                     row.querySelector("td:nth-child(6)") || // Fallback Asset
                     row.querySelector("td:nth-child(5)") || // PC_SN for Desktop
                     row.querySelector("td:nth-child(7)")    // Another fallback
                 )?.innerText.toLowerCase() || "";
 
-                if (equipmentId.includes(searchValue) ||
+                if (
+                    equipmentId.includes(searchValue) ||
                     assetNum.includes(searchValue) ||
-                    serialNum.includes(searchValue)) {
+                    serialNum.includes(searchValue)
+                ) {
                     row.style.display = "";
                     visibleCount++;
                 } else {
@@ -468,15 +488,18 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             // Toggle "No results" message
-            if (visibleCount === 0) {
-                noResultsMsg.classList.remove("hidden");
-            } else {
-                noResultsMsg.classList.add("hidden");
+            if (noResultsMsg) {
+                if (visibleCount === 0) {
+                    noResultsMsg.classList.remove("hidden");
+                } else {
+                    noResultsMsg.classList.add("hidden");
+                }
             }
         });
     });
 });
 </script>
+
 
 
 <script>
