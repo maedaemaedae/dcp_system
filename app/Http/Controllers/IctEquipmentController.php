@@ -395,20 +395,28 @@ $desktops = Desktop::when($search, function ($q) use ($search) {
     $inserted = [];
     $matchedRows = 0;
 
+    // ✅ Category normalization map
+    $categoryMap = [
+        'desktop' => ['desktop', 'desktops', 'desktop computer', 'cpu'],
+        'laptop'  => ['laptop', 'laptops', 'notebook', 'notebooks','portable laptop'],
+        'printer' => ['printer', 'printers', 'printing machine'],
+    ];
+
     foreach ($rows as $row) {
-        $rowCategory = strtolower(trim($row['category'])); // keep row category separate
-    
-        if ($rowCategory !== $category) {
-            continue; // skip rows that don’t match the selected category
+        $rowCategory = strtolower(trim($row['category']));
+
+        // normalize category
+        if (!in_array($rowCategory, $categoryMap[$category])) {
+            continue; // skip rows that don’t match normalized category
         }
-    
+
         $matchedRows++; // ✅ count matched rows
-    
+
         if ($category === 'desktop') {
             Desktop::create([
                 'equipment_id'    => $row['equipment id'],
                 'item_description'=> $row['description'],
-                'category'        => 'Desktop',
+                'category'        => 'Desktop', // ✅ normalized
                 'pc_make'         => $row['pc_make'] ?? null,
                 'pc_model'        => $row['pc_model'] ?? null,
                 'asset_number'    => $row['asset #'] ?? null,
@@ -429,7 +437,7 @@ $desktops = Desktop::when($search, function ($q) use ($search) {
             Laptop::create([
                 'equipment_id'    => $row['equipment id'],
                 'item_description'=> $row['description'],
-                'category'        => 'Laptop',
+                'category'        => 'Laptop', // ✅ normalized
                 'brand'           => $row['brand'],
                 'model'           => $row['model'],
                 'asset_number'    => $row['asset #'],
@@ -445,7 +453,7 @@ $desktops = Desktop::when($search, function ($q) use ($search) {
             Printer::create([
                 'equipment_id'    => $row['equipment id'],
                 'item_description'=> $row['description'],
-                'category'        => 'Printer',
+                'category'        => 'Printer', // ✅ normalized
                 'brand'           => $row['brand'],
                 'model'           => $row['model'],
                 'network_ip'      => $row['network ip'] ?? null,
@@ -460,14 +468,14 @@ $desktops = Desktop::when($search, function ($q) use ($search) {
             ]);
         }
     }
-    
 
     if ($matchedRows === 0) {
         return back()->withErrors(["No rows matched the selected category for import."]);
     }
-    
+
     return back()->with('success', ucfirst($category) . ' equipment imported successfully.');
-}    
+}
+
 
 
     

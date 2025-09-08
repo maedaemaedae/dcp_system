@@ -35,18 +35,18 @@
     <table class="min-w-full text-sm border border-gray-300">
         <thead class="bg-[#4A90E2] text-white sticky top-0">
             <tr>
-                <th class="p-3 text-left">Equipment ID</th>
+                <th class="p-3 text-left whitespace-nowrap">Equipment ID</th>
                 <th class="p-3 text-left">Description</th>
                 <th class="p-3 text-left">Category</th>
                 <th class="p-3 text-left">Brand</th>
                 <th class="p-3 text-left">Model</th>
-                <th class="p-3 text-left">Network IP</th>
-                <th class="p-3 text-left">Asset #</th>
-                <th class="p-3 text-left">Serial #</th>
+                <th class="p-3 text-left whitespace-nowrap">Network IP</th>
+                <th class="p-3 text-left whitespace-nowrap">Asset #</th>
+                <th class="p-3 text-left whitespace-nowrap">Serial #</th>
                 <th class="p-3 text-left">Location</th>
                 <th class="p-3 text-left">Assigned To</th>
-                <th class="p-3 text-left">Purchase Date</th>
-                <th class="p-3 text-left">Warranty Expiry</th>
+                <th class="p-3 text-left whitespace-nowrap">Purchase Date</th>
+                <th class="p-3 text-left whitespace-nowrap">Warranty Expiry</th>
                 <th class="p-3 text-left">Condition</th>
                 <th class="p-3 text-left">Note</th>
                 <th class="p-3 text-center sticky right-0 bg-[#4A90E2] z-10">Action</th>

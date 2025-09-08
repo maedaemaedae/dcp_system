@@ -31,10 +31,10 @@
 
     <!-- Dashboard container -->
     <div class="max-w-6xl mx-auto py-10">
-        <h2 class="text-4xl font-bold text-gray-800 mb-8 flex items-center gap-4">
-            <i class="fa-solid fa-desktop text-blue-500 text-3xl"></i>
-            ICT Equipment Dashboard
-        </h2>
+        <h2 class="text-[42px] font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-600 pb-2 tracking-wide flex items-center gap-4">
+    <i class="fa-solid fa-laptop text-blue-500 text-3xl"></i>
+    ICT Equipment Dashboard
+</h2>
 
 
 

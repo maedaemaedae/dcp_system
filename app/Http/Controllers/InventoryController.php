@@ -75,6 +75,11 @@ class InventoryController extends Controller
             return optional($division->inventories->first())->created_at;
         })->values();
 
+
+            // ✅ Sort alphabetically
+        $schoolInventories = $schoolInventories->sortBy('school_name')->values();
+        $divisionInventories = $divisionInventories->sortBy('division_name')->values();
+
     return view('superadmin.inventory.index', compact('schoolInventories', 'divisionInventories'));
 }
 
