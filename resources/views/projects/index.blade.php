@@ -211,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
     @include('projects.partials.create-package-type-modal')
     @include('projects.partials.edit-project-modal')
     @include('projects.partials.edit-package-modal')
+    @include('projects.partials.create-package-modal', ['projects' => $projects, 'allPackageTypes' => $allPackageTypes])
    
     <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">

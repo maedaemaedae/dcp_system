@@ -14,6 +14,7 @@ class ProjectController extends Controller
     $projects = Project::with('packages.packageType')->orderBy('created_at', 'desc')->paginate(3, ['*'], 'projects_page');
     $packages = Package::with(['project', 'packageType'])->orderBy('created_at', 'desc')->paginate(3, ['*'], 'packages_page');
     $packageTypes = PackageType::with('contents')->orderBy('created_at', 'desc')->paginate(3, ['*'], 'package_types_page');
+    $allPackageTypes = PackageType::with('contents')->orderBy('created_at', 'desc')->get();
 
     if ($request->ajax()) {
         if ($request->type === 'projects') {
@@ -27,7 +28,7 @@ class ProjectController extends Controller
         }
     }
 
-    return view('projects.index', compact('projects', 'packages', 'packageTypes'));
+    return view('projects.index', compact('projects', 'packages', 'packageTypes', 'allPackageTypes'));
     }
 
     public function store(Request $request)
@@ -37,7 +38,7 @@ class ProjectController extends Controller
             'target_delivery_date' => 'nullable|date',
             'target_arrival_date' => 'nullable|date',
         ]);
-
+  
         Project::create($validated);
 
         return back()->with('success', 'Project created successfully.');

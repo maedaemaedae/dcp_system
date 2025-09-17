@@ -86,6 +86,10 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::put('/packages/{id}', [PackageController::class, 'update'])->name('packages.update');
     Route::delete('/packages/{id}', [PackageController::class, 'destroy'])->name('packages.destroy');
 
+
+    // ✅ Package Type delete
+    Route::delete('/package-types/{id}', [PackageTypeController::class, 'destroy'])->name('package_types.destroy');
+
     // ✅ Deliveries (limited to index/edit/update)
     Route::get('/superadmin/deliveries', [DeliveryController::class, 'index'])->name('superadmin.deliveries.index');
     Route::get('/superadmin/deliveries/list', [DeliveryController::class, 'list'])->name('superadmin.deliveries.list');

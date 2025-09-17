@@ -40,4 +40,13 @@ class PackageTypeController extends Controller
 
         return back()->with('success', 'Package type created successfully.');
     }
+
+    public function destroy($id)
+{
+    $packageType = PackageType::findOrFail($id);
+    $packageType->delete();
+
+    return redirect()->back()->with('success', 'Package Type deleted successfully.');
+}
+
 }

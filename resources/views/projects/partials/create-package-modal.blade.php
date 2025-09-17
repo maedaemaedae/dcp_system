@@ -15,7 +15,7 @@
             <div class="mb-4">
                 <label for="package_type_id" class="block font-medium text-sm text-gray-700">Package Type</label>
                 <select name="package_type_id" class="w-full border border-gray-300 rounded-lg px-4 py-2" required>
-                    @foreach($packageTypes as $type)
+                    @foreach($allPackageTypes as $type)
                         <option value="{{ $type->id }}">{{ $type->package_code }}</option>
                     @endforeach
                 </select>
